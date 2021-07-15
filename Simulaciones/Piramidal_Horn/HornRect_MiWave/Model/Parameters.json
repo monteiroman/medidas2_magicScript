@@ -1,0 +1,35 @@
+{
+    "parameters": [
+        {
+            "expr": "22.86",
+            "name": "a",
+            "value": "22.86"
+        },
+        {
+            "expr": "10.16",
+            "name": "b",
+            "value": "10.16"
+        },
+        {
+            "expr": "30",
+            "name": "l",
+            "value": "30"
+        },
+        {
+            "expr": "63.754",
+            "name": "aperture_width",
+            "value": "63.754"
+        },
+        {
+            "expr": "49.784",
+            "name": "aperture_height",
+            "value": "49.784"
+        },
+        {
+            "expr": "109.22",
+            "name": "flare_length",
+            "value": "109.22"
+        }
+    ],
+    "version": 1
+}

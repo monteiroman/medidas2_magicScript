@@ -1,0 +1,44 @@
+1
+0
+4
+4
+12
+TYPE_1D_BUILTIN_RESULT
+Balance\Balance [1]
+^1.bil
+RESULTS_EQUAL
+0.01
+0
+0
+IgnorePasses=0
+Component=ALL
+12
+TYPE_1D_BUILTIN_RESULT
+Efficiencies\Rad. Efficiency [1]
+^FarfieldMetaData_1_RadEff.sig
+RESULTS_EQUAL
+0.01
+0
+0
+IgnorePasses=0
+Component=ALL
+12
+TYPE_1D_BUILTIN_RESULT
+Energy\Energy [1]
+^1.eng
+RESULTS_EQUAL
+0.1
+0
+0
+IgnorePasses=0
+Component=ALL
+12
+TYPE_1D_BUILTIN_RESULT
+Power\Excitation [1]\Power Radiated
+^RadiatedPower_1.sig
+RESULTS_EQUAL
+0.01
+0
+0
+IgnorePasses=0
+Component=ALL

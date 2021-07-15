@@ -1,0 +1,19 @@
+[Version]
+2
+[Author]
+FacultadVM
+[Mesh Cells]
+103,230
+[Mesh Type]
+Hexahedral
+[Last Problem Type]
+High Frequency
+[Last Solver Type]
+HF Time Domain
+[Last Solver Type Abb]
+t
+[Results]
+Time Domain: S-Parameter
+[Modeler Unique ID]
+5:hornrect_optimize.cst?30f403f89f3e031781dce21ee74f5a8e?20893:numberofparameters=6:port=1>mode=1>zre=0>zim=0:::a?aperture_height?aperture_width?b?flare_length?l
+[Comment]

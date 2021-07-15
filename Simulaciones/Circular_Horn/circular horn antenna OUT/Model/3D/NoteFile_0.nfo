@@ -1,0 +1,32 @@
+Circular Horn Antenna
+---------------------
+
+General Description
+
+   This example shows the calculation of farfields and electric fields of a horn antenna. 
+   The antenna consists of a rectangular waveguide, which is connected with a circular 
+   horn by the loft feature. Also the setup of result templates is shown, which are 
+   stored during parameter sweeping and optimization runs.
+
+Structure Generation
+ 
+   The antenna is created using a basic brick and cylinder. More advanced operations 
+   are the usage of the local working coordinate system before defining the cylinder 
+   and especially the loft operation to connect rectangular and circular faces. At the 
+   end (after boolean adding the 3 individual objects), the Shell-feature is applied to 
+   create a finite wall thickness.
+
+Solver Setup
+
+   A waveguide port is defined on the open side of the rectangular waveguide to stimulate 
+   the antenna. All calculation domain boundary conditions are set to "open". Magnetic 
+   and electric symmetry planes are used to reduce the calculation time. Besides standard 
+   efield and farfield monitors also a Result Template is setup to store and compare the 
+   farfield gain during mesh adaption runs, parameter sweeping or optimization runs.
+
+Post Processing
+   
+   The farfield patterns are listed in subfolders of "Farfields" in the navigation tree. 
+   The electric field distribution can be accessed in subfolders of "2D/3D Results/E-Field"  
+   in the navigation tree. 
+

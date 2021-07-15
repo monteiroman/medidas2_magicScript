@@ -1,0 +1,39 @@
+{
+   "execution": {
+      "classname": "SMAPowerByEmagHPCFrame",
+      "libname": "SMAPowerByEmagUI"
+   },
+   "inputVariables": [
+      {
+         "name": "a",
+         "type": "float",
+         "value": 22.86
+      },
+      {
+         "name": "b",
+         "type": "float",
+         "value": 10.16
+      },
+      {
+         "name": "l",
+         "type": "float",
+         "value": 30.0
+      },
+      {
+         "name": "aperture_width",
+         "type": "float",
+         "value": 63.754
+      },
+      {
+         "name": "aperture_height",
+         "type": "float",
+         "value": 49.784
+      },
+      {
+         "name": "flare_length",
+         "type": "float",
+         "value": 109.22
+      }
+   ],
+   "outputVariables": []
+}

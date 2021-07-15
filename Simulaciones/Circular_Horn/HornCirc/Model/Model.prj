@@ -1,0 +1,19 @@
+[Version]
+2
+[Author]
+FacultadVM
+[Mesh Cells]
+18,252
+[Mesh Type]
+Hexahedral
+[Last Problem Type]
+High Frequency
+[Last Solver Type]
+HF Time Domain
+[Last Solver Type Abb]
+t
+[Results]
+Time Domain: S-Parameter
+[Modeler Unique ID]
+5:horncirc.cst?e74e03759fcfb71d11b746007cd21d2d?13996:numberofparameters=6:port=1>mode=1>zre=0>zim=0:::flare_length?aperture_height?aperture_width?l?b?a
+[Comment]
