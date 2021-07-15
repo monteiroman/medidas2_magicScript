@@ -1,0 +1,100 @@
+{
+    "parameters": [
+        {
+            "expr": "c0/frequency_centre",
+            "name": "wavelength_centre",
+            "value": "29.9792458"
+        },
+        {
+            "descr": "Waveguide width",
+            "expr": "22.86",
+            "name": "waveguide_width",
+            "value": "22.86"
+        },
+        {
+            "descr": "Waveguide length",
+            "expr": "29.9792458",
+            "name": "waveguide_length",
+            "value": "29.9792458"
+        },
+        {
+            "descr": "Waveguide height",
+            "expr": "10.16",
+            "name": "waveguide_height",
+            "value": "10.16"
+        },
+        {
+            "expr": "0",
+            "name": "taper_angle",
+            "value": "0"
+        },
+        {
+            "descr": "Rounding radius",
+            "expr": "150",
+            "name": "rounding_radius",
+            "value": "150"
+        },
+        {
+            "descr": "Rounding radius at aperture",
+            "expr": "95",
+            "name": "rounding_end_angle",
+            "value": "95"
+        },
+        {
+            "expr": "9",
+            "name": "num_ff_monitors",
+            "value": "9"
+        },
+        {
+            "expr": "0",
+            "name": "metal_thickness",
+            "value": "0"
+        },
+        {
+            "expr": "frequency_centre*0.5",
+            "name": "frequency_minimum",
+            "value": "5"
+        },
+        {
+            "expr": "frequency_centre*1.5",
+            "name": "frequency_maximum",
+            "value": "15"
+        },
+        {
+            "descr": "Centre frequency",
+            "expr": "10",
+            "name": "frequency_centre",
+            "value": "10"
+        },
+        {
+            "descr": "Flare length",
+            "expr": "170",
+            "name": "flare_length",
+            "value": "170"
+        },
+        {
+            "descr": "Speed of light (corrected for the model units)",
+            "expr": "CLight*1E-06",
+            "name": "c0",
+            "value": "299.792458"
+        },
+        {
+            "expr": "atnd(flare_length/sqr((aperture_height/2-waveguide_height/2)^2+(aperture_width/2-waveguide_width/2)^2)) -90 + rounding_end_angle",
+            "name": "arc_sweep_angle",
+            "value": "76.9284316870935"
+        },
+        {
+            "descr": "Aperture width",
+            "expr": "107.110550618452",
+            "name": "aperture_width",
+            "value": "107.110550618452"
+        },
+        {
+            "descr": "Aperture height",
+            "expr": "82.3407799920577",
+            "name": "aperture_height",
+            "value": "82.3407799920577"
+        }
+    ],
+    "version": 1
+}

@@ -1,0 +1,74 @@
+{
+   "execution": {
+      "classname": "SMAPowerByEmagHPCFrame",
+      "libname": "SMAPowerByEmagUI"
+   },
+   "inputVariables": [
+      {
+         "name": "waveguide_width",
+         "type": "float",
+         "value": 22.86
+      },
+      {
+         "name": "waveguide_length",
+         "type": "float",
+         "value": 29.9792458
+      },
+      {
+         "name": "waveguide_height",
+         "type": "float",
+         "value": 10.16
+      },
+      {
+         "name": "taper_angle",
+         "type": "float",
+         "value": 0.0
+      },
+      {
+         "name": "rounding_radius",
+         "type": "float",
+         "value": 150.0
+      },
+      {
+         "name": "rounding_end_angle",
+         "type": "float",
+         "value": 95.0
+      },
+      {
+         "name": "num_ff_monitors",
+         "type": "float",
+         "value": 9.0
+      },
+      {
+         "name": "metal_thickness",
+         "type": "float",
+         "value": 0.0
+      },
+      {
+         "name": "frequency_centre",
+         "type": "float",
+         "value": 10.0
+      },
+      {
+         "name": "flare_length",
+         "type": "float",
+         "value": 170.0
+      },
+      {
+         "name": "c0",
+         "type": "string",
+         "value": "CLight*1E-06"
+      },
+      {
+         "name": "aperture_width",
+         "type": "float",
+         "value": 107.110550618452
+      },
+      {
+         "name": "aperture_height",
+         "type": "float",
+         "value": 82.3407799920577
+      }
+   ],
+   "outputVariables": []
+}
