@@ -1,3 +1,4 @@
 Simulations/CST/*/*/Result/*
 Simulations/CST/*/*/Temp/*
 Simulations/OpenEMS/*/tmp*
+tmp/*
