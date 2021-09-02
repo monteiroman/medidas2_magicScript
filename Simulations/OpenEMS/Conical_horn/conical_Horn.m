@@ -1,14 +1,9 @@
-%
-% Tutorials / conical horn antenna
-%
 % Describtion at:
 % http://openems.de/index.php/Tutorial:_Conical_Horn_Antenna
 %
 % Tested with
 %  - Matlab 2011a / Octave 4.0
 %  - openEMS v0.0.33
-%
-% (C) 2011-2015 Thorsten Liebig <thorsten.liebig@uni-due.de>
 
 close all
 clear
@@ -110,7 +105,7 @@ Sim_CSX = 'horn_ant.xml';
 WriteOpenEMS( [Sim_Path '/' Sim_CSX], FDTD, CSX );
 
 %% show the structure
-CSXGeomPlot( [Sim_Path '/' Sim_CSX] );
+CSXGeomPlot( [Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
 %% run openEMS
 RunOpenEMS( Sim_Path, Sim_CSX);

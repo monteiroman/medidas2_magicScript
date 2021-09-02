@@ -1,14 +1,9 @@
-%
-% Tutorials / horn antenna
-%
 % Describtion at:
 % http://openems.de/index.php/Tutorial:_Horn_Antenna
 %
 % Tested with
 %  - Matlab 2011a / Octave 3.6.4
 %  - openEMS v0.0.31
-%
-% (C) 2011,2012,2013 Thorsten Liebig <thorsten.liebig@uni-due.de>
 
 close all
 clear
@@ -124,7 +119,7 @@ stop  = [mesh.x(end-8) mesh.y(end-8) mesh.z(end-8)];
 [CSX nf2ff] = CreateNF2FFBox(CSX, 'nf2ff', start, stop, 'Directions', [1 1 1 1 0 1]);
 
 %% prepare simulation folder
-Sim_Path = 'tmp_Horn_Antenna';
+Sim_Path = 'tmp';
 Sim_CSX = 'horn_ant.xml';
 
 [status, message, messageid] = rmdir( Sim_Path, 's' ); % clear previous directory
@@ -134,7 +129,7 @@ Sim_CSX = 'horn_ant.xml';
 WriteOpenEMS([Sim_Path '/' Sim_CSX], FDTD, CSX);
 
 %% show the structure
-CSXGeomPlot([Sim_Path '/' Sim_CSX]);
+CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
 %% run openEMS
 RunOpenEMS(Sim_Path, Sim_CSX);
@@ -153,7 +148,6 @@ grid on
 title( 'reflection coefficient S_{11}' );
 xlabel( 'frequency f / GHz' );
 ylabel( 'reflection coefficient |S_{11}|' );
-
 drawnow
 
 %% NFFF contour plots %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
