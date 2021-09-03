@@ -91,6 +91,10 @@ p(2,3) = -a/2 - sin(horn.angle(1))*horn.length;
 p(1,3) = horn.length;
 p(2,4) = -a/2;
 p(1,4) = 0;
+%
+% AddLinPoly(CSX_structure, name, priority, normal_direction, elevation, points, lenght, varargin)
+% https://openems.de/index.php/Polygon.html#:~:text=Polygon%20example-,Extruded%20Polygon,-An%20extruded%20polygon
+%
 CSX = AddLinPoly( CSX, 'horn', 10, 1, -horn.thickness/2, p, horn.thickness, 'Transform', {'Rotate_X',horn.angle(2),'Translate',['0,' num2str(-b/2-horn.thickness/2) ',0']});
 CSX = AddLinPoly( CSX, 'horn', 10, 1, -horn.thickness/2, p, horn.thickness, 'Transform', {'Rotate_X',-horn.angle(2),'Translate',['0,' num2str(b/2+horn.thickness/2) ',0']});
 
