@@ -83,6 +83,7 @@ stop  = [ a/2+horn.thickness -b/2                0];
 CSX = AddBox(CSX,'horn',10,start,stop);
 
 % horn opening
+% p(coordinate, point_id)
 p(2,1) = a/2;
 p(1,1) = 0;
 p(2,2) = a/2 + sin(horn.angle(1))*horn.length;
