@@ -1,5 +1,5 @@
 Simulations/CST/*/*/Result/*
 Simulations/CST/*/*/Temp/*
 Simulations/OpenEMS/*/tmp*
-tmp/*
-Tests/Structure_test/tmp/*
+tmp*
+Tests/Structure_test/tmp*
