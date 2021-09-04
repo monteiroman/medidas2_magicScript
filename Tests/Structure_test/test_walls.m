@@ -11,6 +11,9 @@ sigma = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5
 NMC = 5                    % Number of corrugations in mode converter
 wgl = 30;                  % Length of circular feeding waveguide
 num_of_corrugations = 60;
+corrugated_width = 10
+straight_width = 2
+cap_width = 2
 show_figures = 1;
 % END OF USER EDITABLE PARAMETERS
 
@@ -48,7 +51,7 @@ a = ai+(ao-ai)*z/length;
 
 if (show_figures);
     figure
-    subplot (2, 2, 1)
+    subplot (3, 2, 1)
     plot(z, a);    
     plot(z, a);    
     plot(z, a);    
@@ -91,7 +94,7 @@ z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
 len = len(1:z_number); % Truncate z axis data points to equal rad vector length
 
 if (show_figures);
-    subplot (2, 2, 2)
+    subplot (3, 2, 2)
     plot(len,rad);
     set(gca, "linewidth",2, "fontsize", 14 )
     xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
@@ -125,7 +128,7 @@ len = [len, z_flip,         -wgl,               -wgl,   0];
 rad = [rad, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
 
 if (show_figures);
-    subplot (2, 2, 3)
+    subplot (3, 2, 3)
     plot(len,rad);
     set(gca, "linewidth",2, "fontsize", 14 )
     xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
@@ -139,12 +142,38 @@ straight_len = [z_flip, -wgl, -wgl, 0, length, length, length];
 straight_rad = [outer_surface, ai+(lambda_c/2+2), 0, 0, 0, ao-ai, outer_surface(1)];
 
 if (show_figures);
-    subplot (2, 2, 4)
+    subplot (3, 2, 4)
     plot(straight_len, straight_rad);
     set(gca, "linewidth",2, "fontsize", 14 )
     xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
     ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
     title( 'Straight walls', 'FontSize', 16 );
+endif
+
+% Determine end cap to prevent the radiation coming out of the back of the horn
+% Extract the end point of the structure
+cap_point_z_1 = [z_flip, -wgl](end);
+cap_point_y_1 = [outer_surface, ai+(lambda_c/2+2)](end);
+% From here we have to move in "y" to to met the "y" end of the cap.
+cap_point_z_2 = cap_point_z_1;
+cap_point_y_2 = -cap_point_y_1;
+% We defined here the width of the cap
+cap_point_z_3 = cap_point_z_1 + cap_width;
+cap_point_y_3 = cap_point_y_1;
+cap_point_z_4 = cap_point_z_2 + cap_width;
+cap_point_y_4 = cap_point_y_2;
+
+cap_y = [cap_point_y_1, cap_point_y_2, cap_point_y_4, cap_point_y_3, cap_point_y_1];
+cap_z = [cap_point_z_1, cap_point_z_2, cap_point_z_4, cap_point_z_3, cap_point_z_1];
+
+if (show_figures);
+    subplot (3, 2, 5)
+    plot(cap_z, cap_y, 'o-r');
+    set(gca, "linewidth",2, "fontsize", 14 )
+    xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
+    ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
+    title( 'Cap', 'FontSize', 16 );
+    axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
 
 % openEMS setup begins here
@@ -182,22 +211,17 @@ mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
 
 CSX = DefineRectGrid( CSX, unit, mesh );
 
-%% create horn
-% horn + waveguide, defined by a rotational polygon
+%% ----->> Create Horn <<-----
+%% Horn + waveguide
 CSX = AddMetal(CSX, 'Corrugated_Horn');
 corrugated_coords = [rad; len];
 straight_coords = [straight_rad; straight_len];
-
-% CSX = AddRotPoly(CSX,'Corrugated_Horn',10,'x',corrugated_coords,'z');
-corrugated_width = 30
-straight_width = 2
 
 % Corrugated walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
                             {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2) ',0']});
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
                             {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2) ',0']});
-
 % Straight walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
                             {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2-straight_width) ',0']});
@@ -209,7 +233,13 @@ CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_w
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
             {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2+straight_width) ',0']});
 
-% Prepare simulation folder
+%% End cap to prevent the radiation coming out of the back of the horn
+CSX = AddMetal(CSX, 'Cap');
+cap_coords = [cap_y; cap_z];
+CSX = AddLinPoly( CSX, 'Cap', 10, 1, 0, cap_coords, corrugated_width + 2 * straight_width, 'Transform', 
+        {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2 - straight_width) ',' num2str(-cap_width)]});
+
+%% ----->> Prepare simulation folder <<----- 
 Sim_Path = 'tmp';
 Sim_CSX = 'Corrugated_Horn.xml';
 [status, message, messageid] = rmdir( Sim_Path, 's'); % Clear previous directory

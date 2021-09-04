@@ -11,23 +11,24 @@ sigma = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5
 NMC = 5                    % Number of corrugations in mode converter
 wgl = 30;                  % Length of circular feeding waveguide
 num_of_corrugations = 60;
+show_figures = 1;
 % END OF USER EDITABLE PARAMETERS
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
 fratio = fmax/fmin             % ratio of fmax/fmin
 if (fratio >= 2.4);            % check fmax/fmin is less than 2.4
-  disp('Error, fmax/fmin is greater than 2.4!');
-  fc = 0
-  elseif (fratio <= 1.4);      % Use Narrowband formula if fmax <= 1.4fmin
-    fc = sqrt(fmin*fmax)
-     elseif (fmax >= 1.4*fmin && fmax <= 2.4*fmin); % Use wideband formula for 1.4fmin<=fmax<=2.4fmin
-       fc = 1.2*fmin
+    disp('Error, fmax/fmin is greater than 2.4!');
+    fc = 0
+    elseif (fratio <= 1.4);      % Use Narrowband formula if fmax <= 1.4fmin
+        fc = sqrt(fmin*fmax)
+        elseif (fmax >= 1.4*fmin && fmax <= 2.4*fmin); % Use wideband formula for 1.4fmin<=fmax<=2.4fmin
+            fc = 1.2*fmin
 endif
 
 if (fratio <= 1.4);
-  fo = 1.02*fc    % For narrow band choose fc <= fo <= 1.05fc
+    fo = 1.02*fc    % For narrow band choose fc <= fo <= 1.05fc
     elseif (fmax >= 1.4*fmin && fmax <= 2.4*fmin);
-      fo = 1.10*fc    % For wideband choose 1.05fc <= fo <= 1.15fc
+        fo = 1.10*fc    % For wideband choose 1.05fc <= fo <= 1.15fc
 endif
 
 unit = 1e-3;                    % Units in mm
@@ -45,12 +46,18 @@ z = 0:p:length;                 % z index distance array from 0 to length of hor
 %%% Linear profile %%%
 a = ai+(ao-ai)*z/length;
 
-plot(z, a);    
-set(gca, "linewidth",2, "fontsize", 14 )
-axis equal;
-xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
-ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
-title( 'Linear Horn Profile', 'FontSize', 16 );
+if (show_figures);
+    figure
+    subplot (2, 2, 1)
+    plot(z, a);    
+    plot(z, a);    
+    plot(z, a);    
+    set(gca, "linewidth",2, "fontsize", 14 )
+    xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
+    ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
+    title( 'Linear Horn Profile', 'FontSize', 16 );
+    axis equal;
+endif
 
 % Mode Converter depths for element j
 ajmc = a(1:NMC);                     % Index range for mode converter
@@ -59,7 +66,8 @@ djmc = (sigma-((idx-1)./NMC).*(sigma-(0.25.*exp(1./(2.114.*(kc*ajmc).^1.134)))))
 % Depth of remaining corrugations
 aj = a(NMC+1:end);
 idx = NMC+1:N+1;
-dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-NMC-1)/(N-NMC-1)).*((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
+dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-NMC-1)/(N-NMC-1)).*((lambda_c/4).*exp(
+                                            1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
 d = [djmc, dj];       % Combining the mode converter and horn depth values
 
 % Generate z,y coordinates as len and rad vector
@@ -82,28 +90,30 @@ endfor
 z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
 len = len(1:z_number); % Truncate z axis data points to equal rad vector length
 
-figure
-plot(len,rad);
-set(gca, "linewidth",2, "fontsize", 14 )
-xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
-ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
-title( 'Mode Converter and Corrugation Profile', 'FontSize', 16 );
-axis equal;   % Scale axis equally for aspect ratio 1:1
+if (show_figures);
+    subplot (2, 2, 2)
+    plot(len,rad);
+    set(gca, "linewidth",2, "fontsize", 14 )
+    xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
+    ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
+    title( 'Mode Converter and Corrugation Profile', 'FontSize', 16 );
+    axis equal;   % Scale axis equally for aspect ratio 1:1
+endif
 
 % Add the rest of the geometry to create a closed path
 % a_offset is the inner horn profile shifted up to give the horn a thickness
 a_offset = a.+(lambda_c/2+2);
-%figure;                    % Uncomment these three lines for debugging
-%plot(z, a_offset);
-%axis equal;
+% figure;                    % Uncomment these three lines for debugging
+% plot(z, a_offset);
+% axis equal;
 
 % Add vertical surface at horn aperture
 len = [len, len(z_number)];
 rad = [rad, a_offset(N)];
 radmsh=rad;                 % radmesh to fix mesh lines to corrugations
-%figure;                    % Uncomment these three lines for debugging
-%plot(len, rad);
-%axis equal;
+% figure;                    % Uncomment these three lines for debugging
+% plot(len, rad);
+% axis equal;
 
 % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
 outer_surface = fliplr(a_offset);
@@ -111,16 +121,31 @@ z_flip = fliplr(z);
 extent = len(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
 % Add outer profile and circular waveguide to horn
-len = [len, z_flip, -wgl, -wgl, 0];
-rad = [rad, outer_surface, ai+(lambda_c/2+2), ai, ai];
+len = [len, z_flip,         -wgl,               -wgl,   0];
+rad = [rad, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
 
-figure
-plot(len,rad);
-set(gca, "linewidth",2, "fontsize", 14 )
-xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
-ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
-title( 'Complete Corrugated Horn Profile', 'FontSize', 16 );
-axis equal;   % Scale axis equally for aspect ratio 1:1
+if (show_figures);
+    subplot (2, 2, 3)
+    plot(len,rad);
+    set(gca, "linewidth",2, "fontsize", 14 )
+    xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
+    ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
+    title( 'Complete Corrugated Horn Profile', 'FontSize', 16 );
+    axis equal;   % Scale axis equally for aspect ratio 1:1
+endif
+
+% Determine straight faces
+straight_len = [z_flip, -wgl, -wgl, 0, length, length, length];
+straight_rad = [outer_surface, ai+(lambda_c/2+2), 0, 0, 0, ao-ai, outer_surface(1)];
+
+if (show_figures);
+    subplot (2, 2, 4)
+    plot(straight_len, straight_rad);
+    set(gca, "linewidth",2, "fontsize", 14 )
+    xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
+    ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
+    title( 'Straight walls', 'FontSize', 16 );
+endif
 
 % openEMS setup begins here
 % EM related physical constants
@@ -147,7 +172,8 @@ CSX = InitCSX();               % Initialise CSX structure
 lambda_max = c0/f_start/unit/4;
 
 % Create fixed lines for the simulation box, structure and port
-mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+lambda_max)];
+mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
+                                                                                                        lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 mesh.y = mesh.x;                                 % Same as x mesh
 % Create fixed lines for the simulation box,port and given number of lines inside the horn
@@ -159,8 +185,29 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 %% create horn
 % horn + waveguide, defined by a rotational polygon
 CSX = AddMetal(CSX, 'Corrugated_Horn');
-coords = [rad; len];
-CSX = AddRotPoly(CSX,'Corrugated_Horn',10,'x',coords,'z');
+corrugated_coords = [rad; len];
+straight_coords = [straight_rad; straight_len];
+
+% CSX = AddRotPoly(CSX,'Corrugated_Horn',10,'x',corrugated_coords,'z');
+corrugated_width = 10
+straight_width = 2
+
+% Corrugated walls
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
+                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
+                            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2) ',0']});
+
+% Straight walls
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
+                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2-straight_width) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', 
+            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(-corrugated_width/2-straight_width) ',0']});
+
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', 
+                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(corrugated_width/2+straight_width) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
+            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2+straight_width) ',0']});
 
 % Prepare simulation folder
 Sim_Path = 'tmp';
