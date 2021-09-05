@@ -46,6 +46,8 @@ N = length/p                    % Total number of corrugations
 kc = (2*pi)/lambda_c            % Wave number at center frequency
 ko = (2*pi)/lambda_o            % Wave number at output frequency
 z = 0:p:length;                 % z index distance array from 0 to length of horn
+r_app = ao*1e-3;                % Aperture radius
+A_app = pi*(r_app)^2;           % Aperture area for gain calculation
 
 %%% Linear profile %%%
 a = ai+(ao-ai)*z/length;
@@ -189,7 +191,7 @@ f_stop  =  fmax*1e9;
 f0 = 12.46*1e9;
 
 %% setup FDTD parameter & excitation function
-FDTD = InitFDTD( 'NrTS', 50000, 'EndCriteria', 0.5e-3 );
+FDTD = InitFDTD( 'NrTS', 5000, 'EndCriteria', 0.5e-3 );
 FDTD = SetGaussExcite(FDTD,0.5*(f_start+f_stop),0.5*(f_stop-f_start));
 BC = {'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8'}; % boundary conditions
 FDTD = SetBoundaryCond(FDTD, BC);
@@ -278,11 +280,6 @@ WriteOpenEMS([Sim_Path '/' Sim_CSX], FDTD, CSX);
 
 % Show structure
 CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
-
-
-
-
-
 
 % Run openEMS
 if(RUN_SIMULATION == 1)
