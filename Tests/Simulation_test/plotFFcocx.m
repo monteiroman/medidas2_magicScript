@@ -75,7 +75,6 @@ else
     error('openEMS:plotFFcocx','unknown parameter to ''xaxis''');
 end
 
-figure;
 h = plot(xax/pi*180, yax1, xax/pi*180, yax2, '--' );
 
 axis([-180 180]);

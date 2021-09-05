@@ -2,21 +2,26 @@ close all
 clear
 clc
 
-% USER EDITABLE PARAMETERS
-fmin = 10.7                % Minimum frequency in GHz
-fmax = 14.5                % Maximum frequency in GHz
+%%_____________________________ USER EDITABLE PARAMETERS _____________________________
+fmin = 8                % Minimum frequency in GHz
+fmax = 12                % Maximum frequency in GHz
+fcalc = 10              % Frequency to calculate fields
 pitch_fraction = 8  % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
 delta = 0.8               % Pitch to width ratio 0.7 to 0.9
 sigma = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC = 5                    % Number of corrugations in mode converter
 wgl = 30;                  % Length of circular feeding waveguide
 num_of_corrugations = 60;
-corrugated_width = 10
+corrugated_width = 10.16
 straight_width = 2
 cap_width = 2
-show_figures = 1;
-RUN_SIMULATION = 1;
-% END OF USER EDITABLE PARAMETERS
+
+SHOW_STRUCTURE_FIGURES  = 1;
+RUN_SIMULATION          = 1;
+PLOT_OUTPUT_SAME_WINDOW = 1;
+
+TIME_STEPS = 50000
+%%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
 fratio = fmax/fmin             % ratio of fmax/fmin
@@ -38,7 +43,7 @@ endif
 unit = 1e-3;                    % Units in mm
 lambda_c = 300/fc               % Center frequency wavelength
 lambda_o = 300/fo               % Output frequency
-ai = (3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
+ai = 22.86%(3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
 ao = 1.95*lambda_c              % Radius of output waveguide in mm
 p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
 length = num_of_corrugations*p  % Length of horn profile
@@ -52,7 +57,7 @@ A_app = pi*(r_app)^2;           % Aperture area for gain calculation
 %%% Linear profile %%%
 a = ai+(ao-ai)*z/length;
 
-if (show_figures);
+if (SHOW_STRUCTURE_FIGURES);
     figure
     subplot (3, 2, 1)
     plot(z, a);    
@@ -96,7 +101,7 @@ endfor
 z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
 len = len(1:z_number); % Truncate z axis data points to equal rad vector length
 
-if (show_figures);
+if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 2)
     plot(len,rad);
     set(gca, "linewidth",2, "fontsize", 14 )
@@ -130,7 +135,7 @@ z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
 len = [len, z_flip,         -wgl,               -wgl,   0];
 rad = [rad, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
 
-if (show_figures);
+if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 3)
     plot(len,rad);
     set(gca, "linewidth",2, "fontsize", 14 )
@@ -142,9 +147,9 @@ endif
 
 % Determine straight faces
 straight_len = [z_flip, -wgl, -wgl, 0, length, length, length];
-straight_rad = [outer_surface, ai+(lambda_c/2+2), 0, 0, 0, ao-ai, outer_surface(1)];
+straight_rad = [outer_surface, ai+(lambda_c/2+2), ai/2, ai/2, ai/2, ao-ai/2, outer_surface(1)];
 
-if (show_figures);
+if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 4)
     plot(straight_len, straight_rad);
     set(gca, "linewidth",2, "fontsize", 14 )
@@ -156,7 +161,7 @@ endif
 % Determine end cap to prevent the radiation coming out of the back of the horn
 % Extract the end point of the structure
 cap_point_z_1 = [z_flip, -wgl](end);
-cap_point_y_1 = [outer_surface, ai+(lambda_c/2+2)](end);
+cap_point_y_1 = [outer_surface, ai+(lambda_c/2+2)](end) - ai/2;
 % From here we have to move in "y" to to met the "y" end of the cap.
 cap_point_z_2 = cap_point_z_1;
 cap_point_y_2 = -cap_point_y_1;
@@ -169,7 +174,7 @@ cap_point_y_4 = cap_point_y_2;
 cap_y = [cap_point_y_1, cap_point_y_2, cap_point_y_4, cap_point_y_3, cap_point_y_1];
 cap_z = [cap_point_z_1, cap_point_z_2, cap_point_z_4, cap_point_z_3, cap_point_z_1];
 
-if (show_figures);
+if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 5)
     plot(cap_z, cap_y, 'o-r');
     set(gca, "linewidth",2, "fontsize", 14 )
@@ -188,10 +193,10 @@ f_start =  fmin*1e9;
 f_stop  =  fmax*1e9;
 
 % frequency to calculate fields
-f0 = 12.46*1e9;
+f0 = fcalc*1e9;
 
 %% setup FDTD parameter & excitation function
-FDTD = InitFDTD( 'NrTS', 5000, 'EndCriteria', 0.5e-3 );
+FDTD = InitFDTD( 'NrTS', TIME_STEPS, 'EndCriteria', 0.5e-3 );
 FDTD = SetGaussExcite(FDTD,0.5*(f_start+f_stop),0.5*(f_stop-f_start));
 BC = {'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8'}; % boundary conditions
 FDTD = SetBoundaryCond(FDTD, BC);
@@ -221,32 +226,41 @@ corrugated_coords = [rad; len];
 straight_coords = [straight_rad; straight_len];
 
 % Corrugated walls
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
-                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2) ',0']});
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', 
-                            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', {
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-corrugated_width/2) ',0']
+    });
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', {
+    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(corrugated_width/2) ',0']
+    });
 % Straight walls
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
-                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2-straight_width) ',0']});
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', 
-            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(-corrugated_width/2-straight_width) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', {
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-corrugated_width/2-straight_width) ',0']
+    });
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', {
+    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(-corrugated_width/2-straight_width) ',0']
+    });
 
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', 
-                            {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(corrugated_width/2+straight_width) ',0']});
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', 
-            {'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ '0,' num2str(corrugated_width/2+straight_width) ',0']});
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, -straight_width, 'Transform', {
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(corrugated_width/2+straight_width) ',0']
+    });
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_width, 'Transform', {
+    'Rotate_Y', pi/2, 'Rotate_X', pi,  'Translate',[ num2str(-ai/2) ',' num2str(corrugated_width/2+straight_width) ',0']
+    });
 
 %% End cap to prevent the radiation coming out of the back of the horn
 CSX = AddMetal(CSX, 'Cap');
 cap_coords = [cap_y; cap_z];
-CSX = AddLinPoly( CSX, 'Cap', 10, 1, 0, cap_coords, corrugated_width + 2 * straight_width, 'Transform', 
-        {'Rotate_Y', -pi/2,'Translate',[ '0,' num2str(-corrugated_width/2 - straight_width) ',' num2str(-cap_width)]});
+
+CSX = AddLinPoly( CSX, 'Cap', 10, 1, 0, cap_coords, corrugated_width + 2 * straight_width, 'Transform',{
+    'Rotate_Y', -pi/2, 'Translate',[ '0,' num2str(-corrugated_width/2 - straight_width) ',' num2str(-cap_width)]
+    });
 %% ----->> End of model geometry <<-----
 
 
-%% ----->> Apply the excitation <<-----
-start=[-ai -corrugated_width/2 -wgl];
-stop =[ai corrugated_width/2 -wgl+10];
+%% ----->> Excitation, dumpboxes and nf2ff <<-----
+% Apply the excitation
+start=[-ai/2 -corrugated_width/2 -wgl];
+stop =[ai/2 corrugated_width/2 -wgl+10];
 [CSX, port] = AddRectWaveGuidePort( CSX, 0, 1, start, stop, 'z', ai*unit, corrugated_width*unit, 'TE11', 1);
 
 % Dump box for Electric field at Phi=0 (vertical cut)
@@ -266,8 +280,7 @@ start = [mesh.x(9) mesh.y(9) mesh.z(9)];
 stop  = [mesh.x(end-8) mesh.y(end-8) mesh.z(end-8)];
 [CSX nf2ff] = CreateNF2FFBox(CSX, 'nf2ff', start, stop, 'Directions', [1 1 1 1 1 1], 'OptResolution', max_res*4);
 
-%% ----->> End of excitation <<-----
-
+%% ----->> End of excitation, dumpboxes and nf2ff definitions <<-----
 
 %% ----->> Prepare simulation folder <<----- 
 Sim_Path = 'tmp';
@@ -281,95 +294,117 @@ WriteOpenEMS([Sim_Path '/' Sim_CSX], FDTD, CSX);
 % Show structure
 CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
-% Run openEMS
-if(RUN_SIMULATION == 1)
-%openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
-%RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
-RunOpenEMS(Sim_Path, Sim_CSX, '--numThreads=3');
-end
+%% ----->> End of simulation folder <<----- 
 
-% Postprocessing & do the plots
-freq = linspace(f_start,f_stop,201);
-port = calcPort(port, Sim_Path, freq);
 
-Zin = port.uf.tot ./ port.if.tot;
-s11 = port.uf.ref ./ port.uf.inc;
+%% ----->> Run openEMS <<-----
+if(RUN_SIMULATION == 1)                                                                                     %% Simulate
+    %openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
+    %RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
+    RunOpenEMS(Sim_Path, Sim_CSX, '--numThreads=3');
 
-% Plot reflection coefficient S11
-figure
-plot(freq/1e9, 20*log10(abs(s11)), 'k-', 'Linewidth', 2);
-xlim([fmin fmax]);
-ylim([-40 0]);
-set(gca, "linewidth",2, "fontsize", 14)
-grid on
-title('Reflection Coefficient S_{11}', 'FontSize', 16);
-xlabel('Frequency (GHz)','FontSize', 14);
-ylabel('Reflection Coefficient |S_{11}| (dB)','FontSize', 14);
-drawnow
+    % Postprocessing & do the plots
+    freq = linspace(f_start,f_stop,201);
+    port = calcPort(port, Sim_Path, freq);
 
-% NFFF plots
+    Zin = port.uf.tot ./ port.if.tot;
+    s11 = port.uf.ref ./ port.uf.inc;
 
-% Calculate the far field at phi=0, 45 and at phi=90 degrees
-thetaRange = (0:0.2:359) - 180;
-disp('calculating far field at phi=[0 45 90] deg...');
-nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, [0 45 90]*pi/180);
+    % Plot reflection coefficient S11
+    figure
+    if (PLOT_OUTPUT_SAME_WINDOW == 1);
+        subplot (3, 2, 1)
+    endif
+    plot(freq/1e9, 20*log10(abs(s11)), 'k-', 'Linewidth', 2);
+    xlim([fmin fmax]);
+    ylim([-40 0]);
+    set(gca, "linewidth",2, "fontsize", 14)
+    grid on
+    title('Reflection Coefficient S_{11}', 'FontSize', 16);
+    xlabel('Frequency (GHz)','FontSize', 14);
+    ylabel('Reflection Coefficient |S_{11}| (dB)','FontSize', 14);
+    drawnow
 
-Dlog=10*log10(nf2ff.Dmax);      % Calculate maximum Directivity in dB
-G_a = 4*pi*A_app/(c0/f0)^2;     % Calculate theoretical gain for given aperture
-e_a = nf2ff.Dmax/G_a;           % Calculate Efficiency
+    % NFFF plots
 
-% Display some antenna parameters from above calculations
-disp(['radiated power: Prad = ' num2str(nf2ff.Prad) ' Watt']);
-disp(['directivity: Dmax = ' num2str(Dlog) ' dBi']);
-disp(['aperture efficiency: e_a = ' num2str(e_a*100) '%']);
+    % Calculate the far field at phi=0, 45 and at phi=90 degrees
+    thetaRange = (0:0.2:359) - 180;
+    disp('calculating far field at phi=[0 45 90] deg...');
+    nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, [0 45 90]*pi/180);
 
-% Directivity
-figure
-plotFFdB(nf2ff,'xaxis','theta','param',[1 2 3]);
-ylim([-30 25]);
-xlim([-180 180]);
-grid on
-set(gca,"linewidth",2, "fontsize", 14, "XTick", -180:30:180, "YTick", -30:5:40)
-title('Farfield Directivity @ 12.46GHz','FontSize', 16);
-xlabel('Theta (degrees)','FontSize', 14);
-ylabel('Directivity (dBi)','FontSize', 14);
-drawnow
+    Dlog=10*log10(nf2ff.Dmax);      % Calculate maximum Directivity in dB
+    G_a = 4*pi*A_app/(c0/f0)^2;     % Calculate theoretical gain for given aperture
+    e_a = nf2ff.Dmax/G_a;           % Calculate Efficiency
 
-% Plot Ludwig3 cross polar
-plotFFcocx(nf2ff,'xaxis','theta','param',[2]);
-ylim([-30 25]);
-xlim([-180 180]);
-grid on
-set(gca,"linewidth",2, "fontsize", 14, "XTick", -180:30:180, "YTick", -30:5:40)
-title('Farfield Directivity with Ludwig3 XPOL @ 12.46GHz','FontSize', 16);
-xlabel('Theta (degrees)','FontSize', 14);
-ylabel('Directivity (dBi)','FontSize', 14);
-drawnow
+    % Display some antenna parameters from above calculations
+    disp(['radiated power: Prad = ' num2str(nf2ff.Prad) ' Watt']);
+    disp(['directivity: Dmax = ' num2str(Dlog) ' dBi']);
+    disp(['aperture efficiency: e_a = ' num2str(e_a*100) '%']);
 
-% Polar plot
-figure
-leg=[];   %legend
-polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12);
-title('Farfield Directivity @ 12.46GHz','FontSize', 16);
-xlabel('Theta (degrees)','FontSize', 14);
-ylabel('Directivity (dBi)','FontSize', 14);
-drawnow
+    % Directivity
+    if (PLOT_OUTPUT_SAME_WINDOW == 1);
+        subplot (3, 2, 2)
+    elseif
+        figure
+    endif
+    plotFFdB(nf2ff,'xaxis','theta','param',[1 2 3]);
+    ylim([-30 25]);
+    xlim([-180 180]);
+    grid on
+    set(gca,"linewidth",2, "fontsize", 14, "XTick", -180:30:180, "YTick", -30:5:40)
+    title(sprintf('Farfield Directivity @ %.2f GHz',fcalc),'FontSize', 16);
+    xlabel('Theta (degrees)','FontSize', 14);
+    ylabel('Directivity (dBi)','FontSize', 14);
+    drawnow
 
-%% Calculate 3D pattern
-%phiRange = sort(unique([-180:5:-100 -100:2.5:-50 -50:1:50 50:2.5:100 100:5:180]));
-%thetaRange = sort(unique([0:1:50 50:2:100 100:5:180]));
-phiRange = sort(unique([-180:1:-100 -100:1:-50 -50:1:50 50:1:100 100:1:180]));
-thetaRange = sort(unique([0:1:50 50:1:100 100:1:180]));
+    % Plot Ludwig3 cross polar
+    if (PLOT_OUTPUT_SAME_WINDOW == 1);
+        subplot (3, 2, 3)
+    elseif
+        figure
+    endif
+    plotFFcocx(nf2ff,'xaxis','theta','param',[2]);
+    ylim([-30 25]);
+    xlim([-180 180]);
+    grid on
+    set(gca,"linewidth",2, "fontsize", 14, "XTick", -180:30:180, "YTick", -30:5:40)
+    title(sprintf('Farfield Directivity with Ludwig3 XPOL @ %.2f GHz',fcalc),'FontSize', 16);
+    xlabel('Theta (degrees)','FontSize', 14);
+    ylabel('Directivity (dBi)','FontSize', 14);
+    drawnow
 
-disp('calculating 3D far field...');
-nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, phiRange*pi/180, 'Verbose',2,'Outfile','nf2ff_3D.h5');
+    % Polar plot
+    if (PLOT_OUTPUT_SAME_WINDOW == 1);
+        subplot (3, 2, 4)
+    elseif
+        figure
+    endif
+    leg=[];   %legend
+    polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12);
+    title(sprintf('Farfield Directivity @ %.2f GHz',fcalc),'FontSize', 16);
+    xlabel('Theta (degrees)','FontSize', 14);
+    ylabel('Directivity (dBi)','FontSize', 14);
+    drawnow
 
-figure
-colormap jet;
-plotFF3D(nf2ff, 'logscale', -40);        % plot 3D far field in dB
+    %% Calculate 3D pattern
+    %phiRange = sort(unique([-180:5:-100 -100:2.5:-50 -50:1:50 50:2.5:100 100:5:180]));
+    %thetaRange = sort(unique([0:1:50 50:2:100 100:5:180]));
+    phiRange = sort(unique([-180:1:-100 -100:1:-50 -50:1:50 50:1:100 100:1:180]));
+    thetaRange = sort(unique([0:1:50 50:1:100 100:1:180]));
 
-% Save far field in VTK to plot in ParaView
-E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
-DumpFF2VTK([Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 'maxgain', Dlog);
+    disp('calculating 3D far field...');
+    nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, phiRange*pi/180, 'Verbose',2,'Outfile','nf2ff_3D.h5');
 
-%%% END OF SCRIPT %%%
+    if (PLOT_OUTPUT_SAME_WINDOW == 1);
+        subplot (3, 2, 5)
+    elseif
+        figure
+    endif
+    colormap jet;
+    plotFF3D(nf2ff, 'logscale', -40);        % plot 3D far field in dB
+
+    % Save far field in VTK to plot in ParaView
+    E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
+    DumpFF2VTK([Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 
+                                                                                                    'maxgain', Dlog);
+end                                                                                                     % End simulate
