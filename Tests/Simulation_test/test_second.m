@@ -3,27 +3,27 @@ clear
 clc
 
 %%_____________________________ USER EDITABLE PARAMETERS _____________________________
-fmin = 8                % Minimum frequency in GHz
-fmax = 12                % Maximum frequency in GHz
-fcalc = 10              % Frequency to calculate fields
+fmin    = 8                % Minimum frequency in GHz
+fmax    = 12                % Maximum frequency in GHz
+fcalc   = 10              % Frequency to calculate fields
 pitch_fraction = 8  % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta = 0.8               % Pitch to width ratio 0.7 to 0.9
-sigma = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5 
-NMC = 5                    % Number of corrugations in mode converter
-wgl = 30;                  % Length of circular feeding waveguide
-num_of_corrugations = 80;
-corrugated_width = 10.16
-straight_width = 2
-cap_width = 2
+delta   = 0.8               % Pitch to width ratio 0.7 to 0.9
+sigma   = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5 
+NMC     = 5                    % Number of corrugations in mode converter
+wgl     = 60;                  % Length of circular feeding waveguide
+num_of_corrugations = 50;
+corrugated_width    = 10.16
+straight_width      = 2
+cap_width           = 2
 
 exc_mode = 'TE10';
 
 SHOW_STRUCTURE_FIGURES  = 1;
-RUN_SIMULATION          = 0;
+RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 
-TIME_STEPS = 5000
+TIME_STEPS = 1000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -47,7 +47,7 @@ unit = 1e-3;                    % Units in mm
 lambda_c = 300/fc               % Center frequency wavelength
 lambda_o = 300/fo               % Output frequency
 ai = 22.86%(3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
-ao = 1.95*lambda_c              % Radius of output waveguide in mm
+ao = 3.9*lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
 p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
 length = num_of_corrugations*p  % Length of horn profile
 N = length/p                    % Total number of corrugations
@@ -84,7 +84,7 @@ if (USE_MODE_CONVERTER == 1);
     dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-NMC-1)/(N-NMC-1)).*((lambda_c/4).*exp(
                                             1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
     d = [djmc, dj];       % Combining the mode converter and horn depth values
-elseif
+else
     % Depth of remaining corrugations
     aj = a;
     idx = 1:N+1;
@@ -224,7 +224,7 @@ lambda_max = c0/f_start/unit/4;
 mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
                                                                                                         lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-mesh.y = mesh.x;                                 % Same as x mesh
+mesh.y = mesh.x/2.5;                                 % Same as x mesh
 % Create fixed lines for the simulation box,port and given number of lines inside the horn
 mesh.z = [-wgl-lambda_max-(9*max_res) -wgl-1 -wgl -wgl+10 0 len(1:2:z_number) length+2*lambda_max+(9*max_res)];
 mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
