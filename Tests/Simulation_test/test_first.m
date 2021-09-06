@@ -11,16 +11,18 @@ delta = 0.8               % Pitch to width ratio 0.7 to 0.9
 sigma = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC = 5                    % Number of corrugations in mode converter
 wgl = 30;                  % Length of circular feeding waveguide
-num_of_corrugations = 60;
+num_of_corrugations = 70;
 corrugated_width = 10.16
 straight_width = 2
 cap_width = 2
 
+exc_mode = 'TE10';
+
 SHOW_STRUCTURE_FIGURES  = 1;
 RUN_SIMULATION          = 1;
-PLOT_OUTPUT_SAME_WINDOW = 1;
+PLOT_OUTPUT_SAME_WINDOW = 0;
 
-TIME_STEPS = 50000
+TIME_STEPS = 5000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -261,7 +263,9 @@ CSX = AddLinPoly( CSX, 'Cap', 10, 1, 0, cap_coords, corrugated_width + 2 * strai
 % Apply the excitation
 start=[-ai/2 -corrugated_width/2 -wgl];
 stop =[ai/2 corrugated_width/2 -wgl+10];
-[CSX, port] = AddRectWaveGuidePort( CSX, 0, 1, start, stop, 'z', ai*unit, corrugated_width*unit, 'TE11', 1);
+%% Ports information at link:
+%       https://openems.de/index.php/Ports.html#Rectangular_Waveguide_Ports
+[CSX, port] = AddRectWaveGuidePort( CSX, 0, 1, start, stop, 'z', ai*unit, corrugated_width*unit, exc_mode, 1);
 
 % Dump box for Electric field at Phi=0 (vertical cut)
 CSX = AddDump(CSX,'Et_V_dump', 'SubSampling', '4,4,4');
