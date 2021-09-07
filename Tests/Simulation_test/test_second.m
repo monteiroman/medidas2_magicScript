@@ -3,15 +3,15 @@ clear
 clc
 
 %%_____________________________ USER EDITABLE PARAMETERS _____________________________
-fmin    = 8                % Minimum frequency in GHz
-fmax    = 12                % Maximum frequency in GHz
-fcalc   = 10              % Frequency to calculate fields
-pitch_fraction = 8  % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta   = 0.8               % Pitch to width ratio 0.7 to 0.9
-sigma   = 0.42               % Percentage factor for first slot depth, 0.4 to 0.5 
-NMC     = 5                    % Number of corrugations in mode converter
-wgl     = 60;                  % Length of circular feeding waveguide
-num_of_corrugations = 50;
+fmin    = 8                             % Minimum frequency in GHz
+fmax    = 12                            % Maximum frequency in GHz
+fcalc   = 10                            % Frequency to calculate fields
+pitch_fraction = 8                      % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
+delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
+sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
+NMC     = 5                             % Number of corrugations in mode converter
+wgl     = 30;                           % Length of circular feeding waveguide
+num_of_corrugations = 60;
 corrugated_width    = 10.16
 straight_width      = 2
 cap_width           = 2
@@ -23,7 +23,7 @@ RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 
-TIME_STEPS = 1000
+TIME_STEPS = 50000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -47,7 +47,7 @@ unit = 1e-3;                    % Units in mm
 lambda_c = 300/fc               % Center frequency wavelength
 lambda_o = 300/fo               % Output frequency
 ai = 22.86%(3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
-ao = 3.9*lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
+ao = 3.5*lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
 p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
 length = num_of_corrugations*p  % Length of horn profile
 N = length/p                    % Total number of corrugations
@@ -312,7 +312,7 @@ CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
 
 %% ----->> Run openEMS <<-----
-if(RUN_SIMULATION == 1)                                                                                     %% Simulate
+if(RUN_SIMULATION == 1)                                                                                      %% Simulate
     %openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
     %RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
     RunOpenEMS(Sim_Path, Sim_CSX, '--numThreads=3');
@@ -421,4 +421,4 @@ if(RUN_SIMULATION == 1)                                                         
     E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
     DumpFF2VTK([Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 
                                                                                                     'maxgain', Dlog);
-end                                                                                                     % End simulate
+end                                                                                                       % End simulate
