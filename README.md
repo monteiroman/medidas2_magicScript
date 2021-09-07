@@ -1,7 +1,7 @@
-# medidas2_magicScript
+# Medidas 2 MagicScript
 
-## [Tests Readme](/Tests/README.md)
-Test zone for script development. When script has significant changes, they will be added to [MagicScript.m](MagicScript.m)
+## Tests
+Test zone for script development, you can see the readme [here](/Tests/README.md). When script has significant changes, they will be added to [MagicScript.m](MagicScript.m)
 
 ## Installation on Linux
 Install openEMS as detailed [here](http://www.openems.de/index.php/Compile_from_Source.html#Linux) for the 
