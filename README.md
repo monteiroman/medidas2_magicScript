@@ -6,11 +6,17 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 ## Checkpoints
 
 ✅ run simulations on OpenEMS with structures made by us.
-❌ Obtain similar horn structure as [1]. 
+
+❌ Obtain similar horn structure as [1].
+
 ❌ Obtain similar simulation values as [1].
+
 ❌ Simulate a full corrugated horn.
+
 ❌ Test other horn shapes (Hyperbolic, Sine-squared,    Exponential, Tangential).
+
 ❌ Make functions for different Horn designs in octave.
+
 
 
 ## OpenEMS installation on Linux
