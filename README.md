@@ -9,11 +9,11 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 
 ✅ Obtain similar horn structure as [1]. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment and it can be seen [here](/Tests/README.md))
 
-❌ Obtain similar simulation values as [1].
+⏳ Obtain similar simulation values as [1].
 
 ❌ Simulate a full corrugated horn.
 
-❌ Test other horn shapes (Hyperbolic, Sine-squared,    Exponential, Tangential).
+❌ Test other horn shapes (Hyperbolic, Sine-squared, Exponential, Tangential).
 
 ❌ Make functions for different Horn designs in octave.
 
