@@ -8,6 +8,12 @@ Simple extruded horn face. It was a test in how to make a straight horn wall fro
 ### test_walls.m
 Semi-corrugated horn inside a mesh.
 
+### test_horn_with_opening_wall.m
+Simulation of horn designed on [1] (see references in [this readme](/README.md))
+
+![openEMS_Structure_walls.png](ReadmeData/test_aperture_walls/openEMS_Structure_walls.png)
+
+
 ## [Simulation_test](https://github.com/monteiroman/medidas2_magicScript/tree/main/Tests/Simulation_test)
 
 ### test_first.m

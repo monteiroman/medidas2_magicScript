@@ -5,9 +5,9 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 
 ## Checkpoints
 
-✅ run simulations on OpenEMS with structures made by us.
+✅ run simulations on OpenEMS with structures made by us. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)
 
-❌ Obtain similar horn structure as [1].
+✅ Obtain similar horn structure as [1].
 
 ❌ Obtain similar simulation values as [1].
 
