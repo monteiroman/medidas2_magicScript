@@ -7,7 +7,7 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 
 ✅ run simulations on OpenEMS with structures made by us. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)
 
-✅ Obtain similar horn structure as [1].
+✅ Obtain similar horn structure as [1]. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment and it can be seen [here](/Tests/README.md))
 
 ❌ Obtain similar simulation values as [1].
 
