@@ -1,9 +1,9 @@
 # Medidas 2 MagicScript
 
-This project is intended to be a repository of horn antennas for OpenEMS. Developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Bueno Aires).
+This project is intended to be a repository of horn antennas for OpenEMS. Developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Buenos Aires).
 
 ## Tests
-Test zone for script development, you can see the readme [here](/Tests/README.md). When script has significant changes, they will be added to [MagicScript.m](MagicScript.m) (currently at step 3)
+Test zone for script development, you can see the readme [here](/Tests/README.md). When the project has significant changes, they will be added to [MagicScript.m](MagicScript.m) (currently at step 3)
 
 ## Checkpoints
 
@@ -11,7 +11,7 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |:---:|:---:|:---:|
 |1|Run simulations on OpenEMS with structures made by us.<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)|✅|
 |2|Obtain similar horn structure as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment with [test_horn_with_chokes.m](/Tests/Structure_test/test_horn_with_chokes.m), results [here](/Tests/README.md))|✅|
-|3|Obtain similar simulation values as [1].<br />(achieved at [this]() moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|⏳<br />(pending teachers approval)|
+|3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|⏳<br />(pending teachers approval)|
 |4|Simulate a full corrugated horn.|❌|
 |5|Test other horn shapes (Hyperbolic, Sine-squared, Exponential, Tangential).|❌|
 |6|Make functions for different Horn designs in octave.|❌|

@@ -20,7 +20,7 @@ Simulation of horn designed on [1] (see references in this [readme](/README.md))
 First test of a piramidal corrugated horn.
 
 ### 2) test_second.m
-Test with piramidal semi corrugated horn. At the moment we are facing some memory problems with this script but some results can be seen below.
+Test with piramidal semi-corrugated horn. At the moment we are facing some memory problems with this script but some results can be seen below.
 
 |2D Structure parts obtained from Octave|3D Structure in paraView|
 |:---:|:---:|
@@ -41,7 +41,7 @@ Test with piramidal semi corrugated horn. At the moment we are facing some memor
 
 ### 3) test_horn_with_chokes_simulation.m
 
-Test with corrugated horn as [1](see references [here](/README.md))
+Test with corrugated horn designed at [1](see references [here](/README.md)). At the moment we are facing some memory problems with this script but some results can be seen below.
 
 |2D Structure parts obtained from Octave|3D Structure in paraView|
 |:---:|:---:|
