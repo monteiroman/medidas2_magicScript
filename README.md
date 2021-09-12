@@ -1,22 +1,20 @@
 # Medidas 2 MagicScript
 
+This project is intended to be a repository of horn antennas for OpenEMS. Developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Bueno Aires).
+
 ## Tests
-Test zone for script development, you can see the readme [here](/Tests/README.md). When script has significant changes, they will be added to [MagicScript.m](MagicScript.m)
+Test zone for script development, you can see the readme [here](/Tests/README.md). When script has significant changes, they will be added to [MagicScript.m](MagicScript.m) (currently at step 3)
 
 ## Checkpoints
 
-✅ run simulations on OpenEMS with structures made by us. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)
-
-✅ Obtain similar horn structure as [1]. (at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment and it can be seen [here](/Tests/README.md))
-
-⏳ Obtain similar simulation values as [1].
-
-❌ Simulate a full corrugated horn.
-
-❌ Test other horn shapes (Hyperbolic, Sine-squared, Exponential, Tangential).
-
-❌ Make functions for different Horn designs in octave.
-
+|Step|Description|Status|
+|:---:|:---:|:---:|
+|1|Run simulations on OpenEMS with structures made by us.<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)|✅|
+|2|Obtain similar horn structure as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment with [test_horn_with_chokes.m](/Tests/Structure_test/test_horn_with_chokes.m), results [here](/Tests/README.md))|✅|
+|3|Obtain similar simulation values as [1].<br />(achieved at [this]() moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|⏳<br />(pending teachers approval)|
+|4|Simulate a full corrugated horn.|❌|
+|5|Test other horn shapes (Hyperbolic, Sine-squared, Exponential, Tangential).|❌|
+|6|Make functions for different Horn designs in octave.|❌|
 
 
 ## OpenEMS installation on Linux
@@ -27,7 +25,7 @@ Next instalations/updates can be done as described
 [here](https://github.com/thliebig/openEMS-Project#update-instruction)
 
 ## References
-[1] **Dual-Polarization and Low-Sidelobe Corrugated Rectangular Horn Antennas for Outdoor RCS Measurement** Changying Wu*, Congxiang Li, Chufeng Hu and Yevhen Yashchyshyn.
+[1] **Dual-Polarization and Low-Sidelobe Corrugated Rectangular Horn Antennas for Outdoor RCS Measurement** Changying Wu, Congxiang Li, Chufeng Hu and Yevhen Yashchyshyn.
 
 [2] **Design of Corrugated Horns: A Primer** Christophe Granet and Graeme L. James.
 

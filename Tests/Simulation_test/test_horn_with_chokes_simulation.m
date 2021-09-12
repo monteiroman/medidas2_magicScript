@@ -11,7 +11,7 @@ delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
 sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC     = 5                             % Number of corrugations in mode converter
 wgl     = 30;                           % Length of circular feeding waveguide
-num_of_corrugations = 90;
+num_of_corrugations = 95;
 corrugated_width    = 10.16
 straight_width      = 2
 cap_width           = 2
@@ -31,8 +31,8 @@ cap_width           = 2
 %                  aperture_wall_width  
 %
 aperture_wall_pitch_fraction = 0.5                                          % 0 to 1
-aperture_wall_N_corrugations = 7
-aperture_wall_step = 5                                                     % in mm
+aperture_wall_N_corrugations = 8
+aperture_wall_step = 4                                                      % in mm
 aperture_wall_pitch = aperture_wall_step*aperture_wall_pitch_fraction       
 aperture_wall_height = aperture_wall_N_corrugations*aperture_wall_step      % Length of horn aperture walls
 aperture_wall_width = 5
@@ -45,7 +45,7 @@ RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 
-TIME_STEPS = 5000
+TIME_STEPS = 50000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
