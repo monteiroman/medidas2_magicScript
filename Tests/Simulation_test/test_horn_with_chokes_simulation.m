@@ -11,32 +11,30 @@ delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
 sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC     = 5                             % Number of corrugations in mode converter
 wgl     = 30;                           % Length of circular feeding waveguide
-num_of_corrugations = 95;
+num_of_corrugations = 110;
 corrugated_width    = 10.16
 straight_width      = 2
 cap_width           = 2
 
-%                        aperture_wall_depth
+%                        chokes_wall_depth
 %                               |   |
 %                     _   __________    _
-%                        |       ___|     aperture_wall_step
+%                        |       ___|     chokes_pitch
 %                        |      |___    _
-%  aperture_wall_height  |       ___|   _ aperture_wall_pitch = aperture_wall_pitch_fraction * aperture_wall_step
+%    chokes_wall_height  |       ___|   _ chokes_tooth_width = chokes_tooth_width_fraction * chokes_pitch
 %                        |      |___
 %                        |       ___|
 %                        |      |
 %                     _  |      |
 %
 %                        |      |
-%                  aperture_wall_width  
+%                  chokes_wall_width  
 %
-aperture_wall_pitch_fraction = 0.5                                          % 0 to 1
-aperture_wall_N_corrugations = 8
-aperture_wall_step = 4                                                      % in mm
-aperture_wall_pitch = aperture_wall_step*aperture_wall_pitch_fraction       
-aperture_wall_height = aperture_wall_N_corrugations*aperture_wall_step      % Length of horn aperture walls
-aperture_wall_width = 5
-aperture_wall_depth = 5
+chokes_tooth_width_fraction = 0.25                                    % 0 to 1 value (paper [1] adopts 0.25)
+chokes_N_corrugations = 8
+chokes_pitch = 4                                                      % in mm
+chokes_wall_width = 5
+chokes_wall_depth = 5
 
 exc_mode = 'TE10';
 
@@ -45,7 +43,7 @@ RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 
-TIME_STEPS = 50000
+TIME_STEPS = 10000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -220,35 +218,37 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
 
-% Define the apertue walls
-aperture_wall_x(1) = 0;
-aperture_wall_y(1) = 0;
-aperture_wall_x(2) = 0;
-aperture_wall_y(2) = aperture_wall_height;
-aperture_wall_x(3) = aperture_wall_width;
-aperture_wall_y(3) = aperture_wall_y(2);
+% Define chokes profile.
+chokes_tooth_width = chokes_pitch*chokes_tooth_width_fraction       
+chokes_wall_height = chokes_N_corrugations*chokes_pitch      % Length of horn aperture walls
+
+chokes_x(1) = 0;
+chokes_y(1) = 0;
+chokes_x(2) = 0;
+chokes_y(2) = chokes_wall_height;
+chokes_x(3) = chokes_wall_width;
+chokes_y(3) = chokes_y(2);
 
 n = 0;
-for i = 3:aperture_wall_N_corrugations+2;
-    aperture_wall_x(i+n+1) = aperture_wall_x(i+n) + aperture_wall_depth;
-    aperture_wall_y(i+n+1) = aperture_wall_y(i+n);
-    aperture_wall_x(i+n+2) = aperture_wall_x(i+n+1);
-    aperture_wall_y(i+n+2) = aperture_wall_y(i+n+1) - aperture_wall_pitch;
-    aperture_wall_x(i+n+3) = aperture_wall_x(i+n+2) - aperture_wall_depth;
-    aperture_wall_y(i+n+3) = aperture_wall_y(i+n+2);
-    aperture_wall_x(i+n+4) = aperture_wall_x(i+n+3);
-    aperture_wall_y(i+n+4) = aperture_wall_y(i+n+3) - (aperture_wall_step - aperture_wall_pitch);
+for i = 3:chokes_N_corrugations+2;
+    chokes_x(i+n+1) = chokes_x(i+n) + chokes_wall_depth;
+    chokes_y(i+n+1) = chokes_y(i+n);
+    chokes_x(i+n+2) = chokes_x(i+n+1);
+    chokes_y(i+n+2) = chokes_y(i+n+1) - chokes_tooth_width;
+    chokes_x(i+n+3) = chokes_x(i+n+2) - chokes_wall_depth;
+    chokes_y(i+n+3) = chokes_y(i+n+2);
+    chokes_x(i+n+4) = chokes_x(i+n+3);
+    chokes_y(i+n+4) = chokes_y(i+n+3) - (chokes_pitch - chokes_tooth_width);
     n = n + 3;
 endfor
 
-% Set corrugations to zero in x and y.
-aperture_wall_x = aperture_wall_x - (aperture_wall_width + aperture_wall_depth);
-aperture_wall_y = aperture_wall_y - (aperture_wall_width + aperture_wall_depth);
+% Set corrugations to zero in x.
+chokes_x = chokes_x - (chokes_wall_width + chokes_wall_depth);
 
 
 if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 6)
-    plot(aperture_wall_x, aperture_wall_y);    
+    plot(chokes_x, chokes_y);    
     set(gca, "linewidth",2, "fontsize", 14 )
     xlabel( 'Dimension in x Direction (mm)', 'FontSize', 14 );
     ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
@@ -288,7 +288,7 @@ lambda_max = c0/f_start/unit/4;
 mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
                                                                                                         lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-mesh.y = mesh.x/2.5;                                 % Same as x mesh
+mesh.y = mesh.x/2;                                 % Same as x mesh
 % Create fixed lines for the simulation box,port and given number of lines inside the horn
 mesh.z = [-wgl-lambda_max-(9*max_res) -wgl-1 -wgl -wgl+10 0 len(1:2:z_number) length+2*lambda_max+(9*max_res)];
 mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
@@ -300,7 +300,7 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 CSX = AddMetal(CSX, 'Corrugated_Horn');
 corrugated_coords = [rad; len];
 straight_coords = [straight_rad; straight_len];
-aperture_wall_coords = [aperture_wall_x; aperture_wall_y];
+aperture_wall_coords = [chokes_x; chokes_y];
 
 % Corrugated walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords, corrugated_width, 'Transform', {
@@ -325,10 +325,10 @@ CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, straight_coords, straight_wi
     });
 % Corrugated aperture walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, aperture_wall_coords, aperture_wall_length, 'Transform',{
-    'Rotate_Z', pi/2,'Translate',[num2str(ao) ',' num2str(corrugated_width+straight_width*2) ',' num2str(length)]
+    'Rotate_Z', pi/2,'Translate',[num2str(ao) ',' num2str(corrugated_width/2+straight_width) ',' num2str(length)]
     });
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, aperture_wall_coords, aperture_wall_length, 'Transform',{
-    'Rotate_Z', -pi/2,'Translate',[num2str(-ao) ',' num2str(-corrugated_width-straight_width*2) ',' num2str(length)]
+    'Rotate_Z', -pi/2,'Translate',[num2str(-ao) ',' num2str(-corrugated_width/2-straight_width) ',' num2str(length)]
     });
 
 %% End cap to prevent the radiation coming out of the back of the horn
