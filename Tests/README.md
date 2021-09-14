@@ -9,7 +9,7 @@ Simple extruded horn face. It was a test in how to make a straight horn wall fro
 Semi-corrugated horn inside a mesh.
 
 ### 3) test_horn_with_chokes.m
-Simulation of horn designed on [1] (see references in this [readme](/README.md))
+Simulation of horn designed on [1] (see references in this [readme](/README.md)).
 
 <img src="ReadmeData/test_horn_with_chokes/openEMS_Structure_chokes.png" alt="openEMS_Structure_chokes.png" width="800"/>
 
