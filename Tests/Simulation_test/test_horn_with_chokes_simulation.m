@@ -10,7 +10,7 @@ pitch_fraction = 8                      % Choose a fraction between 10 to 5 (lam
 delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
 sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC     = 5                             % Number of corrugations in mode converter
-wgl     = 30;                           % Length of circular feeding waveguide
+wgl     = 90;                           % Length of circular feeding waveguide
 num_of_corrugations = 110;
 corrugated_width    = 10.16
 straight_width      = 2
@@ -42,8 +42,9 @@ SHOW_STRUCTURE_FIGURES  = 1;
 RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
+USE_WU_PROFILE          = 1;
 
-TIME_STEPS = 10000
+TIME_STEPS = 5000
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -67,7 +68,7 @@ unit = 1e-3;                    % Units in mm
 lambda_c = 300/fc               % Center frequency wavelength
 lambda_o = 300/fo               % Output frequency
 ai = 22.86%(3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
-ao = 2*lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
+ao = 3*lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
 p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
 length = num_of_corrugations*p  % Length of horn profile
 N = length/p                    % Total number of corrugations
@@ -95,24 +96,28 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;
 endif
 
-if (USE_MODE_CONVERTER == 1);
-    % Mode Converter depths for element j
-    ajmc = a(1:NMC);                     % Index range for mode converter
-    idx = 1:NMC;
-    djmc = (sigma-((idx-1)./NMC).*(sigma-(0.25.*exp(1./(2.114.*(kc*ajmc).^1.134)))))*lambda_c;
-    % Depth of remaining corrugations
-    aj = a(NMC+1:end);
-    idx = NMC+1:N+1;
-    dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-NMC-1)/(N-NMC-1)).*((lambda_c/4).*exp(
-                                            1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
-    d = [djmc, dj];       % Combining the mode converter and horn depth values
-else
-    % Depth of remaining corrugations
-    aj = a;
-    idx = 1:N+1;
-    dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-1)/(N-1)).*((lambda_c/4).*exp(
-                                            1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
-    d = dj;       % Combining the mode converter and horn depth values
+if (USE_WU_PROFILE == 1);
+    idx = zeros(1,N+1);
+    dj = idx + (((300/fcalc))/2);
+    d = dj;
+elseif (USE_MODE_CONVERTER == 1);
+        % Mode Converter depths for element j
+        ajmc = a(1:NMC);                     % Index range for mode converter
+        idx = 1:NMC;
+        djmc = (sigma-((idx-1)./NMC).*(sigma-(0.25.*exp(1./(2.114.*(kc*ajmc).^1.134)))))*lambda_c;
+        % Depth of remaining corrugations
+        aj = a(NMC+1:end);
+        idx = NMC+1:N+1;
+        dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-NMC-1)/(N-NMC-1)).*((lambda_c/4).*exp(
+                                                1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
+        d = [djmc, dj];       % Combining the mode converter and horn depth values
+    else
+        % Depth of remaining corrugations
+        aj = a;
+        idx = 1:N+1;
+        dj = ((lambda_c/4).*exp(1./(2.114.*(kc*aj).^1.134)))-((idx-1)/(N-1)).*((lambda_c/4).*exp(
+                                                1./(2.114.*(kc*aj).^1.134))-(lambda_o/4).*exp(1./(2.114.*(ko*ao).^1.134)));
+        d = dj;       % Combining the mode converter and horn depth values
 endif
 
 % Generate z,y coordinates as len and rad vector
