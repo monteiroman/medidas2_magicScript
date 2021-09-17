@@ -11,7 +11,7 @@ delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
 sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
 NMC     = 5                             % Number of corrugations in mode converter
 wgl     = 90;                           % Length of circular feeding waveguide
-num_of_corrugations = 110;
+num_of_corrugations = 100;
 corrugated_width    = 10.16
 straight_width      = 2
 cap_width           = 2
@@ -30,11 +30,11 @@ cap_width           = 2
 %                        |      |
 %                  chokes_wall_width  
 %
-chokes_tooth_width_fraction = 0.25                                    % 0 to 1 value (paper [1] adopts 0.25)
-chokes_N_corrugations = 8
-chokes_pitch = 4                                                      % in mm
-chokes_wall_width = 5
-chokes_wall_depth = 5
+chokes_tooth_width_fraction = 0.25  % 0 to 1 value (paper [1] adopts 0.25)
+chokes_N_corrugations = 8           % Number of chokes corrugations.
+chokes_pitch = 4                    % In mm.
+chokes_wall_width = 5               % In mm.
+chokes_wall_depth = 0               % In mm. If 0 then chokes_wall_depth = lambda_calc/2
 
 exc_mode = 'TE10';
 
@@ -44,7 +44,8 @@ PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 USE_WU_PROFILE          = 1;
 
-TIME_STEPS = 5000
+TIME_STEPS  = 10000
+n_cell      = 30                    % cell size: lambda/n_cell
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -97,9 +98,13 @@ if (SHOW_STRUCTURE_FIGURES);
 endif
 
 if (USE_WU_PROFILE == 1);
-    idx = zeros(1,N+1);
-    dj = idx + (((300/fcalc))/2);
-    d = dj;
+    d = 1:N+1;
+    depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+
+    for i = 1:N+1;
+        d(i) = ((300/fcalc)/2) - i*depth_step;
+    endfor
+
 elseif (USE_MODE_CONVERTER == 1);
         % Mode Converter depths for element j
         ajmc = a(1:NMC);                     % Index range for mode converter
@@ -224,6 +229,11 @@ if (SHOW_STRUCTURE_FIGURES);
 endif
 
 % Define chokes profile.
+
+if (chokes_wall_depth == 0);
+    chokes_wall_depth = (300/fcalc)/4;
+endif
+
 chokes_tooth_width = chokes_pitch*chokes_tooth_width_fraction       
 chokes_wall_height = chokes_N_corrugations*chokes_pitch      % Length of horn aperture walls
 
@@ -279,17 +289,19 @@ f0 = fcalc*1e9;
 %% setup FDTD parameter & excitation function
 FDTD = InitFDTD( 'NrTS', TIME_STEPS, 'EndCriteria', 0.5e-3 );
 FDTD = SetGaussExcite(FDTD,0.5*(f_start+f_stop),0.5*(f_stop-f_start));
-BC = {'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8'}; % boundary conditions
+BC = {'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8'}; % FDTD Boundary Conditions:
+                                                                % http://openems.de/index.php/FDTD_Boundary_Conditions
 FDTD = SetBoundaryCond(FDTD, BC);
 
 %% setup CSXCAD geometry & mesh
-max_res = c0/(f_stop)/unit/20; % cell size: lambda/20
-CSX = InitCSX();               % Initialise CSX structure
+max_res = c0/(f_stop)/unit/n_cell;  % cell size: lambda/20
+CSX = InitCSX();                    % Initialise CSX structure
 
 % Calculate lambda/4 at lowest frequency to use as distance to nf2ff surfaces
 lambda_max = c0/f_start/unit/4;
 
 % Create fixed lines for the simulation box, structure and port
+% Info at this link: http://openems.de/index.php/FDTD_Mesh
 mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
                                                                                                         lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
@@ -389,7 +401,7 @@ CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
 
 %% ----->> Run openEMS <<-----
-if(RUN_SIMULATION == 1)                                                                                      %% Simulate
+if(RUN_SIMULATION == 1)                                                                              %% Start Simulation
     %openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
     %RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
     RunOpenEMS(Sim_Path, Sim_CSX, '--numThreads=3');
@@ -498,4 +510,4 @@ if(RUN_SIMULATION == 1)                                                         
     E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
     DumpFF2VTK([Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 
                                                                                                     'maxgain', Dlog);
-end                                                                                                       % End simulate
+end                                                                                                    %% End Simulation
