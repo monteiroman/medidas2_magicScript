@@ -1,39 +1,25 @@
 close all
 clear
 clc
+% https://www.miwv.com/x-band-horn-antennas-wr-90-8-2-12-4-ghz/
+
 
 %%_____________________________ USER EDITABLE PARAMETERS _____________________________
-fmin    = 8                             % Minimum frequency in GHz
-fmax    = 12                            % Maximum frequency in GHz
-fcalc   = 10                            % Frequency to calculate fields
-pitch_fraction = 10                      % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta   = 0.8                           % Pitch to width ratio 0.7 to 0.9
-sigma   = 0.42                          % Percentage factor for first slot depth, 0.4 to 0.5 
-NMC     = 5                             % Number of corrugations in mode converter
-wgl     = 90;                           % Length of circular feeding waveguide
+fmin    = 8                     % Minimum frequency in GHz
+fmax    = 12                    % Maximum frequency in GHz
+fcalc   = 10                    % Frequency to calculate fields
+
+ai = 22.86                      % Radius of input waveguide in mm
+ao = 80%63.75                      % Radius of output waveguide in mm
+bi = 10.16
+bo = 60%49.78
+
+pitch_fraction      = 10        % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
+delta               = 0.8       % Pitch to width ratio 0.7 to 0.9
+wg_length           = 90;       % Length of feeding waveguide
 num_of_corrugations = 40;
 straight_width      = 2
 cap_width           = 2
-
-%                        chokes_wall_depth
-%                               |   |
-%                     _   __________    _
-%                        |       ___|     chokes_pitch
-%                        |      |___    _
-%    chokes_wall_height  |       ___|   _ chokes_tooth_width = chokes_tooth_width_fraction * chokes_pitch
-%                        |      |___
-%                        |       ___|
-%                        |      |
-%                     _  |      |
-%
-%                        |      |
-%                  chokes_wall_width  
-%
-chokes_tooth_width_fraction = 0.25  % 0 to 1 value (paper [1] adopts 0.25)
-chokes_N_corrugations = 8           % Number of chokes corrugations.
-chokes_pitch = 4                    % In mm.
-chokes_wall_width = 5               % In mm.
-chokes_wall_depth = 0               % In mm. If 0 then chokes_wall_depth = lambda_calc/2
 
 exc_mode = 'TE10';
 
@@ -42,8 +28,10 @@ RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_MODE_CONVERTER      = 0;
 USE_WU_PROFILE          = 1;
+USE_CORRUGATIONS        = 1;
+SUBSTRACT_LEFTOVERS     = 1;
 
-TIME_STEPS  = 5000
+TIME_STEPS  = 10000
 n_cell      = 50                    % cell size: lambda/n_cell
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
@@ -65,22 +53,13 @@ if (fratio <= 1.4);
 endif
 
 unit = 1e-3;                    % Units in mm
-lambda_c = 300/fc               % Center frequency wavelength
+lambda_c = 300/fcalc               % Center frequency wavelength
 lambda_o = 300/fo               % Output frequency
-ai = 22.86                      %(3 * lambda_c)/(2*pi)      % Radius of input waveguide in mm
-ao = 63.75                      %lambda_c%1.95*lambda_c              % Radius of output waveguide in mm
-bi = 10.16
-bo = 49.78
 p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
 length = num_of_corrugations*p  % Length of horn profile
 N = length/p                    % Total number of corrugations
-kc = (2*pi)/lambda_c            % Wave number at center frequency
-ko = (2*pi)/lambda_o            % Wave number at output frequency
 z = 0:p:length;                 % z index distance array from 0 to length of horn
-r_app = ao*1e-3;                % Aperture radius
-A_app = pi*(r_app)^2;           % Aperture area for gain calculation
 
-aperture_wall_length = ao*2;
 
 %%_____________________________ START OF 2D FIGURES DESIGN _____________________________
 
@@ -98,13 +77,17 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;
 endif
 
-% Corrugations depths.
-d = 1:N+1;
-depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+if (USE_CORRUGATIONS);
+    % Corrugations depths.
+    d = 1:N+1;
+    depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
 
-for i = 1:N+1;
-    d(i) = ((300/fcalc)/2) - i*depth_step;
-endfor
+    for i = 1:N+1;
+        d(i) = ((300/fcalc)/2) - i*depth_step;
+    endfor
+else
+    d = zeros(1,N+1);
+endif
 
 % Generate z,y coordinates as z_for_a_profile and y_for_a_profile vector
 n = 0;
@@ -157,7 +140,7 @@ z_flip = fliplr(z);
 extent = z_for_a_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
 % Add outer profile and circular waveguide to horn
-z_for_a_profile = [z_for_a_profile, z_flip,         -wgl,               -wgl,   0];
+z_for_a_profile = [z_for_a_profile, z_flip,         -wg_length,               -wg_length,   0];
 y_for_a_profile = [y_for_a_profile, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
 
 if (SHOW_STRUCTURE_FIGURES);
@@ -169,6 +152,10 @@ if (SHOW_STRUCTURE_FIGURES);
     title( 'Complete Corrugated Horn A Profile', 'FontSize', 16 );
     axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
+
+% Substraction volume for A
+z_for_a_subs_profile = [z_flip,         -wg_length-2,       -wg_length-2,   0,  z_flip(1),  z_flip(1)];
+y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2),  ao,             ao, ao,         outer_surface(1)];
 
 
 %%% Linear profile B %%%
@@ -184,13 +171,17 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;
 endif
 
-% Corrugations depths.
-d = 1:N+1;
-depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+if (USE_CORRUGATIONS);
+    % Corrugations depths.
+    d = 1:N+1;
+    depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
 
-for i = 1:N+1;
-    d(i) = ((300/fcalc)/2) - i*depth_step;
-endfor
+    for i = 1:N+1;
+        d(i) = ((300/fcalc)/2) - i*depth_step;
+    endfor
+else
+    d = zeros(1,N+1);
+endif
 
 % Generate z,y coordinates as z_for_b_profile and y_for_b_profile vector
 n = 0;
@@ -243,7 +234,7 @@ z_flip = fliplr(z);
 extent = z_for_b_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
 % Add outer profile and circular waveguide to horn
-z_for_b_profile = [z_for_b_profile, z_flip,         -wgl,               -wgl,   0];
+z_for_b_profile = [z_for_b_profile, z_flip,         -wg_length,               -wg_length,   0];
 y_for_b_profile = [y_for_b_profile, outer_surface,  bi+(lambda_c/2+2),  bi,     bi];
 
 if (SHOW_STRUCTURE_FIGURES);
@@ -256,9 +247,14 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
 
-% Determine end cap to prevent the radiation coming out of the back of the horn
+% Substraction volume for B
+z_for_b_subs_profile = [z_flip,         -wg_length-2,       -wg_length-2,   0,  z_flip(1),  z_flip(1)];
+y_for_b_subs_profile = [outer_surface,  bi+(lambda_c/2+2),  bo,             bo, bo,         outer_surface(1)];
+
+
+%% Generate end cap to prevent the radiation coming out of the back of the horn
 % Extract the end point of the structure
-cap_point_z_1 = [z_flip, -wgl](end);
+cap_point_z_1 = [z_flip, -wg_length](end);
 cap_point_y_1 = [outer_surface, ai+(lambda_c/2+2)](end) - ai/2;
 % From here we have to move in "y" to to met the "y" end of the cap.
 cap_point_z_2 = cap_point_z_1;
@@ -271,7 +267,6 @@ cap_point_y_4 = cap_point_y_2;
 
 cap_y = [cap_point_y_1, cap_point_y_2, cap_point_y_4, cap_point_y_3, cap_point_y_1];
 cap_z = [cap_point_z_1, cap_point_z_2, cap_point_z_4, cap_point_z_3, cap_point_z_1];
-
 
 %%%_____________________________ END OF 2D FIGURES DESIGN _____________________________
 
@@ -306,9 +301,9 @@ lambda_max = c0/f_start/unit/4;
 mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
                                                                                                         lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-mesh.y = mesh.x/2;                                 % Same as x mesh
+mesh.y = mesh.x;                                 % Same as x mesh
 % Create fixed lines for the simulation box,port and given number of lines inside the horn
-mesh.z = [-wgl-lambda_max-(9*max_res) -wgl-1 -wgl -wgl+10 0 z_for_a_profile(1:2:z_number) length+2*lambda_max+(9*max_res)];
+mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:z_number) length+2*lambda_max+(9*max_res)];
 mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
 
 CSX = DefineRectGrid( CSX, unit, mesh );
@@ -316,24 +311,48 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 %% ----->> Create Horn Geometry <<-----
 %% Horn + waveguide
 CSX = AddMetal(CSX, 'Corrugated_Horn');
+CSX = AddMaterial( CSX, 'Air' );
+CSX = SetMaterialProperty( CSX, 'Air', 'Epsilon', 1, 'Mue', 1 );
+
 corrugated_coords_a = [y_for_a_profile; z_for_a_profile];
+substract_coords_a  = [y_for_a_subs_profile; z_for_a_subs_profile];
 corrugated_coords_b = [y_for_b_profile; z_for_b_profile];
+substract_coords_b  = [y_for_b_subs_profile; z_for_b_subs_profile];
+guard = 2
 
 % Corrugated walls A
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords_a, bo+(300/fcalc)/2, 'Transform', {
-    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/4) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2+guard/2) ',0']
     });
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords_a, bo+(300/fcalc)/2, 'Transform', {
-    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/4) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
+    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
     });
 
+if (SUBSTRACT_LEFTOVERS);
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
+        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2+guard/2) ',0']
+        });
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
+        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
+        });
+endif
+
 % Corrugated walls B
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords_b, ao+(300/fcalc)/2, 'Transform', {
-    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/4) ',' num2str(-bi/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
+    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2+guard/2) ',' num2str(-bi/2) ',0']
     });
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 10, 1, 0, corrugated_coords_b, ao+(300/fcalc)/2, 'Transform', {
-    'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/4) ',' num2str(bi/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
+    'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
     });
+
+if (SUBSTRACT_LEFTOVERS);
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2+guard/2) ',' num2str(-bi/2) ',0']
+        });
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
+        });
+endif
 
 
 %% End cap to prevent the radiation coming out of the back of the horn
@@ -348,21 +367,21 @@ CSX = AddLinPoly( CSX, 'Cap', 10, 1, 0, cap_coords, bo + 2 * straight_width, 'Tr
 
 %% ----->> Excitation, dumpboxes and nf2ff <<-----
 % Apply the excitation
-start=[-ai/2 -bi/2 -wgl];
-stop =[ai/2 bi/2 -wgl+10];
+start=[-ai/2 -bi/2 -wg_length];
+stop =[ai/2 bi/2 -wg_length+10];
 %% Ports information at link:
 %       https://openems.de/index.php/Ports.html#Rectangular_Waveguide_Ports
 [CSX, port] = AddRectWaveGuidePort( CSX, 0, 1, start, stop, 'z', ai*unit, bo*unit, exc_mode, 1);
 
 % Dump box for Electric field at Phi=0 (vertical cut)
 CSX = AddDump(CSX,'Et_V_dump', 'SubSampling', '4,4,4');
-start=[0 (-a_offset(end)-lambda_max) (-wgl-lambda_max)];
+start=[0 (-a_offset(end)-lambda_max) (-wg_length-lambda_max)];
 stop =[0 (a_offset(end)+lambda_max) (length+2*lambda_max)];
 CSX = AddBox(CSX,'Et_V_dump',0,start,stop);
 
 % Dump box for Electric field at Phi=90 (horizontal cut)
 CSX = AddDump(CSX,'Et_H_dump', 'SubSampling', '4,4,4');
-start=[(-a_offset(end)-lambda_max) 0 (-wgl-lambda_max)];
+start=[(-a_offset(end)-lambda_max) 0 (-wg_length-lambda_max)];
 stop =[(a_offset(end)+lambda_max) 0 (length+2*lambda_max)];
 CSX = AddBox(CSX,'Et_H_dump',0,start,stop);
 
@@ -424,13 +443,10 @@ if(RUN_SIMULATION == 1)                                                         
     nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, [0 45 90]*pi/180);
 
     Dlog=10*log10(nf2ff.Dmax);      % Calculate maximum Directivity in dB
-    G_a = 4*pi*A_app/(c0/f0)^2;     % Calculate theoretical gain for given aperture
-    e_a = nf2ff.Dmax/G_a;           % Calculate Efficiency
 
     % Display some antenna parameters from above calculations
     disp(['radiated power: Prad = ' num2str(nf2ff.Prad) ' Watt']);
     disp(['directivity: Dmax = ' num2str(Dlog) ' dBi']);
-    disp(['aperture efficiency: e_a = ' num2str(e_a*100) '%']);
 
     % Directivity
     if (PLOT_OUTPUT_SAME_WINDOW == 1);
