@@ -9,17 +9,18 @@ fmin    = 8                     % Minimum frequency in GHz
 fmax    = 12                    % Maximum frequency in GHz
 fcalc   = 10                    % Frequency to calculate fields
 
-ai = 22.86                      % Radius of input waveguide in mm
-ao = 63.75                      % Radius of output waveguide in mm
-%ao = 135
+ai = 22.86
 bi = 10.16
-bo = 49.78
-%bo = 60
 
-pitch               = 5         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta               = 0.5       % Pitch to width ratio 0.7 to 0.9
+%ao = 63.75
+ao = 135
+%bo = 49.78
+bo = 120
+
+pitch               = 4         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
+delta               = 0.75       % Pitch to width ratio 0.7 to 0.9
 wg_length           = 20;       % Length of feeding waveguide
-num_of_corrugations = 20;
+num_of_corrugations = 40;
 straight_width      = 2
 cap_width           = 2
 
@@ -33,6 +34,8 @@ SUBSTRACT_LEFTOVERS     = 1;
 
 TIME_STEPS  = 5000
 n_cell      = 20                    % cell size: lambda/n_cell
+
+USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -61,8 +64,20 @@ z = 0:pitch:length;                 % z index distance array from 0 to length of
 
 %%_____________________________ START OF 2D FIGURES DESIGN _____________________________
 
-%%% Linear profile A %%%
-a_profile = ai+(ao/2-ai/2)*z/length;
+%%% Profile for A faces %%%
+switch (USE_PROFILE)
+    case 1
+        % Linear profile
+        a_profile = ai+(ao/2-ai/2)*z/length;
+    case 2
+        % Tangential profile
+        A = 1;
+        rho = 2;
+        a_profile = ai+(ao-ai)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
+    case 3
+        % Exponential profile
+        a_profile = ai*exp(log(ao/ai)*(z/length));
+endswitch
 
 if (SHOW_STRUCTURE_FIGURES);
     figure
@@ -127,7 +142,7 @@ a_offset = a_profile.+(lambda_c/2+2);
 % Add vertical surface at horn aperture
 z_for_a_profile = [z_for_a_profile, z_for_a_profile(z_number)];
 y_for_a_profile = [y_for_a_profile, a_offset(N)];
-radmsh=y_for_a_profile;                 % radmesh to fix mesh lines to corrugations
+radmsh_a = y_for_a_profile;                 % radmesh to fix mesh lines to corrugations
 % figure;                    % Uncomment these three lines for debugging
 % plot(z_for_a_profile, y_for_a_profile);
 % axis equal;
@@ -159,8 +174,20 @@ z_for_a_subs_profile = [z_for_a_subs_profile,   z_flip(1),                  z_fl
 y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2),      outer_surface(1)+air_guard, outer_surface(1)+air_guard]; 
 y_for_a_subs_profile = [y_for_a_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
-%%% Linear profile B %%%
-b_profile = bi+(bo/2-bi/2)*z/length;
+%%% Profile for B faces %%%
+switch (USE_PROFILE)
+    case 1
+        % Linear profile
+        b_profile = bi+(bo/2-bi/2)*z/length;
+    case 2
+        % Tangential profile
+        A = 1;
+        rho = 2;
+        b_profile = bi+(bo-bi)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
+    case 3
+        % Exponential profile
+        b_profile = bi*exp(log(bo/bi)*(z/length));
+endswitch
 
 if (SHOW_STRUCTURE_FIGURES);
     subplot (3, 2, 2)
@@ -215,22 +242,22 @@ if (SHOW_STRUCTURE_FIGURES);
 endif
 
 % Add the rest of the geometry to create a closed path
-% a_offset is the inner horn profile shifted up to give the horn a thickness
-a_offset = b_profile.+(lambda_c/2+2);
+% b_offset is the inner horn profile shifted up to give the horn a thickness
+b_offset = b_profile.+(lambda_c/2+2);
 % figure;                    % Uncomment these three lines for debugging
-% plot(z, a_offset);
+% plot(z, b_offset);
 % axis equal;
 
 % Add vertical surface at horn aperture
 z_for_b_profile = [z_for_b_profile, z_for_b_profile(z_number)];
-y_for_b_profile = [y_for_b_profile, a_offset(N)];
-radmsh=y_for_b_profile;                 % radmesh to fix mesh lines to corrugations
+y_for_b_profile = [y_for_b_profile, b_offset(N)];
+radmsh_b = y_for_b_profile;                 % radmesh to fix mesh lines to corrugations
 % figure;                    % Uncomment these three lines for debugging
 % plot(z_for_b_profile, y_for_b_profile);
 % axis equal;
 
 % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
-outer_surface = fliplr(a_offset);
+outer_surface = fliplr(b_offset);
 z_flip = fliplr(z);
 extent = z_for_b_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
@@ -300,10 +327,14 @@ lambda_max = c0/f_start/unit/4;
 
 % Create fixed lines for the simulation box, structure and port
 % Info at this link: http://openems.de/index.php/FDTD_Mesh
-mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh(1:4:end) 0 radmsh(1:4:end) (a_offset(end)+(9*max_res)+
+mesh.y = [(-b_offset(end)-(9*max_res)-lambda_max) -radmsh_b(1:4:end)+bi/2 0 radmsh_b(1:4:end)-bi/2 (b_offset(end)+(9*max_res)+
+                                                                                                        lambda_max)];
+mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
+
+mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -radmsh_a(1:4:end)+ai/2 0 radmsh_a(1:4:end)-ai/2 (a_offset(end)+(9*max_res)+
                                                                                                         lambda_max)];
 mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-mesh.y = mesh.x;                                 % Same as x mesh
+
 % Create fixed lines for the simulation box,port and given number of lines inside the horn
 mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:z_number) length+2*lambda_max+(9*max_res)];
 mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
@@ -314,6 +345,8 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 %% Horn + waveguide
 CSX = AddMetal(CSX, 'Corrugated_Horn');
 if (SUBSTRACT_LEFTOVERS);
+    % openEMSs way to subtract volumes: https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html
+    %                       primitives: http://openems.de/index.php/Primitives.html#Coordinate_System_Definition
     CSX = AddMaterial( CSX, 'Air' );
     CSX = SetMaterialProperty( CSX, 'Air', 'Epsilon', 1, 'Mue', 1 );
 endif
