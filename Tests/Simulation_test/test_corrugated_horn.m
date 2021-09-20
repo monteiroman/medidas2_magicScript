@@ -10,14 +10,16 @@ fmax    = 12                    % Maximum frequency in GHz
 fcalc   = 10                    % Frequency to calculate fields
 
 ai = 22.86                      % Radius of input waveguide in mm
-ao = 80%63.75                      % Radius of output waveguide in mm
+ao = 63.75                      % Radius of output waveguide in mm
+%ao = 135
 bi = 10.16
-bo = 60%49.78
+bo = 49.78
+%bo = 60
 
-pitch_fraction      = 10        % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta               = 0.8       % Pitch to width ratio 0.7 to 0.9
-wg_length           = 90;       % Length of feeding waveguide
-num_of_corrugations = 40;
+pitch               = 5         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
+delta               = 0.5       % Pitch to width ratio 0.7 to 0.9
+wg_length           = 20;       % Length of feeding waveguide
+num_of_corrugations = 20;
 straight_width      = 2
 cap_width           = 2
 
@@ -26,21 +28,19 @@ exc_mode = 'TE10';
 SHOW_STRUCTURE_FIGURES  = 1;
 RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
-USE_MODE_CONVERTER      = 0;
-USE_WU_PROFILE          = 1;
 USE_CORRUGATIONS        = 1;
 SUBSTRACT_LEFTOVERS     = 1;
 
-TIME_STEPS  = 10000
-n_cell      = 50                    % cell size: lambda/n_cell
+TIME_STEPS  = 5000
+n_cell      = 20                    % cell size: lambda/n_cell
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
-fratio = fmax/fmin             % ratio of fmax/fmin
-if (fratio >= 2.4);            % check fmax/fmin is less than 2.4
+fratio = fmax/fmin              % ratio of fmax/fmin
+if (fratio >= 2.4);             % check fmax/fmin is less than 2.4
     disp('Error, fmax/fmin is greater than 2.4!');
     fc = 0
-    elseif (fratio <= 1.4);      % Use Narrowband formula if fmax <= 1.4fmin
+    elseif (fratio <= 1.4);     % Use Narrowband formula if fmax <= 1.4fmin
         fc = sqrt(fmin*fmax)
         elseif (fmax >= 1.4*fmin && fmax <= 2.4*fmin); % Use wideband formula for 1.4fmin<=fmax<=2.4fmin
             fc = 1.2*fmin
@@ -53,12 +53,10 @@ if (fratio <= 1.4);
 endif
 
 unit = 1e-3;                    % Units in mm
-lambda_c = 300/fcalc               % Center frequency wavelength
-lambda_o = 300/fo               % Output frequency
-p = lambda_c/pitch_fraction;    % Pitch in mm, lambda_c/10 to lambda_c/5
-length = num_of_corrugations*p  % Length of horn profile
-N = length/p                    % Total number of corrugations
-z = 0:p:length;                 % z index distance array from 0 to length of horn
+lambda_c = 300/fcalc            % Center frequency wavelength
+length = num_of_corrugations*pitch  % Length of horn profile
+N = length/pitch                    % Total number of corrugations
+z = 0:pitch:length;                 % z index distance array from 0 to length of horn
 
 
 %%_____________________________ START OF 2D FIGURES DESIGN _____________________________
@@ -99,9 +97,9 @@ for i = 1:N;
     y_for_a_profile(i+n+2) = a_profile(i)+d(i);
     y_for_a_profile(i+n+3) = a_profile(i+1);
     y_for_a_profile(i+n+4) = a_profile(i+1);
-    z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*p;
+    z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*pitch;
     z_for_a_profile(i+n+3) = z_for_a_profile(i+n+2);
-    z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*p;
+    z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*pitch;
     z_for_a_profile(i+n+5) = z_for_a_profile(i+n+4);
     n = n+3;
 endfor
@@ -139,7 +137,7 @@ outer_surface = fliplr(a_offset);
 z_flip = fliplr(z);
 extent = z_for_a_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
-% Add outer profile and circular waveguide to horn
+% Add outer profile and waveguide to horn
 z_for_a_profile = [z_for_a_profile, z_flip,         -wg_length,               -wg_length,   0];
 y_for_a_profile = [y_for_a_profile, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
 
@@ -153,10 +151,13 @@ if (SHOW_STRUCTURE_FIGURES);
     axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
 
-% Substraction volume for A
-z_for_a_subs_profile = [z_flip,         -wg_length-2,       -wg_length-2,   0,  z_flip(1),  z_flip(1)];
-y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2),  ao,             ao, ao,         outer_surface(1)];
+air_guard = 2;
 
+% Substraction volume for A
+z_for_a_subs_profile = [z_flip,         -wg_length-air_guard,   -wg_length-air_guard,       0];  
+z_for_a_subs_profile = [z_for_a_subs_profile,   z_flip(1),                  z_flip(1)];
+y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2),      outer_surface(1)+air_guard, outer_surface(1)+air_guard]; 
+y_for_a_subs_profile = [y_for_a_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
 %%% Linear profile B %%%
 b_profile = bi+(bo/2-bi/2)*z/length;
@@ -193,9 +194,9 @@ for i = 1:N;
     y_for_b_profile(i+n+2) = b_profile(i)+d(i);
     y_for_b_profile(i+n+3) = b_profile(i+1);
     y_for_b_profile(i+n+4) = b_profile(i+1);
-    z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*p;
+    z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*pitch;
     z_for_b_profile(i+n+3) = z_for_b_profile(i+n+2);
-    z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*p;
+    z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*pitch;
     z_for_b_profile(i+n+5) = z_for_b_profile(i+n+4);
     n = n+3;
 endfor
@@ -233,7 +234,7 @@ outer_surface = fliplr(a_offset);
 z_flip = fliplr(z);
 extent = z_for_b_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
 z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
-% Add outer profile and circular waveguide to horn
+% Add outer profile and waveguide to horn
 z_for_b_profile = [z_for_b_profile, z_flip,         -wg_length,               -wg_length,   0];
 y_for_b_profile = [y_for_b_profile, outer_surface,  bi+(lambda_c/2+2),  bi,     bi];
 
@@ -248,9 +249,10 @@ if (SHOW_STRUCTURE_FIGURES);
 endif
 
 % Substraction volume for B
-z_for_b_subs_profile = [z_flip,         -wg_length-2,       -wg_length-2,   0,  z_flip(1),  z_flip(1)];
-y_for_b_subs_profile = [outer_surface,  bi+(lambda_c/2+2),  bo,             bo, bo,         outer_surface(1)];
-
+z_for_b_subs_profile = [z_flip,         -wg_length-air_guard,   -wg_length-air_guard,       0];  
+y_for_b_subs_profile = [outer_surface,  bi+(lambda_c/2+2),      outer_surface(1)+air_guard, outer_surface(1)+air_guard];
+z_for_b_subs_profile = [z_for_b_subs_profile,   z_flip(1),                  z_flip(1)];
+y_for_b_subs_profile = [y_for_b_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
 %% Generate end cap to prevent the radiation coming out of the back of the horn
 % Extract the end point of the structure
@@ -311,8 +313,10 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 %% ----->> Create Horn Geometry <<-----
 %% Horn + waveguide
 CSX = AddMetal(CSX, 'Corrugated_Horn');
-CSX = AddMaterial( CSX, 'Air' );
-CSX = SetMaterialProperty( CSX, 'Air', 'Epsilon', 1, 'Mue', 1 );
+if (SUBSTRACT_LEFTOVERS);
+    CSX = AddMaterial( CSX, 'Air' );
+    CSX = SetMaterialProperty( CSX, 'Air', 'Epsilon', 1, 'Mue', 1 );
+endif
 
 corrugated_coords_a = [y_for_a_profile; z_for_a_profile];
 substract_coords_a  = [y_for_a_subs_profile; z_for_a_subs_profile];
@@ -320,34 +324,36 @@ corrugated_coords_b = [y_for_b_profile; z_for_b_profile];
 substract_coords_b  = [y_for_b_subs_profile; z_for_b_subs_profile];
 guard = 2
 
-% Corrugated walls A
+% Corrugated A walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2+guard/2) ',0']
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2-guard/2) ',0']
     });
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
     'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
     });
 
+% Subtract horn A walls outside geometry
 if (SUBSTRACT_LEFTOVERS);
     CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2+guard/2) ',0']
+        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2-guard/2) ',0']
         });
     CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
         'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
         });
 endif
 
-% Corrugated walls B
+% Corrugated B walls
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2+guard/2) ',' num2str(-bi/2) ',0']
+    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2-guard/2) ',' num2str(-bi/2) ',0']
     });
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
     'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
     });
 
+% Subtract horn B walls outside geometry
 if (SUBSTRACT_LEFTOVERS);
     CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2+guard/2) ',' num2str(-bi/2) ',0']
+        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2-guard/2) ',' num2str(-bi/2) ',0']
         });
     CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
         'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
@@ -411,7 +417,7 @@ CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 if(RUN_SIMULATION == 1)                                                                              %% Start Simulation
     %openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
     %RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
-    RunOpenEMS(Sim_Path, Sim_CSX, '--numThreads=3');
+    RunOpenEMS(Sim_Path, Sim_CSX);%, '--numThreads=3');
 
     % Postprocessing & do the plots
     freq = linspace(f_start,f_stop,201);
