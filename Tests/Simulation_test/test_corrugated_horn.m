@@ -1,8 +1,6 @@
 close all
 clear
 clc
-% https://www.miwv.com/x-band-horn-antennas-wr-90-8-2-12-4-ghz/
-
 
 %%_____________________________ USER EDITABLE PARAMETERS _____________________________
 fmin    = 8                     % Minimum frequency in GHz
@@ -20,7 +18,7 @@ bo = 49.78
 pitch               = 4         
 delta               = 0.8       % Pitch to width ratio
 wg_length           = 20;       % Length of feeding waveguide
-num_of_corrugations = 40;
+num_of_corrugations = 60;
 straight_width      = 2
 cap_width           = 2
 
@@ -32,7 +30,7 @@ PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_CORRUGATIONS        = 1;
 SUBSTRACT_LEFTOVERS     = 1;
 
-TIME_STEPS  = 10000
+TIME_STEPS  = 50000
 n_cell      = 20                    % cell size: lambda/n_cell
 
 USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
@@ -40,7 +38,7 @@ USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
 
 %%              _______________ GOLD VALUES _______________
 %
-% ----->> Uncoment this lines for a Linear corrugated Horn <<-----
+% ----->> Uncoment this lines for a Linear corrugated Horn with 30dB+ sidelobe suppression <<-----
 %
 % fmin    = 8                     % Minimum frequency in GHz
 % fmax    = 12                    % Maximum frequency in GHz
@@ -72,7 +70,7 @@ USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
 
 % USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
 
-% ----->> Uncoment this lines for a Linear corrugated Horn <<-----
+% ----->> Uncoment this lines for a Tangential corrugated Horn with 30dB+ sidelobe suppression <<-----
 %
 % fmin    = 8                     % Minimum frequency in GHz
 % fmax    = 12                    % Maximum frequency in GHz
@@ -102,7 +100,7 @@ USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
 % TIME_STEPS  = 10000
 % n_cell      = 20                    % cell size: lambda/n_cell
 
-% USE_PROFILE = 2                     % 1=Linear, 2=Tangential,
+% USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
 
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
@@ -417,7 +415,7 @@ CSX = DefineRectGrid( CSX, unit, mesh );
 CSX = AddMetal(CSX, 'Corrugated_Horn');
 if (SUBSTRACT_LEFTOVERS);
     % openEMSs way to subtract volumes: https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html
-    %                       primitives: http://openems.de/index.php/Primitives.html#Coordinate_System_Definition
+    %                       primitives: https://openems.de/index.php/Primitives.html#Coordinate_System_Definition
     CSX = AddMaterial( CSX, 'Air' );
     CSX = SetMaterialProperty( CSX, 'Air', 'Epsilon', 1, 'Mue', 1 );
 endif
@@ -429,6 +427,7 @@ substract_coords_b  = [y_for_b_subs_profile; z_for_b_subs_profile];
 guard = 2
 
 % Corrugated A walls
+% https://openems.de/index.php/Polygon.html
 CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi, 'Transform', {
     'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi)/2) ',0']
     });
