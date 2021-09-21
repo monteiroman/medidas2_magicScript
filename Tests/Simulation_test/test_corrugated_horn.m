@@ -18,7 +18,7 @@ ao = 135
 bo = 120
 
 pitch               = 4         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta               = 0.75       % Pitch to width ratio 0.7 to 0.9
+delta               = 0.8       % Pitch to width ratio 0.7 to 0.9
 wg_length           = 20;       % Length of feeding waveguide
 num_of_corrugations = 40;
 straight_width      = 2
@@ -27,7 +27,7 @@ cap_width           = 2
 exc_mode = 'TE10';
 
 SHOW_STRUCTURE_FIGURES  = 1;
-RUN_SIMULATION          = 1;
+RUN_SIMULATION          = 0;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_CORRUGATIONS        = 1;
 SUBSTRACT_LEFTOVERS     = 1;
@@ -36,6 +36,41 @@ TIME_STEPS  = 5000
 n_cell      = 20                    % cell size: lambda/n_cell
 
 USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
+
+
+%% GOLD VALUES
+% fmin    = 8                     % Minimum frequency in GHz
+% fmax    = 12                    % Maximum frequency in GHz
+% fcalc   = 10                    % Frequency to calculate fields
+
+% ai = 22.86
+% bi = 10.16
+
+% %ao = 63.75
+% ao = 135
+% %bo = 49.78
+% bo = 120
+
+% pitch               = 4         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
+% delta               = 0.75       % Pitch to width ratio 0.7 to 0.9
+% wg_length           = 20;       % Length of feeding waveguide
+% num_of_corrugations = 40;
+% straight_width      = 2
+% cap_width           = 2
+
+% exc_mode = 'TE10';
+
+% SHOW_STRUCTURE_FIGURES  = 1;
+% RUN_SIMULATION          = 1;
+% PLOT_OUTPUT_SAME_WINDOW = 0;
+% USE_CORRUGATIONS        = 1;
+% SUBSTRACT_LEFTOVERS     = 1;
+
+% TIME_STEPS  = 5000
+% n_cell      = 40                    % cell size: lambda/n_cell
+
+% USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
+
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
 % Calculate center frequency fc based on narrow or wide bandwidth.
@@ -60,6 +95,7 @@ lambda_c = 300/fcalc            % Center frequency wavelength
 length = num_of_corrugations*pitch  % Length of horn profile
 N = length/pitch                    % Total number of corrugations
 z = 0:pitch:length;                 % z index distance array from 0 to length of horn
+air_guard = 2;
 
 
 %%_____________________________ START OF 2D FIGURES DESIGN _____________________________
@@ -139,6 +175,8 @@ a_offset = a_profile.+(lambda_c/2+2);
 % plot(z, a_offset);
 % axis equal;
 
+a_volume_y_end = a_offset(end);
+
 % Add vertical surface at horn aperture
 z_for_a_profile = [z_for_a_profile, z_for_a_profile(z_number)];
 y_for_a_profile = [y_for_a_profile, a_offset(N)];
@@ -165,8 +203,6 @@ if (SHOW_STRUCTURE_FIGURES);
     title( 'Complete Corrugated Horn A Profile', 'FontSize', 16 );
     axis equal;   % Scale axis equally for aspect ratio 1:1
 endif
-
-air_guard = 2;
 
 % Substraction volume for A
 z_for_a_subs_profile = [z_flip,         -wg_length-air_guard,   -wg_length-air_guard,       0];  
@@ -247,6 +283,8 @@ b_offset = b_profile.+(lambda_c/2+2);
 % figure;                    % Uncomment these three lines for debugging
 % plot(z, b_offset);
 % axis equal;
+
+b_volume_y_end = b_offset(end)
 
 % Add vertical surface at horn aperture
 z_for_b_profile = [z_for_b_profile, z_for_b_profile(z_number)];
@@ -358,38 +396,38 @@ substract_coords_b  = [y_for_b_subs_profile; z_for_b_subs_profile];
 guard = 2
 
 % Corrugated A walls
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2-guard/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi, 'Transform', {
+    'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi)/2) ',0']
     });
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi, 'Transform', {
+    'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi)/2) ',0']
     });
 
 % Subtract horn A walls outside geometry
 if (SUBSTRACT_LEFTOVERS);
-    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-bo/2-(300/fcalc)/2-guard/2) ',0']
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi, 'Transform', {
+        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi)/2) ',0']
         });
-    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, bo+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str(bo/2+(300/fcalc)/2+guard/2) ',0']
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi, 'Transform', {
+        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi)/2) ',0']
         });
 endif
 
 % Corrugated B walls
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2-guard/2) ',' num2str(-bi/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai, 'Transform', {
+    'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai)/2) ',' num2str(-bi/2) ',0']
     });
-CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-    'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
+CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai, 'Transform', {
+    'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai)/2) ',' num2str(bi/2) ',0']
     });
 
 % Subtract horn B walls outside geometry
 if (SUBSTRACT_LEFTOVERS);
-    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-ao/2-(300/fcalc)/2-guard/2) ',' num2str(-bi/2) ',0']
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai)/2) ',' num2str(-bi/2) ',0']
         });
-    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, ao+(300/fcalc)+guard, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str(ao/2+(300/fcalc)/2+guard/2) ',' num2str(bi/2) ',0']
+    CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai)/2) ',' num2str(bi/2) ',0']
         });
 endif
 
