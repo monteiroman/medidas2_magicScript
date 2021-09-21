@@ -58,3 +58,23 @@ Test with corrugated horn designed at [1](see references [here](/README.md)). At
 |Radiation Patern OpenEMS|Radiation Patern and 3D structure in Paraview|
 |:---:|:---:|
 |<img src="ReadmeData/test_horn_with_chokes_simulation/openEMS_Radiation_patern.png" alt="openEMS_Radiation_patern.png" width="800"/>|<img src="ReadmeData/test_horn_with_chokes_simulation/paraView_Radiation_patern.png" alt="paraView_Radiation_patern.png" width="800"/>|
+
+### 4) test_corrugated_horn.m
+
+Tangential profile Corrugated Horn
+
+|2D Structure parts obtained from Octave|3D Structure in paraView|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Structure_tan.png" alt="openEMS_Structure_tan.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Structure_tan.png" alt="paraView_Structure_tan.png" width="800"/>|
+
+|Reflection coeficient|Farfield Directivity|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Reflection_coeficient_tan.png" alt="openEMS_Reflection_coeficient_tan.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_tan.png" alt="openEMS_Farfield_Directivity_tan.png" width="800"/>|
+
+|Farfield Directivity polar coordinates|Farfield Directivity Ludwig3 coordinates|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_Polar_tan.png" alt="openEMS_Farfield_Directivity_Polar_tan.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_Ludwig3_tan.png" alt="openEMS_Farfield_Directivity_Ludwig3_tan.png" width="800"/>|
+
+|Radiation Patern OpenEMS|Radiation Patern and 3D structure in Paraview|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Radiation_patern_tan.png" alt="openEMS_Radiation_patern_tan.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_tan.png" alt="paraView_Radiation_patern_tan.png" width="800"/>|
