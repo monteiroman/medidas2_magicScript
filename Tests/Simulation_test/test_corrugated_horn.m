@@ -12,13 +12,13 @@ fcalc   = 10                    % Frequency to calculate fields
 ai = 22.86
 bi = 10.16
 
-%ao = 63.75
-ao = 135
-%bo = 49.78
-bo = 120
+ao = 63.75
+%ao = 135
+bo = 49.78
+%bo = 120
 
-pitch               = 4         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-delta               = 0.8       % Pitch to width ratio 0.7 to 0.9
+pitch               = 4         
+delta               = 0.8       % Pitch to width ratio
 wg_length           = 20;       % Length of feeding waveguide
 num_of_corrugations = 40;
 straight_width      = 2
@@ -27,18 +27,21 @@ cap_width           = 2
 exc_mode = 'TE10';
 
 SHOW_STRUCTURE_FIGURES  = 1;
-RUN_SIMULATION          = 0;
+RUN_SIMULATION          = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 USE_CORRUGATIONS        = 1;
 SUBSTRACT_LEFTOVERS     = 1;
 
-TIME_STEPS  = 5000
+TIME_STEPS  = 10000
 n_cell      = 20                    % cell size: lambda/n_cell
 
-USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
+USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
 
 
-%% GOLD VALUES
+%%              _______________ GOLD VALUES _______________
+%
+% ----->> Uncoment this lines for a Linear corrugated Horn <<-----
+%
 % fmin    = 8                     % Minimum frequency in GHz
 % fmax    = 12                    % Maximum frequency in GHz
 % fcalc   = 10                    % Frequency to calculate fields
@@ -46,13 +49,11 @@ USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
 % ai = 22.86
 % bi = 10.16
 
-% %ao = 63.75
 % ao = 135
-% %bo = 49.78
 % bo = 120
 
-% pitch               = 4         % Choose a fraction between 10 to 5 (lambda_c / pitch_fraction)
-% delta               = 0.75       % Pitch to width ratio 0.7 to 0.9
+% pitch               = 4         
+% delta               = 0.75      % Pitch to width ratio
 % wg_length           = 20;       % Length of feeding waveguide
 % num_of_corrugations = 40;
 % straight_width      = 2
@@ -70,6 +71,38 @@ USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
 % n_cell      = 40                    % cell size: lambda/n_cell
 
 % USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
+
+% ----->> Uncoment this lines for a Linear corrugated Horn <<-----
+%
+% fmin    = 8                     % Minimum frequency in GHz
+% fmax    = 12                    % Maximum frequency in GHz
+% fcalc   = 10                    % Frequency to calculate fields
+
+% ai = 22.86
+% bi = 10.16
+
+% ao = 135
+% bo = 120
+
+% pitch               = 4         
+% delta               = 0.8       % Pitch to width ratio
+% wg_length           = 20;       % Length of feeding waveguide
+% num_of_corrugations = 40;
+% straight_width      = 2
+% cap_width           = 2
+
+% exc_mode = 'TE10';
+
+% SHOW_STRUCTURE_FIGURES  = 1;
+% RUN_SIMULATION          = 1;
+% PLOT_OUTPUT_SAME_WINDOW = 0;
+% USE_CORRUGATIONS        = 1;
+% SUBSTRACT_LEFTOVERS     = 1;
+
+% TIME_STEPS  = 10000
+% n_cell      = 20                    % cell size: lambda/n_cell
+
+% USE_PROFILE = 2                     % 1=Linear, 2=Tangential,
 
 %%__________________________ END OF USER EDITABLE PARAMETERS __________________________
 
