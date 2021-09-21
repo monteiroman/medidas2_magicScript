@@ -16,10 +16,10 @@ Simulation of horn designed on [1] (see references in this [readme](/README.md))
 ***
 ## [Simulation_test](https://github.com/monteiroman/medidas2_magicScript/tree/main/Tests/Simulation_test)
 
-### 1) test_first.m
+### **1)** test_first.m
 First test of a piramidal corrugated horn.
 
-### 2) test_second.m
+### **2)** test_second.m
 Test with piramidal semi-corrugated horn. At the moment we are facing some memory problems with this script but some results can be seen below.
 
 |2D Structure parts obtained from Octave|3D Structure in paraView|
@@ -39,7 +39,7 @@ Test with piramidal semi-corrugated horn. At the moment we are facing some memor
 |<img src="ReadmeData/test_second/openEMS_Radiation_patern.png" alt="openEMS_Radiation_patern.png" width="800"/>|<img src="ReadmeData/test_second/paraView_Radiation_patern.png" alt="paraView_Radiation_patern.png" width="800"/>|
 
 
-### 3) test_horn_with_chokes_simulation.m
+### **3)** test_horn_with_chokes_simulation.m
 
 Test with corrugated horn designed at [1](see references [here](/README.md)). At the moment we are facing some memory problems with this script but some results can be seen below.
 
@@ -59,9 +59,43 @@ Test with corrugated horn designed at [1](see references [here](/README.md)). At
 |:---:|:---:|
 |<img src="ReadmeData/test_horn_with_chokes_simulation/openEMS_Radiation_patern.png" alt="openEMS_Radiation_patern.png" width="800"/>|<img src="ReadmeData/test_horn_with_chokes_simulation/paraView_Radiation_patern.png" alt="paraView_Radiation_patern.png" width="800"/>|
 
-### 4) test_corrugated_horn.m
+### **4)** test_corrugated_horn.m
 
-Tangential profile Corrugated Horn
+This script can simulate three horn types: linear, tangential and exponential. 
+
+It also can define an air volume for subtract the horn leftovers (this is the OpenEMS way to do it according to [this](https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html) tutorial).
+
+**a)** Linear profile Corrugated Horn
+
+|2D Structure parts obtained from Octave|3D Structure in paraView|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Structure_lin.png" alt="openEMS_Structure_lin.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Structure_lin.png" alt="paraView_Structure_lin.png" width="800"/>|
+
+|Reflection coeficient|Farfield Directivity|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Reflection_coeficient_lin.png" alt="openEMS_Reflection_coeficient_lin.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_lin.png" alt="openEMS_Farfield_Directivity_lin.png" width="800"/>|
+
+|Farfield Directivity polar coordinates|Farfield Directivity Ludwig3 coordinates|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_Polar_lin.png" alt="openEMS_Farfield_Directivity_Polar_lin.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/openEMS_Farfield_Directivity_Ludwig3_lin.png" alt="openEMS_Farfield_Directivity_Ludwig3_lin.png" width="800"/>|
+
+|Radiation Patern OpenEMS|Radiation Patern and 3D structure in Paraview|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/openEMS_Radiation_patern_lin.png" alt="openEMS_Radiation_patern_lin.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_lin.png" alt="paraView_Radiation_patern_lin.png" width="800"/>|
+
+To analize the diference between the model with leftovers and without them we run two other simulations.
+
+|Radiation Patern in Paraview **WITH AIR**|Radiation Patern in Paraview **WITHOUT AIR**|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_air.png" alt="paraView_Radiation_patern_air.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_wo_air.png" alt="paraView_Radiation_patern_wo_air.png" width="800"/>|
+
+|Radiation Patern in Paraview **WITH AIR**|
+|:---:|
+|<img src="ReadmeData/test_corrugated_horn/paraView_air.png" alt="paraView_air.png" width="400"/>|
+
+
+
+**b)** Tangential profile Corrugated Horn
 
 |2D Structure parts obtained from Octave|3D Structure in paraView|
 |:---:|:---:|
