@@ -63,7 +63,7 @@ Test with corrugated horn designed at [1](see references [here](/README.md)). At
 
 This script can simulate three horn types: linear, tangential and exponential. 
 
-It also can define an air volume for subtract the horn leftovers (this is the OpenEMS way to do it according to [this](https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html) tutorial).
+It also can define an air volume for subtract horn leftovers (according to [this](https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html) tutorial, this is the OpenEMS way to do it).
 
 **a)** Linear profile Corrugated Horn
 
@@ -83,17 +83,15 @@ It also can define an air volume for subtract the horn leftovers (this is the Op
 |:---:|:---:|
 |<img src="ReadmeData/test_corrugated_horn/openEMS_Radiation_patern_lin.png" alt="openEMS_Radiation_patern_lin.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_lin.png" alt="paraView_Radiation_patern_lin.png" width="800"/>|
 
-To analize the diference between the model with leftovers and without them we run two other simulations.
+In order to analize the diference between the model with leftovers and without them we run two other simulations.
 
 |Radiation Patern in Paraview **WITH AIR**|Radiation Patern in Paraview **WITHOUT AIR**|
 |:---:|:---:|
 |<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_air.png" alt="paraView_Radiation_patern_air.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_wo_air.png" alt="paraView_Radiation_patern_wo_air.png" width="800"/>|
 
-|Radiation Patern in Paraview **WITH AIR**|
+|3D Air volume in Paraview|
 |:---:|
 |<img src="ReadmeData/test_corrugated_horn/paraView_air.png" alt="paraView_air.png" width="400"/>|
-
-
 
 **b)** Tangential profile Corrugated Horn
 
@@ -125,4 +123,4 @@ CST comparison
 
 |CST 3D Radiation Patern|
 |:---:|
-|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern.png" alt="CST_Radiation_patern.png" width="400"/>|
+|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern.png" alt="CST_Radiation_patern.png" width="600"/>|
