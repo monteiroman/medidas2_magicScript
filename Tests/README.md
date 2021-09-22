@@ -112,3 +112,17 @@ To analize the diference between the model with leftovers and without them we ru
 |Radiation Patern OpenEMS|Radiation Patern and 3D structure in Paraview|
 |:---:|:---:|
 |<img src="ReadmeData/test_corrugated_horn/openEMS_Radiation_patern_tan.png" alt="openEMS_Radiation_patern_tan.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/paraView_Radiation_patern_tan.png" alt="paraView_Radiation_patern_tan.png" width="800"/>|
+
+CST comparison
+
+|CST Radiation Patern at phi=0°|CST Radiation Patern at phi=45°|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern_polar_0deg.png" alt="CST_Radiation_patern_polar_0deg.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern_polar_45deg.png" alt="CST_Radiation_patern_polar_45deg.png" width="800"/>|
+
+|CST Radiation Patern at phi=90°|CST Radiation Patern at phi=45|
+|:---:|:---:|
+|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern_polar_90deg.png" alt="CST_Radiation_patern_polar_90deg.png" width="800"/>|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern_cart_0deg.png" alt="CST_Radiation_patern_cart_0deg.png" width="800"/>|
+
+|CST 3D Radiation Patern|
+|:---:|
+|<img src="ReadmeData/test_corrugated_horn/CST_Radiation_patern.png" alt="CST_Radiation_patern.png" width="400"/>|
