@@ -11,10 +11,11 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |:---:|:---:|:---:|
 |1|Run simulations on OpenEMS with structures made by us.<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)|✅|
 |2|Obtain similar horn structure as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment with [test_horn_with_chokes.m](/Tests/Structure_test/test_horn_with_chokes.m), results [here](/Tests/README.md))|✅|
-|3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|⏸️<br />(pending teachers approval)|
-|4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|⏸️<br />(pending teachers approval)|
-|5|Test other horn shapes (Hyperbolic, Sine-squared, Exponential, Tangential).|⏳|
+|3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|✅|
+|4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
+|5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |6|Make functions for different Horn designs in octave.|❌|
+|7|Make a parameter sweep script for horn antennas in octave.|❌|
 
 
 ## OpenEMS installation on Linux
