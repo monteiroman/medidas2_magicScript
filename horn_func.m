@@ -21,12 +21,13 @@ function make_horn()
 
     % exc_mode = 'TE10';
 
-    % SHOW_STRUCTURE_FIGURES  = 1;
-    % RUN_SIMULATION          = 1;
-    % PLOT_OUTPUT_SAME_WINDOW = 0;
-    % USE_CORRUGATIONS        = 1;
-    % SUBSTRACT_LEFTOVERS     = 1;
-    % MAKE_STRUCTURE          = 1;
+    % SHOW_STRUCTURE_FIGURES    = 1;
+    % RUN_SIMULATION            = 1;
+    % PLOT_OUTPUT_SAME_WINDOW   = 0;
+    % USE_CORRUGATIONS          = 1;
+    % SUBSTRACT_LEFTOVERS       = 1;
+    % MAKE_STRUCTURE            = 1;
+    % CHANGE_CORRUGATIONS_DEPTH = 1;
 
     % TIME_STEPS  = 20000
     % n_cell      = 35                    % cell size: lambda/n_cell
@@ -59,12 +60,14 @@ function make_horn()
 
     exc_mode = 'TE10';
 
-    SHOW_STRUCTURE_FIGURES  = 1;
-    RUN_SIMULATION          = 1;
-    PLOT_OUTPUT_SAME_WINDOW = 0;
-    USE_CORRUGATIONS        = 1;
-    SUBSTRACT_LEFTOVERS     = 1;
-    MAKE_STRUCTURE          = 1;
+    SHOW_STRUCTURE_FIGURES      = 1;
+    RUN_SIMULATION              = 1;
+    PLOT_OUTPUT_SAME_WINDOW     = 0;
+    USE_CORRUGATIONS            = 1;
+    SUBSTRACT_LEFTOVERS         = 1;
+    MAKE_STRUCTURE              = 1;
+    CHANGE_CORRUGATIONS_DEPTH   = 1;
+
 
     TIME_STEPS  = 5000
     n_cell      = 40                    % cell size: lambda/n_cell
@@ -95,12 +98,13 @@ function make_horn()
 
     % exc_mode = 'TE10';
 
-    % SHOW_STRUCTURE_FIGURES  = 1;
-    % RUN_SIMULATION          = 1;
-    % PLOT_OUTPUT_SAME_WINDOW = 0;
-    % USE_CORRUGATIONS        = 1;
-    % SUBSTRACT_LEFTOVERS     = 1;
-    % MAKE_STRUCTURE          = 1;
+    % SHOW_STRUCTURE_FIGURES    = 1;
+    % RUN_SIMULATION            = 1;
+    % PLOT_OUTPUT_SAME_WINDOW   = 0;
+    % USE_CORRUGATIONS          = 1;
+    % SUBSTRACT_LEFTOVERS       = 1;
+    % MAKE_STRUCTURE            = 1;
+    % CHANGE_CORRUGATIONS_DEPTH = 1;
 
     % TIME_STEPS  = 10000
     % n_cell      = 20                    % cell size: lambda/n_cell
@@ -150,12 +154,17 @@ function make_horn()
 
     if (USE_CORRUGATIONS);
         % Corrugations depths.
-        d = 1:N+1;
-        depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+        if (CHANGE_CORRUGATIONS_DEPTH);
+            d = 1:N+1;
+            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
 
-        for i = 1:N+1;
-            d(i) = ((300/fcalc)/2) - i*depth_step;
-        endfor
+            for i = 1:N+1;
+                d(i) = ((300/fcalc)/2) - i*depth_step;
+            endfor
+        else
+            d = zeros(1,N+1);
+            d = d + (300/fcalc)/2;
+        endif
     else
         d = zeros(1,N+1);
     endif
@@ -259,12 +268,17 @@ function make_horn()
 
     if (USE_CORRUGATIONS);
         % Corrugations depths.
-        d = 1:N+1;
-        depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+        if (CHANGE_CORRUGATIONS_DEPTH);
+            d = 1:N+1;
+            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
 
-        for i = 1:N+1;
-            d(i) = ((300/fcalc)/2) - i*depth_step;
-        endfor
+            for i = 1:N+1;
+                d(i) = ((300/fcalc)/2) - i*depth_step;
+            endfor
+        else
+            d = zeros(1,N+1);
+            d = d + (300/fcalc)/2;
+        endif
     else
         d = zeros(1,N+1);
     endif
