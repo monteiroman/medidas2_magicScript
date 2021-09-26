@@ -1,126 +1,45 @@
-function make_horn()
-%%_____________________________ USER EDITABLE PARAMETERS _____________________________
-    % fmin    = 8                     % Minimum frequency in GHz
-    % fmax    = 12                    % Maximum frequency in GHz
-    % fcalc   = 10                    % Frequency to calculate fields
+function make_horn(Sim_Path, Sim_CSX, Sim)
+    %%
+    %%  Still remains documentation
+    %%
 
-    % ai = 22.86
-    % bi = 10.16
+    disp('________ Simulation Values ________');
+    fmin    = Sim.fmin
+    fmax    = Sim.fmax
+    fcalc   = Sim.fcalc
 
-    % %ao = 63.75
-    % ao = 105
-    % %bo = 49.78
-    % bo = 90
+    ai = Sim.ai
+    bi = Sim.bi
 
-    % pitch               = 4         
-    % delta               = 0.8       % Pitch to width ratio
-    % wg_length           = 50;       % Length of feeding waveguide
-    % num_of_corrugations = 80;
-    % straight_width      = 2
-    % cap_width           = 2
+    ao = Sim.ao
+    bo = Sim.bo
 
-    % exc_mode = 'TE10';
+    pitch               = Sim.pitch         
+    delta               = Sim.delta
+    wg_length           = Sim.wg_length
+    num_of_corrugations = Sim.num_of_corrugations
+    straight_width      = Sim.straight_width
+    cap_width           = Sim.cap_width
 
-    % SHOW_STRUCTURE_FIGURES    = 1;
-    % RUN_SIMULATION            = 1;
-    % PLOT_OUTPUT_SAME_WINDOW   = 0;
-    % USE_CORRUGATIONS          = 1;
-    % SUBSTRACT_LEFTOVERS       = 1;
-    % MAKE_STRUCTURE            = 1;
-    % CHANGE_CORRUGATIONS_DEPTH = 1;
+    exc_mode = Sim.exc_mode
 
-    % TIME_STEPS  = 20000
-    % n_cell      = 35                    % cell size: lambda/n_cell
-
-    % USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
-
-    % Sim_Path = 'tmp';
-    % Sim_CSX = 'Corrugated_Horn.xml';
-
-%%              _______________ GOLD VALUES _______________
-    %
-    % ----->> Uncoment this lines for a Linear corrugated Horn with 30dB+ sidelobe suppression <<-----
-
-    fmin    = 8                     % Minimum frequency in GHz
-    fmax    = 12                    % Maximum frequency in GHz
-    fcalc   = 10                    % Frequency to calculate fields
-
-    ai = 22.86
-    bi = 10.16
-
-    ao = 135
-    bo = 120
-
-    pitch               = 4         
-    delta               = 0.75      % Pitch to width ratio
-    wg_length           = 60;       % Length of feeding waveguide
-    num_of_corrugations = 40;
-    straight_width      = 2
-    cap_width           = 2
-
-    exc_mode = 'TE10';
-
-    SHOW_STRUCTURE_FIGURES      = 1;
-    RUN_SIMULATION              = 1;
-    PLOT_OUTPUT_SAME_WINDOW     = 0;
-    USE_CORRUGATIONS            = 1;
-    SUBSTRACT_LEFTOVERS         = 1;
-    MAKE_STRUCTURE              = 1;
-    CHANGE_CORRUGATIONS_DEPTH   = 1;
+    SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES
+    USE_CORRUGATIONS            = Sim.USE_CORRUGATIONS
+    SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS
+    CHANGE_CORRUGATIONS_DEPTH   = Sim.CHANGE_CORRUGATIONS_DEPTH
 
 
-    TIME_STEPS  = 5000
-    n_cell      = 40                    % cell size: lambda/n_cell
+    TIME_STEPS  = Sim.TIME_STEPS
+    n_cell      = Sim.n_cell
 
-    USE_PROFILE = 1                     % 1=Linear, 2=Tangential, 3=Exponential
-
-    Sim_Path = 'tmp';
-    Sim_CSX = 'Corrugated_Horn.xml';
-
-% ----->> Uncoment this lines for a Tangential corrugated Horn with 30dB+ sidelobe suppression <<-----
-    %
-    % fmin    = 8                     % Minimum frequency in GHz
-    % fmax    = 12                    % Maximum frequency in GHz
-    % fcalc   = 10                    % Frequency to calculate fields
-
-    % ai = 22.86
-    % bi = 10.16
-
-    % ao = 135
-    % bo = 120
-
-    % pitch               = 4         
-    % delta               = 0.8       % Pitch to width ratio
-    % wg_length           = 60;       % Length of feeding waveguide
-    % num_of_corrugations = 40;
-    % straight_width      = 2
-    % cap_width           = 2
-
-    % exc_mode = 'TE10';
-
-    % SHOW_STRUCTURE_FIGURES    = 1;
-    % RUN_SIMULATION            = 1;
-    % PLOT_OUTPUT_SAME_WINDOW   = 0;
-    % USE_CORRUGATIONS          = 1;
-    % SUBSTRACT_LEFTOVERS       = 1;
-    % MAKE_STRUCTURE            = 1;
-    % CHANGE_CORRUGATIONS_DEPTH = 1;
-
-    % TIME_STEPS  = 10000
-    % n_cell      = 20                    % cell size: lambda/n_cell
-
-    % USE_PROFILE = 2                     % 1=Linear, 2=Tangential, 3=Exponential
-
-    % Sim_Path = 'tmp';
-    % Sim_CSX = 'Corrugated_Horn.xml';
-
-%%__________________________ END OF USER EDITABLE PARAMETERS __________________________
+    USE_PROFILE = Sim.USE_PROFILE        % 1=Linear, 2=Tangential, 3=Exponential
+    disp('________________');
 
 
-    unit = 1e-3;                    % Units in mm
-    lambda_c = 300/fcalc            % Center frequency wavelength
-    length = num_of_corrugations*pitch  % Length of horn profile
-    N = length/pitch                    % Total number of corrugations
+    unit = 1e-3;                        % Units in mm
+    lambda_c = 300/fcalc;               % Center frequency wavelength
+    length = num_of_corrugations*pitch; % Length of horn profile
+    N = length/pitch;                   % Total number of corrugations
     z = 0:pitch:length;                 % z index distance array from 0 to length of horn
     air_guard = 2;
 
@@ -156,7 +75,7 @@ function make_horn()
         % Corrugations depths.
         if (CHANGE_CORRUGATIONS_DEPTH);
             d = 1:N+1;
-            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N;
 
             for i = 1:N+1;
                 d(i) = ((300/fcalc)/2) - i*depth_step;
@@ -270,7 +189,7 @@ function make_horn()
         % Corrugations depths.
         if (CHANGE_CORRUGATIONS_DEPTH);
             d = 1:N+1;
-            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N
+            depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N;
 
             for i = 1:N+1;
                 d(i) = ((300/fcalc)/2) - i*depth_step;
@@ -320,7 +239,7 @@ function make_horn()
     % plot(z, b_offset);
     % axis equal;
 
-    b_volume_y_end = b_offset(end)
+    b_volume_y_end = b_offset(end);
 
     % Add vertical surface at horn aperture
     z_for_b_profile = [z_for_b_profile, z_for_b_profile(z_number)];
