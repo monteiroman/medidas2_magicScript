@@ -3,3 +3,4 @@ Simulations/CST/*/*/Temp/*
 Simulations/OpenEMS/*/tmp*
 tmp*
 Tests/Structure_test/tmp*
+outputs/*

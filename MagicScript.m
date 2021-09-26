@@ -5,6 +5,7 @@ clc
 RUN_SIMULATION = 0;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 
+output_path = 'outputs';
 Sim_Path    = 'tmp';
 Sim_CSX     = 'Corrugated_Horn.xml';
 
@@ -17,6 +18,8 @@ Sim.bi      = 10.16;
 
 Sim.ao      = 135;
 Sim.bo      = 120;
+
+Sim.horn_number = 1;
 
 Sim.pitch               = 4;         
 Sim.delta               = 0.75;      % Pitch to width ratio
@@ -36,16 +39,21 @@ Sim.TIME_STEPS  = 5000;
 Sim.n_cell      = 40;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
+Sim.output_path = output_path;
+
+
+%% ----->> Output simulation folder <<----- 
+confirm_recursive_rmdir(0);                                 % No ask if removedirectory
+[status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
+[status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
 make_horn(Sim_Path, Sim_CSX, Sim);
 
-
-
 if (RUN_SIMULATION);
     %% ----->> Run openEMS <<-----
-     openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
-     RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
-    %RunOpenEMS(Sim_Path, Sim_CSX);%, '--numThreads=3');
+    % openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
+    % RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
+    RunOpenEMS(Sim_Path, Sim_CSX);%, '--numThreads=3');
 
     % Postprocessing & do the plots
     freq = linspace(f_start,f_stop,201);

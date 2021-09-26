@@ -3,7 +3,7 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     %%  Still remains documentation
     %%
 
-    disp('________ Simulation Values ________');
+    disp('________ Horn and Simulation Values ________');
     fmin    = Sim.fmin
     fmax    = Sim.fmax
     fcalc   = Sim.fcalc
@@ -13,6 +13,8 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
 
     ao = Sim.ao
     bo = Sim.bo
+
+    horn_number         = Sim.horn_number;
 
     pitch               = Sim.pitch         
     delta               = Sim.delta
@@ -33,8 +35,12 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     n_cell      = Sim.n_cell
 
     USE_PROFILE = Sim.USE_PROFILE        % 1=Linear, 2=Tangential, 3=Exponential
+    output_path = Sim.output_path
     disp('________________');
 
+    % Save variables for analysis
+    config_variables_file = strcat(Sim.output_path, sprintf('/%d_horn_variables.txt',horn_number));
+    save("-text", config_variables_file, "Sim");
 
     unit = 1e-3;                        % Units in mm
     lambda_c = 300/fcalc;               % Center frequency wavelength
@@ -61,7 +67,7 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
-        figure
+        structure_figure = figure(1, 'position',[100,100,900,900]);
         subplot (3, 2, 1)
         plot(z, a_profile);    
         set(gca, "linewidth",2, "fontsize", 14 )
@@ -266,6 +272,9 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
         ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
         title( 'Complete Corrugated Horn B Profile', 'FontSize', 16 );
         axis equal;   % Scale axis equally for aspect ratio 1:1
+
+        structure_output = strcat(Sim.output_path, sprintf('/%d_structure_output.svg',horn_number));
+        print (structure_figure, structure_output, "-dsvg", "-Sxsize=900");
     endif
 
     % Substraction volume for B
