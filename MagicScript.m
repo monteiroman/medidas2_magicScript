@@ -36,7 +36,7 @@ Sim.USE_CORRUGATIONS            = 1;
 Sim.SUBSTRACT_LEFTOVERS         = 1;
 Sim.CHANGE_CORRUGATIONS_DEPTH   = 1;
 
-Sim.TIME_STEPS  = 5000;
+Sim.TIME_STEPS  = 50000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
@@ -151,8 +151,8 @@ if (RUN_SIMULATION);
     radiation_pattern_figure = figure('position',[600,100,900,900]);
     colormap jet;
     plotFF3D(nf2ff, 'logscale', -40);        % plot 3D far field in dB
-    radiation_patern_output = strcat(output_path, sprintf('/%d_radiation_patern_output.svg', Sim.horn_number));
-    print (radiation_pattern_figure, radiation_patern_output, "-dsvg", "-Sxsize=900");
+    radiation_patern_output = strcat(output_path, sprintf('/%d_radiation_patern_output.jpg', Sim.horn_number));
+    print (radiation_pattern_figure, radiation_patern_output, "-djpg", "-Sxsize=900");
 
     % Save far field in VTK to plot in ParaView
     E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
