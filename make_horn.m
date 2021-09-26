@@ -1,9 +1,9 @@
-function make_horn(Sim_Path, Sim_CSX, Sim)
+function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     %%
     %%  Still remains documentation
     %%
 
-    disp('________ Horn and Simulation Values ________');
+    disp('>>________ Horn and Simulation Values ________<<');
     fmin    = Sim.fmin
     fmax    = Sim.fmax
     fcalc   = Sim.fcalc
@@ -36,7 +36,7 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
 
     USE_PROFILE = Sim.USE_PROFILE        % 1=Linear, 2=Tangential, 3=Exponential
     output_path = Sim.output_path
-    disp('________________');
+    disp('>>____________________________________________<<');
 
     % Save variables for analysis
     config_variables_file = strcat(Sim.output_path, sprintf('/%d_horn_variables.txt',horn_number));
@@ -67,7 +67,7 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
-        structure_figure = figure(1, 'position',[100,100,900,900]);
+        structure_figure = figure('position',[600,100,900,900]);
         subplot (3, 2, 1)
         plot(z, a_profile);    
         set(gca, "linewidth",2, "fontsize", 14 )
@@ -363,6 +363,7 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     %% ----->> Create Horn Geometry <<-----
     %% Horn + waveguide
     CSX = AddMetal(CSX, 'Corrugated_Horn');
+    CSX = AddMetal(CSX, 'Cap');
     if (SUBSTRACT_LEFTOVERS);
         % openEMSs way to subtract volumes: https://openems.de/index.php/Metal_sheet_with_cylindrical_holes.html
         %                       primitives: https://openems.de/index.php/Primitives.html#Coordinate_System_Definition
@@ -463,4 +464,4 @@ function make_horn(Sim_Path, Sim_CSX, Sim)
     CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
 
     %% ----->> End of simulation folder <<----- 
-
+endfunction
