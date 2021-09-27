@@ -2,8 +2,13 @@
 
 This project is intended to be a repository of horn antennas for OpenEMS. Developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Buenos Aires).
 
+## MagicScript
+
+Script for design and simulation of horn antennas. **NOTE**: For using this script OpenEMS must be installed on "~/opt/openEMS" (as it is by default). 
+
 ## Tests
-Test zone for script development, you can see the readme [here](/Tests/README.md). When the project has significant changes, they will be added to [MagicScript.m](MagicScript.m) (currently at step 3).
+
+Test zone for script development, you can see the readme [here](/Tests/README.md). .
 
 ## Checkpoints
 
@@ -14,8 +19,8 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|✅|
 |4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
-|6|Make function for Horn design in octave.|⏳|
-|7|Make a parameter sweep script for horn antennas in octave.|❌|
+|6|Make function for Horn design in octave.|✅|
+|7|Make a parameter sweep script for horn antennas in octave.|⏳|
 
 
 ## OpenEMS installation on Linux
