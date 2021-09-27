@@ -14,7 +14,7 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|✅|
 |4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
-|6|Make functions for different Horn designs in octave.|❌|
+|6|Make function for Horn design in octave.|⏳|
 |7|Make a parameter sweep script for horn antennas in octave.|❌|
 
 
