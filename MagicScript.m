@@ -26,6 +26,9 @@ function simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION)
     endif
 endfunction
 
+%------------------------------------------------------------------------------%
+%                                   MagicScript                                %
+%------------------------------------------------------------------------------%
 %%
 %%  Documentation is still missing
 %%
@@ -75,4 +78,9 @@ confirm_recursive_rmdir(0);                                 % No ask if removedi
 [status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
 [status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
+Sim.ai = Sim.ai(1);
 simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+Sim.horn_number = 2;
+simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+
+disp(">>-------------------- Sweep fineshed! --------------------<<");
