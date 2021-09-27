@@ -3,6 +3,8 @@ close all
 clear
 clc
 
+addpath('src');
+
 %%
 %%
 %%
@@ -47,7 +49,7 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = 135;
+Sim.ao      = [125:10:225];
 Sim.bo      = 120;
 
 Sim.horn_number = 1;
@@ -66,7 +68,7 @@ Sim.USE_CORRUGATIONS            = 1;
 Sim.SUBSTRACT_LEFTOVERS         = 1;
 Sim.CHANGE_CORRUGATIONS_DEPTH   = 1;
 
-Sim.TIME_STEPS  = 100;
+Sim.TIME_STEPS  = 5000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
@@ -78,9 +80,43 @@ confirm_recursive_rmdir(0);                                 % No ask if removedi
 [status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
 [status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
-Sim.ai = Sim.ai(1);
-simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
-Sim.horn_number = 2;
-simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+ai_len = length(Sim.ai);
+bi_len = length(Sim.bi);
+ao_len = length(Sim.ao);
+bo_len = length(Sim.bo);
+
+if (ai_len > 1);
+    ai_values = Sim.ai;
+
+    for i = 1:ai_len+1;
+        Sim.horn_number = i;
+        Sim.ai = ai_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (bi_len > 1);
+    bi_values = Sim.bi;
+
+    for i = 1:bi_len+1;
+        Sim.horn_number = i;
+        Sim.bi = bi_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (ao_len > 1);
+    ao_values = Sim.ao;
+
+    for i = 1:ao_len+1;
+        Sim.horn_number = i;
+        Sim.ao = ao_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (bo_len > 1);
+    bo_values = Sim.bo;
+
+    for i = 1:bo_len+1;
+        Sim.horn_number = i;
+        Sim.bo = bo_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+endif
 
 disp(">>-------------------- Sweep fineshed! --------------------<<");

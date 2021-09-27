@@ -16,7 +16,8 @@ function CSXGeomPlot(CSX_filename, args_string)
 % -----------------------
 % author: Thorsten Liebig
 %
-% modified by Tiago Monteiro for MagicScript.
+% modified by Tiago Monteiro for MagicScript based on this post:
+%                               http://openems.de/forum/viewtopic.php?t=362
 
 if nargin < 1
     error 'specify the xml file to open'
@@ -28,8 +29,6 @@ end
 
 filename = mfilename('fullpath');
 pathname = fileparts( filename );
-
-[pathname filesep '..' filesep '..' filesep 'AppCSXCAD' filesep]
 
 if isunix
     AppCSXCAD_bin = searchBinary('AppCSXCAD.sh', ...
