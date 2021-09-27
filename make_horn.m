@@ -1,6 +1,9 @@
+%
+%
+%
 function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     %%
-    %%  Still remains documentation
+    %%  Documentation is still missing
     %%
 
     disp('>>________ Horn and Simulation Values ________<<');

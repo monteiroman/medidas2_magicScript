@@ -1,7 +1,34 @@
+%% Clean workspace
 close all
 clear
 clc
 
+%%
+%%
+%%
+function simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION)
+    %%
+    %%  Documentation is still missing
+    %%
+
+    %% ----->> Output simulation particular folder <<----- 
+    Sim.output_path = strcat(Sim.output_path, sprintf('/Corrugated_Horn_%d',Sim.horn_number));
+    [status, message, messageid] = mkdir(Sim.output_path);
+
+    %% ----->> Make horn structure and save openEMS XML simulation file at "<Sim_Path>/<Sim_CSX>"  <<-----
+    [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim);
+
+    %% ----->> Simulate and store 3D files <<-----
+    if (RUN_SIMULATION);
+        run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff);
+        movefile(strcat(Sim_Path, '/*.stl'), Sim.output_path);
+        movefile(strcat(Sim_Path, '/*.vtk'), Sim.output_path);
+    endif
+endfunction
+
+%%
+%%  Documentation is still missing
+%%
 RUN_SIMULATION = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 
@@ -48,14 +75,4 @@ confirm_recursive_rmdir(0);                                 % No ask if removedi
 [status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
 [status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
-
-%% ----->> Output simulation particular folder <<----- 
-Sim.output_path = strcat(Sim.output_path, sprintf('/Corrugated_Horn_%d',Sim.horn_number));
-[status, message, messageid] = mkdir(Sim.output_path);
-
-%% ----->> Make horn structure and save openEMS XML simulation file at "<Sim_Path>/<Sim_CSX>"  <<-----
-[port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim);
-
-if (RUN_SIMULATION);
-    run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff);
-endif
+simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
