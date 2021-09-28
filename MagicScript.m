@@ -49,12 +49,12 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = [125:10:225];
-Sim.bo      = 120;
+Sim.ao      = 225;
+Sim.bo      = 190;
 
 Sim.horn_number = 1;
 
-Sim.pitch               = 4;         
+Sim.pitch               = [2:0.5:7];         
 Sim.delta               = 0.75;      % Pitch to width ratio
 Sim.wg_length           = 60;       % Length of feeding waveguide
 Sim.num_of_corrugations = 40;
@@ -84,11 +84,15 @@ ai_len = length(Sim.ai);
 bi_len = length(Sim.bi);
 ao_len = length(Sim.ao);
 bo_len = length(Sim.bo);
+pitch_len = length(Sim.pitch);
+delta_len = length(Sim.delta);
+wg_length_len = length(Sim.wg_length);
+num_of_corrugations_len = length(sim.num_of_corrugations);
 
 if (ai_len > 1);
     ai_values = Sim.ai;
 
-    for i = 1:ai_len+1;
+    for i = 1:ai_len;
         close all                                   % Prevent memory leakage
         Sim.horn_number = i;
         Sim.ai = ai_values(i);
@@ -97,7 +101,7 @@ if (ai_len > 1);
 elseif (bi_len > 1);
     bi_values = Sim.bi;
 
-    for i = 1:bi_len+1;
+    for i = 1:bi_len;
         close all
         Sim.horn_number = i;
         Sim.bi = bi_values(i);
@@ -106,7 +110,7 @@ elseif (bi_len > 1);
 elseif (ao_len > 1);
     ao_values = Sim.ao;
 
-    for i = 1:ao_len+1;
+    for i = 1:ao_len;
         close all
         Sim.horn_number = i;
         Sim.ao = ao_values(i);
@@ -115,12 +119,52 @@ elseif (ao_len > 1);
 elseif (bo_len > 1);
     bo_values = Sim.bo;
 
-    for i = 1:bo_len+1;
+    for i = 1:bo_len;
         close all
         Sim.horn_number = i;
         Sim.bo = bo_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
     endfor
+elseif (pitch_len > 1);
+    pitch_values = Sim.pitch;
+
+    for i = 1:pitch_len;
+        close all
+        Sim.horn_number = i;
+        Sim.pitch = pitch_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (delta_len > 1);
+    delta_values = Sim.delta;
+
+    for i = 1:delta_len;
+        close all
+        Sim.horn_number = i;
+        Sim.delta = delta_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (wg_length_len > 1);
+    wg_length_values = Sim.wg_length;
+
+    for i = 1:wg_length_len;
+        close all
+        Sim.horn_number = i;
+        Sim.wg_length = wg_length_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (num_of_corrugations_len > 1);
+    num_of_corrugations_values = Sim.num_of_corrugations;
+
+    for i = 1:num_of_corrugations_len;
+        close all
+        Sim.horn_number = i;
+        Sim.num_of_corrugations = num_of_corrugations_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+else
+    close all
+    Sim.horn_number = 1;
+    simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
 endif
 
-disp(">>-------------------- Sweep fineshed! --------------------<<");
+disp(">>-------------------- Simulation fineshed! --------------------<<");
