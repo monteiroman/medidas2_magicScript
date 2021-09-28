@@ -89,6 +89,7 @@ if (ai_len > 1);
     ai_values = Sim.ai;
 
     for i = 1:ai_len+1;
+        close all                                   % Prevent memory leakage
         Sim.horn_number = i;
         Sim.ai = ai_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
@@ -97,6 +98,7 @@ elseif (bi_len > 1);
     bi_values = Sim.bi;
 
     for i = 1:bi_len+1;
+        close all
         Sim.horn_number = i;
         Sim.bi = bi_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
@@ -105,6 +107,7 @@ elseif (ao_len > 1);
     ao_values = Sim.ao;
 
     for i = 1:ao_len+1;
+        close all
         Sim.horn_number = i;
         Sim.ao = ao_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
@@ -113,6 +116,7 @@ elseif (bo_len > 1);
     bo_values = Sim.bo;
 
     for i = 1:bo_len+1;
+        close all
         Sim.horn_number = i;
         Sim.bo = bo_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
