@@ -87,7 +87,7 @@ bo_len = length(Sim.bo);
 pitch_len = length(Sim.pitch);
 delta_len = length(Sim.delta);
 wg_length_len = length(Sim.wg_length);
-num_of_corrugations_len = length(sim.num_of_corrugations);
+num_of_corrugations_len = length(Sim.num_of_corrugations);
 
 if (ai_len > 1);
     ai_values = Sim.ai;
