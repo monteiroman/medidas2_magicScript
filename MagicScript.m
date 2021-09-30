@@ -34,7 +34,7 @@ endfunction
 %%
 %%  Documentation is still missing
 %%
-RUN_SIMULATION = 1;
+RUN_SIMULATION = 0;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 
 
@@ -49,15 +49,15 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = 225;
-Sim.bo      = 190;
+Sim.ao      = 63.75;
+Sim.bo      = 49.78;
 
 Sim.horn_number = 1;
 
-Sim.pitch               = [2:0.5:7];         
-Sim.delta               = 0.75;      % Pitch to width ratio
+Sim.pitch               = 4;         
+Sim.delta               = 0.3;      % Pitch to width ratio
 Sim.wg_length           = 60;       % Length of feeding waveguide
-Sim.num_of_corrugations = 40;
+Sim.num_of_corrugations = 25;
 Sim.straight_width      = 2;
 Sim.cap_width           = 2;
 
@@ -68,7 +68,7 @@ Sim.USE_CORRUGATIONS            = 1;
 Sim.SUBSTRACT_LEFTOVERS         = 1;
 Sim.CHANGE_CORRUGATIONS_DEPTH   = 1;
 
-Sim.TIME_STEPS  = 5000;
+Sim.TIME_STEPS  = 100000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
