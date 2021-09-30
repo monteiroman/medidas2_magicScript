@@ -34,7 +34,7 @@ endfunction
 %%
 %%  Documentation is still missing
 %%
-RUN_SIMULATION = 0;
+RUN_SIMULATION = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 
 
