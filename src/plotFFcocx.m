@@ -26,6 +26,7 @@ function h = plotFFcocx(nf2ff,varargin)
 % -----------------------
 % author: Thorsten Liebig, Stefan Mahr
 % Based up plotFFdB and modified for co- and cross-pol by Bruce Veidt
+% Modified by Tiago Monteiro for MagicScript.
 
 % defaults
 freq_index = 1;

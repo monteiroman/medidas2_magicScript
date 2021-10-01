@@ -16,7 +16,7 @@ function CSXGeomPlot(CSX_filename, args_string)
 % -----------------------
 % author: Thorsten Liebig
 %
-% modified by Tiago Monteiro for MagicScript based on this post:
+% Modified by Tiago Monteiro for MagicScript based on this post:
 %                               http://openems.de/forum/viewtopic.php?t=362
 
 if nargin < 1
@@ -33,11 +33,7 @@ pathname = fileparts( filename );
 if isunix
     AppCSXCAD_bin = searchBinary('AppCSXCAD.sh', ...
                     {'~/opt/openEMS/bin/'});
-    % AppCSXCAD_bin = searchBinary('AppCSXCAD.sh', ...
-        % {[pathname filesep '..' filesep '..' filesep 'AppCSXCAD' filesep], ...
-        %  [pathname filesep '..' filesep '..' filesep '..' filesep 'bin' filesep], ...});
 else % assume windows
-    %AppCSXCAD_bin = searchBinary('AppCSXCAD.exe',[pathname filesep '..' filesep]);
     disp(['MagicScript is not supported on windows yet.']);
 end
 
@@ -50,7 +46,6 @@ end
 if ~isunix && isOctave() % assume Octave on windows
   old_qt_plugin_path=getenv('QT_PLUGIN_PATH');
   setenv('QT_PLUGIN_PATH',[pathname filesep '..' filesep 'qt5' filesep 'plugins']);
-%   system(strcat(command, ' &'));
   system(command);
   setenv('QT_PLUGIN_PATH', old_qt_plugin_path);
 else
