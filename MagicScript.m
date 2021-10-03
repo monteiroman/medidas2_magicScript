@@ -49,15 +49,30 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = 63.75;
-Sim.bo      = 49.78;
+Sim.ao      = 135;
+Sim.bo      = 120;%49.78;
 
-Sim.horn_number = 1;
+%__ Corrugated profile ____
+%
+%               |slot| width |    | pitch |
+%                ____         ____         ____  _
+%               |    |       |    |       |    |   depth
+%           ____|    |_______|    |_______|    | _
+%                                              |
+%           ___________________________________|
+%
+%               width = pitch * delta
+%               slot  = pitch * (1-delta)
+%
+% If Sim.depth is setted to 0 it changes from fcalc/2 to fcalc/4 across flare length.
+%
+Sim.pitch               = 4;
+Sim.delta               = 0.75;
+Sim.depth_a             = 0;
+Sim.depth_b             = 10;
 
-Sim.pitch               = 4;         
-Sim.delta               = 0.3;      % Pitch to width ratio
 Sim.wg_length           = 60;       % Length of feeding waveguide
-Sim.num_of_corrugations = 25;
+Sim.num_of_corrugations = 40;
 Sim.straight_width      = 2;
 Sim.cap_width           = 2;
 
@@ -68,7 +83,7 @@ Sim.USE_CORRUGATIONS            = 1;
 Sim.SUBSTRACT_LEFTOVERS         = 1;
 Sim.CHANGE_CORRUGATIONS_DEPTH   = 1;
 
-Sim.TIME_STEPS  = 100000;
+Sim.TIME_STEPS  = 5000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
@@ -86,6 +101,8 @@ ao_len = length(Sim.ao);
 bo_len = length(Sim.bo);
 pitch_len = length(Sim.pitch);
 delta_len = length(Sim.delta);
+depth_a_len = length(Sim.depth_a);
+depth_b_len = length(Sim.depth_b);
 wg_length_len = length(Sim.wg_length);
 num_of_corrugations_len = length(Sim.num_of_corrugations);
 
@@ -141,6 +158,24 @@ elseif (delta_len > 1);
         close all
         Sim.horn_number = i;
         Sim.delta = delta_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (depth_a_len > 1);
+    depth_a_values = Sim.depth_a;
+
+    for i = 1:depth_a_len;
+        close all
+        Sim.horn_number = i;
+        Sim.depth_a = depth_a_values(i);
+        simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
+    endfor
+elseif (depth_b_len > 1);
+    depth_b_values = Sim.depth_b;
+
+    for i = 1:depth_b_len;
+        close all
+        Sim.horn_number = i;
+        Sim.depth_b = depth_b_values(i);
         simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION);
     endfor
 elseif (wg_length_len > 1);

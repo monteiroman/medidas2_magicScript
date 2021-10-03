@@ -21,6 +21,8 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
 
     pitch               = Sim.pitch         
     delta               = Sim.delta
+    depth_a             = Sim.depth_a
+    depth_b             = Sim.depth_b
     wg_length           = Sim.wg_length
     num_of_corrugations = Sim.num_of_corrugations
     straight_width      = Sim.straight_width
@@ -82,7 +84,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
 
     if (USE_CORRUGATIONS);
         % Corrugations depths.
-        if (CHANGE_CORRUGATIONS_DEPTH);
+        if (depth_a == 0);
             d = 1:N+1;
             depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N;
 
@@ -91,14 +93,11 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             endfor
         else
             d = zeros(1,N+1);
-            d = d + (300/fcalc)/2;
+            d = d + depth_a;
         endif
     else
         d = zeros(1,N+1);
     endif
-
-    % d = zeros(1,N+1);
-    % d = d + (300/fcalc)/2;
 
     % Generate z,y coordinates as z_for_a_profile and y_for_a_profile vector
     n = 0;
@@ -199,7 +198,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
 
     if (USE_CORRUGATIONS);
         % Corrugations depths.
-        if (CHANGE_CORRUGATIONS_DEPTH);
+        if (depth_b == 0);
             d = 1:N+1;
             depth_step = (((300/fcalc)/2) - ((300/fcalc)/4)) / N;
 
@@ -208,14 +207,11 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             endfor
         else
             d = zeros(1,N+1);
-            d = d + (300/fcalc)/2;
+            d = d + depth_b;
         endif
     else
         d = zeros(1,N+1);
     endif
-
-    d = zeros(1,N+1);
-    d = d + (300/fcalc)/2;
 
     % Generate z,y coordinates as z_for_b_profile and y_for_b_profile vector
     n = 0;
@@ -323,7 +319,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     f0 = fcalc*1e9;
 
     %% setup FDTD parameter & excitation function
-    FDTD = InitFDTD( 'NrTS', TIME_STEPS, 'EndCriteria', 0.5e-2, 'OverSampling', 50);
+    FDTD = InitFDTD( 'NrTS', TIME_STEPS, 'EndCriteria', 0.5e-2);%, 'OverSampling', 50);
     FDTD = SetGaussExcite(FDTD,0.5*(f_start+f_stop),0.5*(f_stop-f_start));
     BC = {'PML_10' 'PML_10' 'PML_10' 'PML_10' 'PML_10' 'PML_10'}; % FDTD Boundary Conditions:
                                                                     % http://openems.de/index.php/FDTD_Boundary_Conditions
@@ -340,11 +336,11 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     % Info at this link: http://openems.de/index.php/FDTD_Mesh
     mesh.y = [(-b_offset(end)-(9*max_res)-lambda_max) -mesh_b(1:4:end)+bi/2 0 mesh_b(1:4:end)-bi/2 (b_offset(end)+(9*max_res)+
                                                                                                             lambda_max)];
-    mesh.y = SmoothMeshLines( mesh.y, max_res, 1.1); % Create a smooth mesh between specified fixed mesh lines
+    mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
     mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -mesh_a(1:4:end)+ai/2 0 mesh_a(1:4:end)-ai/2 (a_offset(end)+(9*max_res)+
                                                                                                             lambda_max)];
-    mesh.x = SmoothMeshLines( mesh.x, max_res, 1.1); % Create a smooth mesh between specified fixed mesh lines
+    mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
     % % Create fixed lines for the simulation box,port and given number of lines inside the horn
     mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:z_number) length+2*lambda_max+(9*max_res)];
