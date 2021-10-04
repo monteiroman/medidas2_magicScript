@@ -95,29 +95,30 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             d = zeros(1,N+1);
             d = d + depth_a;
         endif
+
+        % Generate z,y coordinates as z_for_a_profile and y_for_a_profile vector
+        n = 0;
+        z_for_a_profile(1) = 0;
+        z_for_a_profile(2) = 0;
+        for i = 1:N;
+            y_for_a_profile(i+n) = a_profile(i);
+            y_for_a_profile(i+n+1) = a_profile(i)+d(i);
+            y_for_a_profile(i+n+2) = a_profile(i)+d(i);
+            y_for_a_profile(i+n+3) = a_profile(i+1);
+            y_for_a_profile(i+n+4) = a_profile(i+1);
+            z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*pitch;
+            z_for_a_profile(i+n+3) = z_for_a_profile(i+n+2);
+            z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*pitch;
+            z_for_a_profile(i+n+5) = z_for_a_profile(i+n+4);
+            n = n+3;
+        endfor
+
+        z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
+        z_for_a_profile = z_for_a_profile(1:z_number); % Truncate z axis data points to equal y_for_a_profile vector length
     else
-        d = zeros(1,N+1);
+        y_for_a_profile = a_profile;
+        z_for_a_profile = z;
     endif
-
-    % Generate z,y coordinates as z_for_a_profile and y_for_a_profile vector
-    n = 0;
-    z_for_a_profile(1) = 0;
-    z_for_a_profile(2) = 0;
-    for i = 1:N;
-        y_for_a_profile(i+n) = a_profile(i);
-        y_for_a_profile(i+n+1) = a_profile(i)+d(i);
-        y_for_a_profile(i+n+2) = a_profile(i)+d(i);
-        y_for_a_profile(i+n+3) = a_profile(i+1);
-        y_for_a_profile(i+n+4) = a_profile(i+1);
-        z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*pitch;
-        z_for_a_profile(i+n+3) = z_for_a_profile(i+n+2);
-        z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*pitch;
-        z_for_a_profile(i+n+5) = z_for_a_profile(i+n+4);
-        n = n+3;
-    endfor
-
-    z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
-    z_for_a_profile = z_for_a_profile(1:z_number); % Truncate z axis data points to equal y_for_a_profile vector length
 
     if (SHOW_STRUCTURE_FIGURES);
         subplot (3, 2, 3)
@@ -139,7 +140,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     a_volume_y_end = a_offset(end);
 
     % Add vertical surface at horn aperture
-    z_for_a_profile = [z_for_a_profile, z_for_a_profile(z_number)];
+    z_for_a_profile = [z_for_a_profile, z_for_a_profile(end)];
     y_for_a_profile = [y_for_a_profile, a_offset(N)];
     mesh_a = y_for_a_profile;                 % radmesh to fix mesh lines to corrugations
     % figure;                    % Uncomment these three lines for debugging
@@ -209,29 +210,30 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             d = zeros(1,N+1);
             d = d + depth_b;
         endif
+
+        % Generate z,y coordinates as z_for_b_profile and y_for_b_profile vector
+        n = 0;
+        z_for_b_profile(1) = 0;
+        z_for_b_profile(2) = 0;
+        for i = 1:N;
+            y_for_b_profile(i+n) = b_profile(i);
+            y_for_b_profile(i+n+1) = b_profile(i)+d(i);
+            y_for_b_profile(i+n+2) = b_profile(i)+d(i);
+            y_for_b_profile(i+n+3) = b_profile(i+1);
+            y_for_b_profile(i+n+4) = b_profile(i+1);
+            z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*pitch;
+            z_for_b_profile(i+n+3) = z_for_b_profile(i+n+2);
+            z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*pitch;
+            z_for_b_profile(i+n+5) = z_for_b_profile(i+n+4);
+            n = n+3;
+        endfor
+
+        z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
+        z_for_b_profile = z_for_b_profile(1:z_number); % Truncate z axis data points to equal y_for_a_profile vector length
     else
-        d = zeros(1,N+1);
+        y_for_b_profile = b_profile;
+        z_for_b_profile = z;
     endif
-
-    % Generate z,y coordinates as z_for_b_profile and y_for_b_profile vector
-    n = 0;
-    z_for_b_profile(1) = 0;
-    z_for_b_profile(2) = 0;
-    for i = 1:N;
-        y_for_b_profile(i+n) = b_profile(i);
-        y_for_b_profile(i+n+1) = b_profile(i)+d(i);
-        y_for_b_profile(i+n+2) = b_profile(i)+d(i);
-        y_for_b_profile(i+n+3) = b_profile(i+1);
-        y_for_b_profile(i+n+4) = b_profile(i+1);
-        z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*pitch;
-        z_for_b_profile(i+n+3) = z_for_b_profile(i+n+2);
-        z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*pitch;
-        z_for_b_profile(i+n+5) = z_for_b_profile(i+n+4);
-        n = n+3;
-    endfor
-
-    z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
-    z_for_b_profile = z_for_b_profile(1:z_number); % Truncate z axis data points to equal y_for_b_profile vector length
 
     if (SHOW_STRUCTURE_FIGURES);
         subplot (3, 2, 4)
@@ -253,7 +255,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     b_volume_y_end = b_offset(end);
 
     % Add vertical surface at horn aperture
-    z_for_b_profile = [z_for_b_profile, z_for_b_profile(z_number)];
+    z_for_b_profile = [z_for_b_profile, z_for_b_profile(end)];
     y_for_b_profile = [y_for_b_profile, b_offset(N)];
     mesh_b = y_for_b_profile;                 % radmesh to fix mesh lines to corrugations
     % figure;                    % Uncomment these three lines for debugging
@@ -343,7 +345,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
     % % Create fixed lines for the simulation box,port and given number of lines inside the horn
-    mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:z_number) length+2*lambda_max+(9*max_res)];
+    mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:end) length+2*lambda_max+(9*max_res)];
     mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
 
 
