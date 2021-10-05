@@ -31,10 +31,9 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     exc_mode = Sim.exc_mode
 
     SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES
-    USE_CORRUGATIONS            = Sim.USE_CORRUGATIONS
+    USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A
+    USE_CORRUGATIONS_B          = Sim.USE_CORRUGATIONS_B
     SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS
-    CHANGE_CORRUGATIONS_DEPTH   = Sim.CHANGE_CORRUGATIONS_DEPTH
-
 
     TIME_STEPS  = Sim.TIME_STEPS
     n_cell      = Sim.n_cell
@@ -82,7 +81,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
         axis equal;
     endif
 
-    if (USE_CORRUGATIONS);
+    if (USE_CORRUGATIONS_A);
         % Corrugations depths.
         if (depth_a == 0);
             d = 1:N+1;
@@ -197,7 +196,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
         axis equal;
     endif
 
-    if (USE_CORRUGATIONS);
+    if (USE_CORRUGATIONS_B);
         % Corrugations depths.
         if (depth_b == 0);
             d = 1:N+1;
