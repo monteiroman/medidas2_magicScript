@@ -37,8 +37,14 @@ endfunction
 %                                   MagicScript                                %
 %------------------------------------------------------------------------------%
 %%
-%%  Documentation is still missing
+%% OpenEMS based app for corrugated Horn antennas simulation. 
+%% Edit "user editable parameters" for change horn characteristic. This program
+%% can sweep parameters if they are defined as a linear matrix.
 %%
+%%    Eg. Sim.ao = [5:1:10];    % will sweep between 6 simulations with ao 
+%%                                  starting at 5 and finishing at 10.
+
+% ______ User Editable parameters ______________________________________________
 RUN_SIMULATION = 1;
 PLOT_OUTPUT_SAME_WINDOW = 0;
 
@@ -72,9 +78,10 @@ Sim.bo      = 190;
 %               slot  = pitch * (1-delta)
 %
 % If Sim.depth is setted to 0 it changes from fcalc/2 to fcalc/4 across flare length.
+% If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
 Sim.pitch               = 7;
-Sim.delta               = 0.5;
+Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = ON;
 Sim.depth_a             = 0;
 Sim.USE_CORRUGATIONS_B  = ON;
@@ -96,12 +103,15 @@ Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
 Sim.output_path = output_path;
 
+% ______ End of User Editable parameters _______________________________________
 
-%% ----->> Output simulation generic folder <<----- 
-confirm_recursive_rmdir(0);                                 % No ask if removedirectory
+
+%% ----->> Generic simulation output folder <<----- 
+confirm_recursive_rmdir(0);                                 % No asking if remove directory
 [status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
 [status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
+%% ----->> Check parameters and sweep if necessary <<----- 
 ai_len = length(Sim.ai);
 bi_len = length(Sim.bi);
 ao_len = length(Sim.ao);
