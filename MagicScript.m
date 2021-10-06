@@ -65,7 +65,7 @@ Sim.bo      = 190;
 
 %__ Corrugated profile ____
 %
-%               |slot| width |    | pitch |
+%               |slot| width |    |   pitch    |
 %                ____         ____         ____  _
 %               |    |       |    |       |    |   depth
 %           ____|    |_______|    |_______|    | _
@@ -78,7 +78,7 @@ Sim.bo      = 190;
 % If Sim.depth is set to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
-Sim.pitch               = 7;
+Sim.pitch               = [6:0.5:9];
 Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = ON;
 Sim.depth_a             = 0;
