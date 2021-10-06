@@ -97,7 +97,7 @@ Sim.exc_mode = 'TE10';
 Sim.SHOW_STRUCTURE_FIGURES      = YES;
 Sim.SUBSTRACT_LEFTOVERS         = YES;
 
-Sim.TIME_STEPS  = 5000;
+Sim.TIME_STEPS  = 10000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
