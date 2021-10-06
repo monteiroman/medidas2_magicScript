@@ -54,8 +54,10 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = 63.75;
-Sim.bo      = 49.78;
+% Sim.ao      = 63.75;
+% Sim.bo      = 49.78;
+Sim.ao      = 225;
+Sim.bo      = 190;
 
 %__ Corrugated profile ____
 %
@@ -71,15 +73,15 @@ Sim.bo      = 49.78;
 %
 % If Sim.depth is setted to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 %
-Sim.pitch               = 2;
+Sim.pitch               = 7;
 Sim.delta               = 0.5;
 Sim.USE_CORRUGATIONS_A  = ON;
-Sim.depth_a             = 7.5;
-Sim.USE_CORRUGATIONS_B  = OFF;
-Sim.depth_b             = 7.5;
+Sim.depth_a             = 0;
+Sim.USE_CORRUGATIONS_B  = ON;
+Sim.depth_b             = 0;
 
 Sim.wg_length           = 60;       % Length of feeding waveguide
-Sim.num_of_corrugations = 190;
+Sim.num_of_corrugations = 20;
 Sim.straight_width      = 2;
 Sim.cap_width           = 2;
 
@@ -88,7 +90,7 @@ Sim.exc_mode = 'TE10';
 Sim.SHOW_STRUCTURE_FIGURES      = YES;
 Sim.SUBSTRACT_LEFTOVERS         = YES;
 
-Sim.TIME_STEPS  = 20000;
+Sim.TIME_STEPS  = 5000;
 Sim.n_cell      = 20;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
