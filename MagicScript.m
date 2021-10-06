@@ -45,9 +45,7 @@ endfunction
 %%                                  starting at 5 and finishing at 10.
 
 % ______ User Editable parameters ______________________________________________
-RUN_SIMULATION = 1;
-PLOT_OUTPUT_SAME_WINDOW = 0;
-
+RUN_SIMULATION = ON;
 
 output_path = 'outputs';
 Sim_Path    = 'tmp';
@@ -77,7 +75,7 @@ Sim.bo      = 190;
 %               width = pitch * delta
 %               slot  = pitch * (1-delta)
 %
-% If Sim.depth is setted to 0 it changes from fcalc/2 to fcalc/4 across flare length.
+% If Sim.depth is set to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
 Sim.pitch               = 7;
@@ -107,7 +105,7 @@ Sim.output_path = output_path;
 
 
 %% ----->> Generic simulation output folder <<----- 
-confirm_recursive_rmdir(0);                                 % No asking if remove directory
+confirm_recursive_rmdir(0);                                 % Do not asks if remove directory
 [status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
 [status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
 
