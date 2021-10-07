@@ -3,7 +3,7 @@ close all
 clear
 clc
 
-addpath('src');
+addpath('src/');
 
 YES = 1;
 NO  = 0;
@@ -48,8 +48,8 @@ endfunction
 % ______ User Editable parameters ______________________________________________
 RUN_SIMULATION = ON;
 
-output_path = 'outputs';
-Sim_Path    = 'tmp';
+output_path = 'outputs/';
+Sim_Path    = 'tmp/';
 Sim_CSX     = 'Corrugated_Horn.xml';
 
 Sim.fmin    = 8;                     % Minimum frequency in GHz
@@ -59,10 +59,10 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-% Sim.ao      = 63.75;
-% Sim.bo      = 49.78;
-Sim.ao      = 225;
-Sim.bo      = 190;
+Sim.ao      = 63.75;
+Sim.bo      = 49.78;
+% Sim.ao      = 225;
+% Sim.bo      = 190;
 
 %__ Corrugated profile ____
 %
@@ -79,15 +79,15 @@ Sim.bo      = 190;
 % If Sim.depth is set to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
-Sim.pitch               = 7;
-Sim.delta               = 0.75;
-Sim.USE_CORRUGATIONS_A  = ON;
+Sim.pitch               = 4;
+Sim.delta               = 0.5;
+Sim.USE_CORRUGATIONS_A  = OFF;
 Sim.depth_a             = 0;
 Sim.USE_CORRUGATIONS_B  = ON;
 Sim.depth_b             = 0;
 
 Sim.wg_length           = 60;       % Length of feeding waveguide
-Sim.num_of_corrugations = 20;
+Sim.num_of_corrugations = 10:5:60;
 Sim.straight_width      = 2;
 Sim.cap_width           = 2;
 
