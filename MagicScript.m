@@ -30,6 +30,7 @@ function simulate(Sim_Path, Sim_CSX, Sim, RUN_SIMULATION)
         run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff);
         movefile(strcat(Sim_Path, '/*.stl'), Sim.output_path);
         movefile(strcat(Sim_Path, '/*.vtk'), Sim.output_path);
+        movefile(strcat(Sim_Path, '/*.txt'), Sim.output_path);
     endif
 endfunction
 
@@ -78,7 +79,7 @@ Sim.bo      = 190;
 % If Sim.depth is set to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
-Sim.pitch               = [6:0.5:9];
+Sim.pitch               = 7;
 Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = ON;
 Sim.depth_a             = 0;

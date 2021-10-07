@@ -9,7 +9,7 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     %% ----->> Run openEMS <<-----
     % openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
     % RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
-    RunOpenEMS(Sim_Path, Sim_CSX);%, '--numThreads=3');
+    RunOpenEMS(Sim_Path, Sim_CSX, '--dump-statistics');%, '--numThreads=3');
 
     % frequency range of interest
     f_start =  Sim.fmin*1e9;
