@@ -25,7 +25,7 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     Zin = port.uf.tot ./ port.if.tot;
     s11 = port.uf.ref ./ port.uf.inc;
 
-    % Plot reflection coefficient S11
+    % 1) Plot reflection coefficient S11
     S11_figure = figure('position',[600,100,900,900]);
     plot(freq/1e9, 20*log10(abs(s11)), 'k-', 'Linewidth', 2);
     xlim([Sim.fmin Sim.fmax]);
@@ -39,7 +39,7 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     S11_output = strcat(Sim.output_path, sprintf('/%d_S11_output.svg', Sim.horn_number));
     print (S11_figure, S11_output, "-dsvg", "-Sxsize=900");
 
-    % NFFF plots
+    %%% NFFF plots
 
     % Calculate the far field at phi=0, 45 and at phi=90 degrees
     thetaRange = (0:0.2:359) - 180;
@@ -52,9 +52,9 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     disp(['radiated power: Prad = ' num2str(nf2ff.Prad) ' Watt']);
     disp(['directivity: Dmax = ' num2str(Dlog) ' dBi']);
 
-    % Directivity
+    % 2) Directivity
     farfield_directivity_figure = figure('position',[600,100,900,900]);
-    plotFFdB(nf2ff,'xaxis','theta','param',[1 2 3]);
+    plotFFdB(nf2ff, 'xaxis', 'theta', 'param', [1 2 3], 'Linewidth', 2);
     ylim([-30 25]);
     xlim([-180 180]);
     grid on
@@ -66,9 +66,9 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     farfield_directivity_output = strcat(Sim.output_path, sprintf('/%d_Farfield_directivity_output.svg', Sim.horn_number));
     print (farfield_directivity_figure, farfield_directivity_output, "-dsvg", "-Sxsize=900");
 
-    % Plot Ludwig3 cross polar
+    % 3) Plot Ludwig3 cross polar
     farfield_directivity_ludwig_figure = figure('position',[600,100,900,900]);
-    plotFFcocx(nf2ff,'xaxis','theta','param',[2]);
+    plotFFcocx(nf2ff, 'xaxis', 'theta', 'param', [2], 'Linewidth', 2);
     ylim([-30 25]);
     xlim([-180 180]);
     grid on
@@ -81,10 +81,10 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
                                                                                                     Sim.horn_number));
     print (farfield_directivity_ludwig_figure, farfield_directivity_ludwig_output, "-dsvg", "-Sxsize=900");
 
-    % Polar plot
+    % 4) Polar plot
     farfield_directivity_polar_figure = figure('position',[600,100,900,900]);
     leg=[];   %legend
-    polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12);
+    polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12, 'Linewidth', 1);
     title(sprintf('Farfield Directivity @ %.2f GHz',Sim.fcalc),'FontSize', 16);
     xlabel('Theta (degrees)','FontSize', 14);
     ylabel('Directivity (dBi)','FontSize', 14);
