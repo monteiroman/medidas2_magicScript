@@ -4,7 +4,9 @@ This project is intended to be a repository of horn antennas for OpenEMS. Develo
 
 ## MagicScript
 
-Script for design and simulation of horn antennas. **NOTE**: For using this script OpenEMS must be installed on "~/opt/openEMS" (as it is by default). 
+Script for design and simulation of horn antennas. 
+
+⚠️**NOTE**: For using this script OpenEMS must be installed on "~/opt/openEMS" (as it is by default).
 
 ## Tests
 
@@ -20,7 +22,8 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |6|Make function for Horn design in octave.|✅|
-|7|Make a parameter sweep script for horn antennas in octave.|⏳|
+|7|Make a parameter sweep script for horn antennas in octave.|✅|
+|8|Waveguide to N connector adapter|⏳|
 
 
 ## OpenEMS installation on Linux
