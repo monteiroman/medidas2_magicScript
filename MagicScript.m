@@ -59,7 +59,7 @@ Sim.fcalc   = 10;                    % Frequency to calculate fields
 Sim.ai      = 22.86;
 Sim.bi      = 10.16;
 
-Sim.ao      = 150;%63.75;
+Sim.ao      = 145;%63.75;
 Sim.bo      = 120;%49.78;
 % Sim.ao      = 225;
 % Sim.bo      = 190;
@@ -79,7 +79,7 @@ Sim.bo      = 120;%49.78;
 % If Sim.depth is set to 0 it changes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
 %
-Sim.pitch               = 7;
+Sim.pitch               = 6;
 Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = OFF;
 Sim.depth_a             = 0;
@@ -97,7 +97,7 @@ Sim.SHOW_STRUCTURE_FIGURES      = YES;
 Sim.SUBSTRACT_LEFTOVERS         = YES;
 
 Sim.TIME_STEPS  = 10000;
-Sim.n_cell      = 20;                    % cell size: lambda/n_cell
+Sim.n_cell      = 30;                    % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                     % 1=Linear, 2=Tangential, 3=Exponential
 Sim.output_path = output_path;
