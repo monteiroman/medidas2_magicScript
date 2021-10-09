@@ -1,9 +1,21 @@
-%
-%
-%
+%%
+%% 3D Structure and XML constructor function
+%%
+%%  Author: Tiago Monteiro
+%%
 function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     %%
-    %%  Documentation is still missing
+    %%  Function for make the 3D structure and OpenEMS's XML for simulation.
+    %%
+    %%  Parameters:
+    %%          Sim_Path: Generic simulation path for the simulation data.
+    %%          Sim_CSX: OpenEMS XML file name.
+    %%          Sim: Horn simulation parameters.
+    %%          
+    %%  Returns:
+    %%          port: Waveguide port for later simulation.
+    %%          nf2ff: Near field to far field simulation box.
+    %%
     %%
 
     disp('>>________ Horn and Simulation Values ________<<');

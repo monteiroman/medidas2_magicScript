@@ -1,3 +1,6 @@
+%%
+%%  Author: Tiago Monteiro
+%%
 %% Clean workspace
 close all
 clear
@@ -11,11 +14,22 @@ ON  = 1;
 OFF = 0;
 
 %%
-%%
+%%  Simulation function
 %%
 function simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION)
-    %%
-    %%  Documentation is still missing
+    %%  
+    %%  This function makes the simulation directory, calls make_horn for make 
+    %%  the 3D structure and then calls run_simulation if it is required to. 
+    %%  
+    %%  Parameters:
+    %%          Sim_Path: Generic simulation path for the simulation data.
+    %%          Sim_CSX: OpenEMS XML file name.
+    %%          Sim: Horn simulation parameters.
+    %%          sweep_type: String detailing sweep type.
+    %%          RUN_SIMULATION: Flag that determines if the simulation must be 
+    %%                          done.
+    %%  Returns:
+    %%          void
     %%
 
     %% ----->> Output simulation particular folder <<-----
@@ -48,7 +62,7 @@ endfunction
 %% Edit "user editable parameters" for change horn characteristic. This program
 %% can sweep parameters if they are defined as a linear matrix.
 %%
-%%    Eg. Sim.ao = [5:1:10];    % will sweep between 6 simulations with ao 
+%%    E.g. Sim.ao = 5:1:10;    % will sweep between 6 simulations with ao 
 %%                                  starting at 5 and finishing at 10.
 
 % ______ User Editable parameters ______________________________________________
@@ -81,7 +95,7 @@ Sim.bo      = 120;%49.78;
 %               width  = corr_step * (1-delta)
 %
 % If Sim.depth is set to 0 it goes from fcalc/2 to fcalc/4 across flare length.
-% If Sim.USE_CORRUGATIONS_A/B are set to NO then depth_a/b are ignored.
+% If Sim.USE_CORRUGATIONS_A/B are set to NO or OFFthen depth_a/b are ignored.
 %
 Sim.corr_step           = 6;
 Sim.delta               = 0.65:0.05:0.75;

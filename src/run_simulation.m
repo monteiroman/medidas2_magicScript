@@ -1,9 +1,21 @@
-%
-%
-%
+%%
+%%  Simulation run function.
+%%
+%%  Author: Tiago Monteiro
+%%
 function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
     %%
-    %%  Documentation is still missing
+    %%  Runs the OpenEMS simulation and stores output graphics.
+    %%
+    %%  Parameters:
+    %%          Sim_Path: Generic simulation path for the simulation data.
+    %%          Sim_CSX: OpenEMS XML file name.
+    %%          Sim: Horn simulation parameters.
+    %%          port: Waveguide port for later simulation.
+    %%          nf2ff: Near field to far field simulation box.
+    %%
+    %%  Returns:
+    %%          void
     %%
 
     %% ----->> Run openEMS <<-----
