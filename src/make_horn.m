@@ -19,7 +19,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
 
     horn_number         = Sim.horn_number;
 
-    pitch               = Sim.pitch         
+    corr_step           = Sim.corr_step         
     delta               = Sim.delta
     depth_a             = Sim.depth_a
     depth_b             = Sim.depth_b
@@ -28,7 +28,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     straight_width      = Sim.straight_width
     cap_width           = Sim.cap_width
 
-    exc_mode = Sim.exc_mode
+    exc_mode            = Sim.exc_mode
 
     SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES
     USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A
@@ -46,11 +46,11 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     config_variables_file = strcat(Sim.output_path, sprintf('/%d_horn_variables.txt',horn_number));
     save("-text", config_variables_file, "Sim");
 
-    unit = 1e-3;                        % Units in mm
-    lambda_c = 300/fcalc;               % Center frequency wavelength
-    length = num_of_corrugations*pitch; % Length of horn profile
-    N = length/pitch;                   % Total number of corrugations
-    z = 0:pitch:length;                 % z index distance array from 0 to length of horn
+    unit = 1e-3;                            % Units in mm
+    lambda_c = 300/fcalc;                   % Center frequency wavelength
+    length = num_of_corrugations*corr_step; % Length of horn profile
+    N = length/corr_step;                   % Total number of corrugations
+    z = 0:corr_step:length;                 % z index distance array from 0 to length of horn
     air_guard = 2;
 
 
@@ -105,15 +105,16 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             y_for_a_profile(i+n+2) = a_profile(i)+d(i);
             y_for_a_profile(i+n+3) = a_profile(i+1);
             y_for_a_profile(i+n+4) = a_profile(i+1);
-            z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*pitch;
+            z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*corr_step;
             z_for_a_profile(i+n+3) = z_for_a_profile(i+n+2);
-            z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*pitch;
+            z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*corr_step;
             z_for_a_profile(i+n+5) = z_for_a_profile(i+n+4);
             n = n+3;
         endfor
 
-        z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
-        z_for_a_profile = z_for_a_profile(1:z_number); % Truncate z axis data points to equal y_for_a_profile vector length
+        z_number = (N*4)+1;                                 % Number of coordinate points for corrugated length of horn
+        z_for_a_profile = z_for_a_profile(1:z_number);      % Truncate z axis data points to equal y_for_a_profile 
+                                                            %   vector length.
     else
         y_for_a_profile = a_profile;
         z_for_a_profile = z;
@@ -126,13 +127,13 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
         xlabel( 'Dimension in z Direction (mm)', 'FontSize', 14 );
         ylabel( 'Dimension in y Direction (mm)', 'FontSize', 14 );
         title( 'Corrugation A Profile', 'FontSize', 16 );
-        axis equal;   % Scale axis equally for aspect ratio 1:1
+        axis equal;                                         % Scale axis equally for aspect ratio 1:1
     endif
 
     % Add the rest of the geometry to create a closed path
     % a_offset is the inner horn profile shifted up to give the horn a thickness
     a_offset = a_profile.+(lambda_c/2+2);
-    % figure;                    % Uncomment these three lines for debugging
+    % figure;                                               % Uncomment these three lines for debugging
     % plot(z, a_offset);
     % axis equal;
 
@@ -141,16 +142,15 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     % Add vertical surface at horn aperture
     z_for_a_profile = [z_for_a_profile, z_for_a_profile(end)];
     y_for_a_profile = [y_for_a_profile, a_offset(N)];
-    mesh_a = y_for_a_profile;                 % radmesh to fix mesh lines to corrugations
-    % figure;                    % Uncomment these three lines for debugging
+    mesh_a = y_for_a_profile;                               % radmesh to fix mesh lines to corrugations
+    % figure;                                               % Uncomment these three lines for debugging
     % plot(z_for_a_profile, y_for_a_profile);
     % axis equal;
 
     % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
     outer_surface = fliplr(a_offset);
     z_flip = fliplr(z);
-    extent = z_for_a_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
-    z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
+    z_flip(1) = z_for_a_profile(end);
     % Add outer profile and waveguide to horn
     z_for_a_profile = [z_for_a_profile, z_flip,         -wg_length,               -wg_length,   0];
     y_for_a_profile = [y_for_a_profile, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
@@ -220,15 +220,16 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
             y_for_b_profile(i+n+2) = b_profile(i)+d(i);
             y_for_b_profile(i+n+3) = b_profile(i+1);
             y_for_b_profile(i+n+4) = b_profile(i+1);
-            z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*pitch;
+            z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*corr_step;
             z_for_b_profile(i+n+3) = z_for_b_profile(i+n+2);
-            z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*pitch;
+            z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*corr_step;
             z_for_b_profile(i+n+5) = z_for_b_profile(i+n+4);
             n = n+3;
         endfor
 
-        z_number = (N*4)+1; % Number of coordinate points for corrugated length of horn
-        z_for_b_profile = z_for_b_profile(1:z_number); % Truncate z axis data points to equal y_for_a_profile vector length
+        z_number = (N*4)+1;                                 % Number of coordinate points for corrugated length of horn
+        z_for_b_profile = z_for_b_profile(1:z_number);      % Truncate z axis data points to equal y_for_a_profile 
+                                                            %   vector length.
     else
         y_for_b_profile = b_profile;
         z_for_b_profile = z;
@@ -247,7 +248,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     % Add the rest of the geometry to create a closed path
     % b_offset is the inner horn profile shifted up to give the horn a thickness
     b_offset = b_profile.+(lambda_c/2+2);
-    % figure;                    % Uncomment these three lines for debugging
+    % figure;                                               % Uncomment these three lines for debugging
     % plot(z, b_offset);
     % axis equal;
 
@@ -256,16 +257,15 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     % Add vertical surface at horn aperture
     z_for_b_profile = [z_for_b_profile, z_for_b_profile(end)];
     y_for_b_profile = [y_for_b_profile, b_offset(N)];
-    mesh_b = y_for_b_profile;                 % radmesh to fix mesh lines to corrugations
-    % figure;                    % Uncomment these three lines for debugging
+    mesh_b = y_for_b_profile;                               % radmesh to fix mesh lines to corrugations
+    % figure;                                               % Uncomment these three lines for debugging
     % plot(z_for_b_profile, y_for_b_profile);
     % axis equal;
 
     % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
     outer_surface = fliplr(b_offset);
     z_flip = fliplr(z);
-    extent = z_for_b_profile(end);  % Fudge to make horn aperture planar for ring loaded slot MC
-    z_flip(1) = extent; % Fudge to make horn aperture planar for ring loaded slot MC
+    z_flip(1) = z_for_b_profile(end);
     % Add outer profile and waveguide to horn
     z_for_b_profile = [z_for_b_profile, z_flip,         -wg_length,               -wg_length,   0];
     y_for_b_profile = [y_for_b_profile, outer_surface,  bi+(lambda_c/2+2),  bi,     bi];
@@ -323,7 +323,7 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     FDTD = InitFDTD( 'NrTS', TIME_STEPS, 'EndCriteria', 0.5e-2);%, 'OverSampling', 50);
     FDTD = SetGaussExcite(FDTD,0.5*(f_start+f_stop),0.5*(f_stop-f_start));
     BC = {'PML_10' 'PML_10' 'PML_10' 'PML_10' 'PML_10' 'PML_10'}; % FDTD Boundary Conditions:
-                                                                    % http://openems.de/index.php/FDTD_Boundary_Conditions
+                                                                % http://openems.de/index.php/FDTD_Boundary_Conditions
     FDTD = SetBoundaryCond(FDTD, BC);
 
     %% setup CSXCAD geometry & mesh
@@ -459,9 +459,9 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
     %% ----->> End of excitation, dumpboxes and nf2ff definitions <<-----
 
     %% ----->> Prepare simulation folder <<----- 
-    confirm_recursive_rmdir(0);                                 % No ask if removedirectory
-    [status, message, messageid] = rmdir( Sim_Path, 's');       % Clear previous directory
-    [status, message, messageid] = mkdir( Sim_Path );           % Create empty simulation folder
+    confirm_recursive_rmdir(0);                             % No ask if removedirectory
+    [status, message, messageid] = rmdir( Sim_Path, 's');   % Clear previous directory
+    [status, message, messageid] = mkdir( Sim_Path );       % Create empty simulation folder
 
     % Write openEMS compatible xml-file
     WriteOpenEMS([Sim_Path '/' Sim_CSX], FDTD, CSX);
