@@ -95,10 +95,10 @@ Sim.bo      = 120;%49.78;
 %               width  = corr_step * (1-delta)
 %
 % If Sim.depth is set to 0 it goes from fcalc/2 to fcalc/4 across flare length.
-% If Sim.USE_CORRUGATIONS_A/B are set to NO or OFFthen depth_a/b are ignored.
+% If Sim.USE_CORRUGATIONS_A/B are set to NO or OFF then depth_a/b are ignored.
 %
 Sim.corr_step           = 6;
-Sim.delta               = 0.65:0.05:0.75;
+Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = OFF;
 Sim.depth_a             = 0;
 Sim.USE_CORRUGATIONS_B  = ON;
@@ -115,7 +115,7 @@ Sim.SHOW_STRUCTURE_FIGURES      = YES;
 Sim.SUBSTRACT_LEFTOVERS         = YES;
 
 Sim.TIME_STEPS  = 10000;
-Sim.n_cell      = 20;                   % cell size: lambda/n_cell
+Sim.n_cell      = 40;                   % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                    % 1=Linear, 2=Tangential, 3=Exponential
 Sim.output_path = output_path;
