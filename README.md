@@ -1,12 +1,10 @@
 # Medidas 2 MagicScript
-
-This project is intended to be a repository of horn antennas for OpenEMS. Developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Buenos Aires).
+This project was developed for the Department of Medidas Electrónicas II (Electronic Measurements II) of the UTN FRBA (National Technological University of Buenos Aires).
 
 ## MagicScript
+The script can design and simulate rectangular horn antennas defined by the user. It also can sweep horn parameters automatically and stores results on "outputs/".
 
-Script for design and simulation of rectangular horn antennas. It can sweep horn parameters automatically and stores results on "outputs/".
-
-Parameters than can be swept are:
+Parameters that can be swept are:
 
 ||Parameter|Description|
 |:---:|:---:|:---:|
@@ -25,18 +23,20 @@ Parameters than can be swept are:
 
 ### Results
 
+**Results obtained with OpenEMS**
+|3D Structure in Paraview|3D Radiation patern in Paraview|
+|:---:|:---:|
+|<img src="ReadmeData/paraview_Structure.png" alt="paraview_Structure.png" width="800"/>|<img src="ReadmeData/paraview_Farfield.png" alt="paraview_Farfield.png" width="800"/>|
 
+|Reflection coeficient|Farfield polar coordinates|
+|:---:|:---:|
+|<img src="ReadmeData/0_S11_output.png" alt="0_S11_output.png" width="800"/>|<img src="ReadmeData/0_Farfield_directivity_polar_output.png" alt="0_Farfield_directivity_polar_output.png" width="800"/>|
 
-<img src="outputs/Corrugated_Horn_1/1_structure_output.svg" alt="1_structure_output.svg" width="800"/>
-
-
-
-## Tests
-
-Test zone for script development, you can see the readme [here](/Tests/README.md).
+|Farfield|Farfield Ludwig3 coordinates|
+|:---:|:---:|
+|<img src="ReadmeData/0_Farfield_directivity_output.png" alt="0_Farfield_directivity_output.png" width="800"/>|<img src="ReadmeData/0_Farfield_directivity_ludwig_output.png" alt="0_Farfield_directivity_ludwig_output.png" width="800"/>|
 
 ## Project State
-
 |Step|Description|Status|
 |:---:|:---:|:---:|
 |1|Run simulations on OpenEMS with structures made by us.<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)|✅|
@@ -48,6 +48,8 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |7|Make a parameter sweep script for horn antennas in octave. (on MagicScript.m)|✅|
 |8|Waveguide to N connector adapter|⏳|
 
+## Tests
+Project tests can be seen here, they were the first steps developing the root project. You can see the readme [here](/Tests/README.md).
 
 ## OpenEMS installation on Linux
 Install openEMS as detailed [here](http://www.openems.de/index.php/Compile_from_Source.html#Linux) for the 
@@ -68,3 +70,5 @@ Next instalations/updates can be done as described
 [4] **Corrugated Horn Antenna Tutorial for openEMS** [(link)](https://openems.de/forum/viewtopic.php?f=3&t=900).
 
 [5] **Corrugated Horn Antenna Design in MATLAB and CST** [(link)](https://www.youtube.com/watch?v=Fh7Ri-CNEjs&ab_channel=SimulationMaster). Or you can see a modified script derived from that example [here](/MatlabToCST_example).
+
+[6] **Antenna Theory: Analysis and Design** Constantine A. Balanis
