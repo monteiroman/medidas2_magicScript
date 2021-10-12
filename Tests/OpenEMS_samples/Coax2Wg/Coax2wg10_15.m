@@ -100,6 +100,7 @@ CSX = DefineRectGrid(CSX, unit,mesh);
 
 %% add metal top to waveguide   
 CSX = AddMetal(CSX,'metal');  %% metal is PEC
+CSX = AddMetal(CSX,'metal2');  %% metal is PEC
 
 CSX = AddBox(CSX,'metal',0, [0 b 0], [a b+WallThickness length]);
 
@@ -109,7 +110,7 @@ CSX = SetMaterialProperty(CSX,'air','Epsilon',1.0,'Mue',1.0);
 CSX = AddCylinder(CSX,'air',20,[a/2 b length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCondSMA/2);
 
 %% add SMA center conductor probe to waveguide
-CSX = AddCylinder(CSX,'metal',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],InnerCondSMA/2);
+CSX = AddCylinder(CSX,'metal2',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],InnerCondSMA/2);
 
 %% add teflon dielectric material
 
@@ -138,7 +139,7 @@ CSX = AddBox(CSX,'Et',0 , start,stop);
 %% Write openEMS compatible xml-file %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (postproc_only==0)
     WriteOpenEMS([Sim_Path '/' Sim_CSX],FDTD,CSX);
-    CSXGeomPlot([Sim_Path '/' Sim_CSX]);
+    CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
  
     RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts, Settings)
 end
