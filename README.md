@@ -4,15 +4,38 @@ This project is intended to be a repository of horn antennas for OpenEMS. Develo
 
 ## MagicScript
 
-Script for design and simulation of horn antennas. 
+Script for design and simulation of rectangular horn antennas. It can sweep horn parameters automatically and stores results on "outputs/".
 
-⚠️**NOTE**: For using this script OpenEMS must be installed on "~/opt/openEMS" (as it is by default).
+Parameters than can be swept are:
+
+||Parameter|Description|
+|:---:|:---:|:---:|
+|1|ai|Input width|
+|2|bi|Input height|
+|3|ao|Output width|
+|4|bo|Output height|
+|5|corr_step|Corrugation step in mm|
+|6|delta|Ratio between corrugation slot and teeth|
+|7|depth_a|A wall corrugation depth|
+|8|depth_b|B wall corrugation depth|
+|9|wg_length|Input waveguide length|
+|10|num_of_corrugations|Number of horn flare corrugations|
+
+⚠️**NOTE**: This script only runs on Linux. OpenEMS must be installed on "~/opt/openEMS" (as it is by default) in order to use CSXCad.
+
+### Results
+
+
+
+<img src="outputs/Corrugated_Horn_1/1_structure_output.svg" alt="1_structure_output.svg" width="800"/>
+
+
 
 ## Tests
 
-Test zone for script development, you can see the readme [here](/Tests/README.md). .
+Test zone for script development, you can see the readme [here](/Tests/README.md).
 
-## Checkpoints
+## Project State
 
 |Step|Description|Status|
 |:---:|:---:|:---:|
@@ -21,8 +44,8 @@ Test zone for script development, you can see the readme [here](/Tests/README.md
 |3|Obtain similar simulation values as [1].<br />(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|✅|
 |4|Simulate a full corrugated horn.<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
 |5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br />(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
-|6|Make function for Horn design in octave.|✅|
-|7|Make a parameter sweep script for horn antennas in octave.|✅|
+|6|Make function for Horn design in octave. (on MagicScript.m)|✅|
+|7|Make a parameter sweep script for horn antennas in octave. (on MagicScript.m)|✅|
 |8|Waveguide to N connector adapter|⏳|
 
 
