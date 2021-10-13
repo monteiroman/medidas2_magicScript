@@ -16,14 +16,12 @@ OFF = 0;
 %%
 %%  Simulation function
 %%
-function simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION)
+function simulate(Sim, sweep_type, RUN_SIMULATION)
     %%  
     %%  This function makes the simulation directory, calls make_horn for make 
     %%  the 3D structure and then calls run_simulation if it is required to. 
     %%  
     %%  Parameters:
-    %%          Sim_Path: Generic simulation path for the simulation data.
-    %%          Sim_CSX: OpenEMS XML file name.
     %%          Sim: Horn simulation parameters.
     %%          sweep_type: String detailing sweep type.
     %%          RUN_SIMULATION: Flag that determines if the simulation must be 
@@ -43,14 +41,14 @@ function simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION)
     [status, message, messageid] = mkdir(Sim.output_path);
 
     %% ----->> Make horn structure and save openEMS XML simulation file at "<Sim_Path>/<Sim_CSX>"  <<-----
-    [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim);
+    [port, nf2ff] = make_horn(Sim);
 
     %% ----->> Simulate and store 3D files <<-----
     if (RUN_SIMULATION);
-        run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff);
-        movefile(strcat(Sim_Path, '/*.stl'), Sim.output_path);
-        movefile(strcat(Sim_Path, '/*.vtk'), Sim.output_path);
-        movefile(strcat(Sim_Path, '/*.txt'), Sim.output_path);
+        run_simulation(Sim, port, nf2ff);
+        movefile(strcat(Sim.Sim_Path, '/*.stl'), Sim.output_path);
+        movefile(strcat(Sim.Sim_Path, '/*.vtk'), Sim.output_path);
+        movefile(strcat(Sim.Sim_Path, '/*.txt'), Sim.output_path);
     endif
 endfunction
 
@@ -68,9 +66,9 @@ endfunction
 % ______ User Editable parameters ______________________________________________
 RUN_SIMULATION = ON;
 
-output_path = 'outputs/';
-Sim_Path    = 'tmp/';
-Sim_CSX     = 'Corrugated_Horn.xml';
+Sim.output_path = 'outputs/';
+Sim.Sim_Path    = 'tmp/';
+Sim.Sim_CSX     = 'Corrugated_Horn.xml';
 
 Sim.fmin    = 8;                     % Minimum frequency in GHz
 Sim.fmax    = 12;                    % Maximum frequency in GHz
@@ -118,15 +116,14 @@ Sim.TIME_STEPS  = 10000;
 Sim.n_cell      = 40;                   % cell size: lambda/n_cell
 
 Sim.USE_PROFILE = 1;                    % 1=Linear, 2=Tangential, 3=Exponential
-Sim.output_path = output_path;
 
 % ______ End of User Editable parameters _______________________________________
 
 
 %% ----->> Generic simulation output folder <<----- 
-confirm_recursive_rmdir(0);                                 % Do not asks if remove directory
-[status, message, messageid] = rmdir( output_path, 's');    % Clear previous directory
-[status, message, messageid] = mkdir( output_path );        % Create empty simulation folder
+confirm_recursive_rmdir(0);                                     % Do not asks if remove directory
+[status, message, messageid] = rmdir( Sim.output_path, 's');    % Clear previous directory
+[status, message, messageid] = mkdir( Sim.output_path );        % Create empty simulation folder
 
 %% ----->> Check parameters and sweep if necessary <<----- 
 ai_len = length(Sim.ai);
@@ -148,7 +145,7 @@ if (ai_len > 1);
         Sim.horn_number = i;
         Sim.ai          = ai_values(i);
         sweep_type      = sprintf('ai_sweep_%.2f', ai_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (bi_len > 1);
     bi_values = Sim.bi;
@@ -158,7 +155,7 @@ elseif (bi_len > 1);
         Sim.horn_number = i;
         Sim.bi          = bi_values(i);
         sweep_type      = sprintf('bi_sweep_%.2f', bi_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (ao_len > 1);
     ao_values = Sim.ao;
@@ -168,7 +165,7 @@ elseif (ao_len > 1);
         Sim.horn_number = i;
         Sim.ao          = ao_values(i);
         sweep_type      = sprintf('ao_sweep_%.2f', ao_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (bo_len > 1);
     bo_values = Sim.bo;
@@ -178,7 +175,7 @@ elseif (bo_len > 1);
         Sim.horn_number = i;
         Sim.bo          = bo_values(i);
         sweep_type      = sprintf('bo_sweep_%.2f', bo_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (corr_step_len > 1);
     corr_step_values = Sim.corr_step;
@@ -188,7 +185,7 @@ elseif (corr_step_len > 1);
         Sim.horn_number = i;
         Sim.corr_step   = corr_step_values(i);
         sweep_type      = sprintf('corr_step_sweep_%.2f', corr_step_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (delta_len > 1);
     delta_values = Sim.delta;
@@ -198,7 +195,7 @@ elseif (delta_len > 1);
         Sim.horn_number = i;
         Sim.delta       = delta_values(i);
         sweep_type      = sprintf('delta_sweep_%.2f', delta_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (depth_a_len > 1);
     depth_a_values = Sim.depth_a;
@@ -208,7 +205,7 @@ elseif (depth_a_len > 1);
         Sim.horn_number = i;
         Sim.depth_a     = depth_a_values(i);
         sweep_type      = sprintf('depth_a_sweep_%.2f', depth_a_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (depth_b_len > 1);
     depth_b_values = Sim.depth_b;
@@ -218,7 +215,7 @@ elseif (depth_b_len > 1);
         Sim.horn_number = i;
         Sim.depth_b     = depth_b_values(i);
         sweep_type      = sprintf('depth_b_sweep_%.2f', depth_b_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (wg_length_len > 1);
     wg_length_values = Sim.wg_length;
@@ -228,7 +225,7 @@ elseif (wg_length_len > 1);
         Sim.horn_number = i;
         Sim.wg_length   = wg_length_values(i);
         sweep_type      = sprintf('wg_length_sweep_%.2f', wg_length_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (num_of_corrugations_len > 1);
     num_of_corrugations_values = Sim.num_of_corrugations;
@@ -238,13 +235,13 @@ elseif (num_of_corrugations_len > 1);
         Sim.horn_number         = i;
         Sim.num_of_corrugations = num_of_corrugations_values(i);
         sweep_type              = sprintf('num_of_corrugations_sweep_%d', num_of_corrugations_values(i));
-        simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+        simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 else
     close all
     Sim.horn_number = 0;
     sweep_type = 'no_sweep';
-    simulate(Sim_Path, Sim_CSX, Sim, sweep_type, RUN_SIMULATION);
+    simulate(Sim, sweep_type, RUN_SIMULATION);
 endif
 
 disp(">>-------------------- Simulation fineshed! --------------------<<");

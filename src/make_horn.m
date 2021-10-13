@@ -3,13 +3,11 @@
 %%
 %%  Author: Tiago Monteiro
 %%
-function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
+function [port, nf2ff] = make_horn(Sim)
     %%
     %%  Function for make the 3D structure and OpenEMS's XML for simulation.
     %%
     %%  Parameters:
-    %%          Sim_Path: Generic simulation path for the simulation data.
-    %%          Sim_CSX: OpenEMS XML file name.
     %%          Sim: Horn simulation parameters.
     %%          
     %%  Returns:
@@ -472,14 +470,14 @@ function [port, nf2ff] = make_horn(Sim_Path, Sim_CSX, Sim)
 
     %% ----->> Prepare simulation folder <<----- 
     confirm_recursive_rmdir(0);                             % No ask if removedirectory
-    [status, message, messageid] = rmdir( Sim_Path, 's');   % Clear previous directory
-    [status, message, messageid] = mkdir( Sim_Path );       % Create empty simulation folder
+    [status, message, messageid] = rmdir( Sim.Sim_Path, 's');   % Clear previous directory
+    [status, message, messageid] = mkdir( Sim.Sim_Path );       % Create empty simulation folder
 
     % Write openEMS compatible xml-file
-    WriteOpenEMS([Sim_Path '/' Sim_CSX], FDTD, CSX);
+    WriteOpenEMS([Sim.Sim_Path '/' Sim.Sim_CSX], FDTD, CSX);
 
     % Show structure
-    CSXGeomPlot([Sim_Path '/' Sim_CSX], ['--export-STL=tmp']);
+    CSXGeomPlot([Sim.Sim_Path '/' Sim.Sim_CSX], ['--export-STL=tmp']);
 
     %% ----->> End of simulation folder <<----- 
 endfunction

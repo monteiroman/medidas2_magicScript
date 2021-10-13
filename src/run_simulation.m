@@ -3,13 +3,11 @@
 %%
 %%  Author: Tiago Monteiro
 %%
-function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
+function run_simulation(Sim, port, nf2ff)
     %%
     %%  Runs the OpenEMS simulation and stores output graphics.
     %%
     %%  Parameters:
-    %%          Sim_Path: Generic simulation path for the simulation data.
-    %%          Sim_CSX: OpenEMS XML file name.
     %%          Sim: Horn simulation parameters.
     %%          port: Waveguide port for later simulation.
     %%          nf2ff: Near field to far field simulation box.
@@ -20,8 +18,8 @@ function run_simulation(Sim_Path, Sim_CSX, Sim, port, nf2ff)
 
     %% ----->> Run openEMS <<-----
     % openEMS_opts = '--debug-PEC --no-simulation';   % Uncomment to visualise mesh in Paraview
-    % RunOpenEMS(Sim_Path, Sim_CSX, openEMS_opts);
-    RunOpenEMS(Sim_Path, Sim_CSX, '--dump-statistics');%, '--numThreads=3');
+    % RunOpenEMS(Sim.Sim_Path, Sim.Sim_CSX, openEMS_opts);
+    RunOpenEMS(Sim.Sim_Path, Sim.Sim_CSX, '--dump-statistics');%, '--numThreads=3');
 
     % frequency range of interest
     f_start =  Sim.fmin*1e9;
