@@ -32,7 +32,9 @@ function [port, nf2ff] = make_horn(Sim)
     corr_step           = Sim.corr_step         
     delta               = Sim.delta
     depth_a             = Sim.depth_a
+    a_jump              = Sim.a_jump
     depth_b             = Sim.depth_b
+    b_jump              = Sim.b_jump
     wg_length           = Sim.wg_length
     num_of_corrugations = Sim.num_of_corrugations
     straight_width      = Sim.straight_width
@@ -110,11 +112,15 @@ function [port, nf2ff] = make_horn(Sim)
         z_for_a_profile(1) = 0;
         z_for_a_profile(2) = 0;
         for i = 1:N;
-            y_for_a_profile(i+n) = a_profile(i);
-            y_for_a_profile(i+n+1) = a_profile(i)+d(i);
-            y_for_a_profile(i+n+2) = a_profile(i)+d(i);
-            y_for_a_profile(i+n+3) = a_profile(i+1);
-            y_for_a_profile(i+n+4) = a_profile(i+1);
+            if (i==1);                                                      % The first step must match the wg end.
+                y_for_a_profile(i+n) = a_profile(i);
+            else
+                y_for_a_profile(i+n) = a_profile(i)+a_jump;
+            endif            
+            y_for_a_profile(i+n+1) = a_profile(i)+d(i)+a_jump;
+            y_for_a_profile(i+n+2) = a_profile(i)+d(i)+a_jump;
+            y_for_a_profile(i+n+3) = a_profile(i+1)+a_jump;
+            y_for_a_profile(i+n+4) = a_profile(i+1)+a_jump;
             z_for_a_profile(i+n+2) = z_for_a_profile(i+n)+delta*corr_step;
             z_for_a_profile(i+n+3) = z_for_a_profile(i+n+2);
             z_for_a_profile(i+n+4) = z_for_a_profile(i+n+3)+(1-delta)*corr_step;
@@ -151,19 +157,19 @@ function [port, nf2ff] = make_horn(Sim)
 
     % Add vertical surface at horn aperture
     z_for_a_profile = [z_for_a_profile, z_for_a_profile(end)];
-    y_for_a_profile = [y_for_a_profile, a_offset(N)];
+    y_for_a_profile = [y_for_a_profile, a_offset(N)+a_jump];
     mesh_a = y_for_a_profile;                               % radmesh to fix mesh lines to corrugations
     % figure;                                               % Uncomment these three lines for debugging
     % plot(z_for_a_profile, y_for_a_profile);
     % axis equal;
 
     % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
-    outer_surface = fliplr(a_offset);
+    outer_surface = fliplr(a_offset)+a_jump;
     z_flip = fliplr(z);
     z_flip(1) = z_for_a_profile(end);
     % Add outer profile and waveguide to horn
     z_for_a_profile = [z_for_a_profile, z_flip,         -wg_length,               -wg_length,   0];
-    y_for_a_profile = [y_for_a_profile, outer_surface,  ai+(lambda_c/2+2),  ai,     ai];
+    y_for_a_profile = [y_for_a_profile, outer_surface,  ai+(lambda_c/2+2)+a_jump,  ai,          ai];
 
     if (SHOW_STRUCTURE_FIGURES);
         subplot (3, 2, 5)
@@ -176,9 +182,9 @@ function [port, nf2ff] = make_horn(Sim)
     endif
 
     % Substraction volume for A
-    z_for_a_subs_profile = [z_flip,         -wg_length-air_guard,   -wg_length-air_guard,       0];  
+    z_for_a_subs_profile = [z_flip,         -wg_length-air_guard,       -wg_length-air_guard,       0];
+    y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2)+a_jump,   outer_surface(1)+air_guard, outer_surface(1)+air_guard];
     z_for_a_subs_profile = [z_for_a_subs_profile,   z_flip(1),                  z_flip(1)];
-    y_for_a_subs_profile = [outer_surface,  ai+(lambda_c/2+2),      outer_surface(1)+air_guard, outer_surface(1)+air_guard]; 
     y_for_a_subs_profile = [y_for_a_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
     %%% Profile for B faces %%%
@@ -225,11 +231,15 @@ function [port, nf2ff] = make_horn(Sim)
         z_for_b_profile(1) = 0;
         z_for_b_profile(2) = 0;
         for i = 1:N;
-            y_for_b_profile(i+n) = b_profile(i);
-            y_for_b_profile(i+n+1) = b_profile(i)+d(i);
-            y_for_b_profile(i+n+2) = b_profile(i)+d(i);
-            y_for_b_profile(i+n+3) = b_profile(i+1);
-            y_for_b_profile(i+n+4) = b_profile(i+1);
+            if (i==1);                                                      % The first step must match the wg end.
+                y_for_b_profile(i+n) = b_profile(i);
+            else
+                y_for_b_profile(i+n) = b_profile(i)+b_jump;
+            endif            
+            y_for_b_profile(i+n+1) = b_profile(i)+d(i)+b_jump;
+            y_for_b_profile(i+n+2) = b_profile(i)+d(i)+b_jump;
+            y_for_b_profile(i+n+3) = b_profile(i+1)+b_jump;
+            y_for_b_profile(i+n+4) = b_profile(i+1)+b_jump;
             z_for_b_profile(i+n+2) = z_for_b_profile(i+n)+delta*corr_step;
             z_for_b_profile(i+n+3) = z_for_b_profile(i+n+2);
             z_for_b_profile(i+n+4) = z_for_b_profile(i+n+3)+(1-delta)*corr_step;
@@ -266,19 +276,19 @@ function [port, nf2ff] = make_horn(Sim)
 
     % Add vertical surface at horn aperture
     z_for_b_profile = [z_for_b_profile, z_for_b_profile(end)];
-    y_for_b_profile = [y_for_b_profile, b_offset(N)];
+    y_for_b_profile = [y_for_b_profile, b_offset(N)+b_jump];
     mesh_b = y_for_b_profile;                               % radmesh to fix mesh lines to corrugations
     % figure;                                               % Uncomment these three lines for debugging
     % plot(z_for_b_profile, y_for_b_profile);
     % axis equal;
 
     % Flip outer surface profile so that widest horn dimensions comes next in the outline coordinates
-    outer_surface = fliplr(b_offset);
+    outer_surface = fliplr(b_offset)+b_jump;
     z_flip = fliplr(z);
     z_flip(1) = z_for_b_profile(end);
     % Add outer profile and waveguide to horn
     z_for_b_profile = [z_for_b_profile, z_flip,         -wg_length,               -wg_length,   0];
-    y_for_b_profile = [y_for_b_profile, outer_surface,  bi+(lambda_c/2+2),  bi,     bi];
+    y_for_b_profile = [y_for_b_profile, outer_surface,  bi+(lambda_c/2+2)+b_jump,  bi,          bi];
 
     if (SHOW_STRUCTURE_FIGURES);
         subplot (3, 2, 6)
@@ -294,8 +304,8 @@ function [port, nf2ff] = make_horn(Sim)
     endif
 
     % Substraction volume for B
-    z_for_b_subs_profile = [z_flip,         -wg_length-air_guard,   -wg_length-air_guard,       0];  
-    y_for_b_subs_profile = [outer_surface,  bi+(lambda_c/2+2),      outer_surface(1)+air_guard, outer_surface(1)+air_guard];
+    z_for_b_subs_profile = [z_flip,         -wg_length-air_guard,       -wg_length-air_guard,       0];  
+    y_for_b_subs_profile = [outer_surface,  bi+(lambda_c/2+2)+b_jump,   outer_surface(1)+air_guard, outer_surface(1)+air_guard];
     z_for_b_subs_profile = [z_for_b_subs_profile,   z_flip(1),                  z_flip(1)];
     y_for_b_subs_profile = [y_for_b_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
@@ -345,11 +355,11 @@ function [port, nf2ff] = make_horn(Sim)
 
     % Create fixed lines for the simulation box, structure and port
     % Info at this link: http://openems.de/index.php/FDTD_Mesh
-    mesh.y = [(-b_offset(end)-(9*max_res)-lambda_max) -mesh_b(1:4:end)+bi/2 0 mesh_b(1:4:end)-bi/2 (b_offset(end)+(9*max_res)+
+    mesh.y = [(-mesh_b(end)-(9*max_res)-lambda_max) -mesh_b(1:4:end)+bi/2 0 mesh_b(1:4:end)-bi/2 (mesh_b(end)+(9*max_res)+
                                                                                                             lambda_max)];
     mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
-    mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -mesh_a(1:4:end)+ai/2 0 mesh_a(1:4:end)-ai/2 (a_offset(end)+(9*max_res)+
+    mesh.x = [(-mesh_a(end)-(9*max_res)-lambda_max) -mesh_a(1:4:end)+ai/2 0 mesh_a(1:4:end)-ai/2 (mesh_a(end)+(9*max_res)+
                                                                                                             lambda_max)];
     mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
@@ -395,38 +405,38 @@ function [port, nf2ff] = make_horn(Sim)
 
     % Corrugated A walls
     % https://openems.de/index.php/Polygon.html
-    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi, 'Transform', {
-        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi)/2) ',0']
+    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
+        'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi+2*b_jump)/2) ',0']
         });
-    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi, 'Transform', {
-        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi)/2) ',0']
+    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
+        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi+2*b_jump)/2) ',0']
         });
 
     % Subtract horn A walls outside geometry
     if (SUBSTRACT_LEFTOVERS);
-        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi, 'Transform', {
-            'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi)/2) ',0']
+        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
+            'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi+2*b_jump)/2) ',0']
             });
-        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi, 'Transform', {
-            'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi)/2) ',0']
+        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
+            'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi+2*b_jump)/2) ',0']
             });
     endif
 
     % Corrugated B walls
-    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai)/2) ',' num2str(-bi/2) ',0']
+    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(-bi/2) ',0']
         });
-    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai)/2) ',' num2str(bi/2) ',0']
+    CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
+        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(bi/2) ',0']
         });
 
     % Subtract horn B walls outside geometry
     if (SUBSTRACT_LEFTOVERS);
-        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai, 'Transform', {
-            'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai)/2) ',' num2str(-bi/2) ',0']
+        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
+            'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(-bi/2) ',0']
             });
-        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai, 'Transform', {
-            'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai)/2) ',' num2str(bi/2) ',0']
+        CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
+            'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(bi/2) ',0']
             });
     endif
 

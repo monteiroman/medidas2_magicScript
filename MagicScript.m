@@ -97,10 +97,14 @@ Sim.bo      = 120;%49.78;
 %
 Sim.corr_step           = 6;
 Sim.delta               = 0.75;
+% A walls corrugations
 Sim.USE_CORRUGATIONS_A  = OFF;
 Sim.depth_a             = 0;
+Sim.a_jump              = 0;
+% B walls corrugations
 Sim.USE_CORRUGATIONS_B  = ON;
 Sim.depth_b             = 0;
+Sim.b_jump              = 1:0.5:5;
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
 Sim.num_of_corrugations = 35;
@@ -133,7 +137,9 @@ bo_len = length(Sim.bo);
 corr_step_len   = length(Sim.corr_step);
 delta_len       = length(Sim.delta);
 depth_a_len     = length(Sim.depth_a);
+a_jump_len      = length(Sim.a_jump);
 depth_b_len     = length(Sim.depth_b);
+b_jump_len      = length(Sim.b_jump);
 wg_length_len   = length(Sim.wg_length);
 num_of_corrugations_len = length(Sim.num_of_corrugations);
 
@@ -207,6 +213,16 @@ elseif (depth_a_len > 1);
         sweep_type      = sprintf('depth_a_sweep_%.2f', depth_a_values(i));
         simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
+elseif (a_jump_len > 1);
+    a_jump_values = Sim.a_jump;
+
+    for i = 1:a_jump_len;
+        close all
+        Sim.horn_number = i;
+        Sim.a_jump      = a_jump_values(i);
+        sweep_type      = sprintf('a_jump_sweep_%.2f', a_jump_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
 elseif (depth_b_len > 1);
     depth_b_values = Sim.depth_b;
 
@@ -215,6 +231,16 @@ elseif (depth_b_len > 1);
         Sim.horn_number = i;
         Sim.depth_b     = depth_b_values(i);
         sweep_type      = sprintf('depth_b_sweep_%.2f', depth_b_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (b_jump_len > 1);
+    b_jump_values = Sim.b_jump;
+
+    for i = 1:b_jump_len;
+        close all
+        Sim.horn_number = i;
+        Sim.b_jump      = b_jump_values(i);
+        sweep_type      = sprintf('b_jump_sweep_%.2f', b_jump_values(i));
         simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (wg_length_len > 1);
