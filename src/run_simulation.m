@@ -30,7 +30,7 @@ function run_simulation(Sim, port, nf2ff)
 
     % Postprocessing & do the plots
     freq = linspace(f_start,f_stop,201);
-    port = calcPort(port, Sim_Path, freq);
+    port = calcPort(port, Sim.Sim_Path, freq);
 
     Zin = port.uf.tot ./ port.if.tot;
     s11 = port.uf.ref ./ port.uf.inc;
@@ -54,7 +54,7 @@ function run_simulation(Sim, port, nf2ff)
     % Calculate the far field at phi=0, 45 and at phi=90 degrees
     thetaRange = (0:0.2:359) - 180;
     disp('calculating far field at phi=[0 45 90] deg...');
-    nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, [0 45 90]*pi/180);
+    nf2ff = CalcNF2FF(nf2ff, Sim.Sim_Path, f0, thetaRange*pi/180, [0 45 90]*pi/180);
 
     Dlog=10*log10(nf2ff.Dmax);      % Calculate maximum Directivity in dB
 
@@ -110,7 +110,7 @@ function run_simulation(Sim, port, nf2ff)
     thetaRange = sort(unique([0:1:50 50:1:100 100:1:180]));
 
     disp('calculating 3D far field...');
-    nf2ff = CalcNF2FF(nf2ff, Sim_Path, f0, thetaRange*pi/180, phiRange*pi/180, 'Verbose',2,'Outfile','nf2ff_3D.h5');
+    nf2ff = CalcNF2FF(nf2ff, Sim.Sim_Path, f0, thetaRange*pi/180, phiRange*pi/180, 'Verbose',2,'Outfile','nf2ff_3D.h5');
 
     radiation_pattern_figure = figure('position',[600,100,900,900]);
     colormap jet;
@@ -120,6 +120,6 @@ function run_simulation(Sim, port, nf2ff)
 
     % Save far field in VTK to plot in ParaView
     E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
-    DumpFF2VTK([Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 
+    DumpFF2VTK([Sim.Sim_Path '/Farfield.vtk'],E_far_normalized,thetaRange,phiRange,'scale', 0.008, 'logscale', -30, 
                                                                                                     'maxgain', Dlog);
 endfunction
