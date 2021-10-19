@@ -95,7 +95,7 @@ Sim.bo      = 120;%49.78;
 % If Sim.depth is set to 0 it goes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO or OFF then depth_a/b are ignored.
 %
-Sim.corr_step           = 6;
+Sim.corr_step           = 3;
 Sim.delta               = 0.75;
 % A walls corrugations
 Sim.USE_CORRUGATIONS_A  = OFF;
