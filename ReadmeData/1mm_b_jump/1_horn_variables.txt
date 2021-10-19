@@ -1,0 +1,161 @@
+# Created by Octave 4.2.2, Fri Oct 15 07:46:14 2021 -03 <tiago@tiago-Lenovo-G50-70>
+# name: Sim
+# type: scalar struct
+# ndims: 2
+ 1 1
+# length: 29
+# name: output_path
+# type: sq_string
+# elements: 1
+# length: 41
+outputs//b_jump_sweep_1.00_Horn_n1_output
+
+
+# name: Sim_Path
+# type: sq_string
+# elements: 1
+# length: 4
+tmp/
+
+
+# name: Sim_CSX
+# type: sq_string
+# elements: 1
+# length: 19
+Corrugated_Horn.xml
+
+
+# name: fmin
+# type: scalar
+8
+
+
+# name: fmax
+# type: scalar
+12
+
+
+# name: fcalc
+# type: scalar
+10
+
+
+# name: ai
+# type: scalar
+22.86
+
+
+# name: bi
+# type: scalar
+10.16
+
+
+# name: ao
+# type: scalar
+145
+
+
+# name: bo
+# type: scalar
+120
+
+
+# name: corr_step
+# type: scalar
+3
+
+
+# name: delta
+# type: scalar
+0.75
+
+
+# name: USE_CORRUGATIONS_A
+# type: scalar
+0
+
+
+# name: depth_a
+# type: scalar
+0
+
+
+# name: a_jump
+# type: scalar
+0
+
+
+# name: USE_CORRUGATIONS_B
+# type: scalar
+1
+
+
+# name: depth_b
+# type: scalar
+0
+
+
+# name: b_jump
+# type: scalar
+1
+
+
+# name: wg_length
+# type: scalar
+60
+
+
+# name: num_of_corrugations
+# type: scalar
+35
+
+
+# name: straight_width
+# type: scalar
+2
+
+
+# name: cap_width
+# type: scalar
+2
+
+
+# name: exc_mode
+# type: sq_string
+# elements: 1
+# length: 4
+TE10
+
+
+# name: SHOW_STRUCTURE_FIGURES
+# type: scalar
+1
+
+
+# name: SUBSTRACT_LEFTOVERS
+# type: scalar
+1
+
+
+# name: TIME_STEPS
+# type: scalar
+10000
+
+
+# name: n_cell
+# type: scalar
+40
+
+
+# name: USE_PROFILE
+# type: scalar
+1
+
+
+# name: horn_number
+# type: scalar
+1
+
+
+
+
