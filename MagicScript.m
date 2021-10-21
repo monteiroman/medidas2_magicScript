@@ -104,7 +104,7 @@ Sim.a_jump              = 0;
 % B walls corrugations
 Sim.USE_CORRUGATIONS_B  = ON;
 Sim.depth_b             = 0;
-Sim.b_jump              = 1:0.5:5;
+Sim.b_jump              = 2.5;
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
 Sim.num_of_corrugations = 35;

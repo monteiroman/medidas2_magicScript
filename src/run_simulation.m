@@ -35,12 +35,13 @@ function run_simulation(Sim, port, nf2ff)
     Zin = port.uf.tot ./ port.if.tot;
     s11 = port.uf.ref ./ port.uf.inc;
 
-    % 1) Plot reflection coefficient S11
+    % 1) Reflection coefficient (S11) plots
+    % S11 absolute value
     S11_figure = figure('position',[600,100,900,900]);
     plot(freq/1e9, 20*log10(abs(s11)), 'k-', 'Linewidth', 2);
     xlim([Sim.fmin Sim.fmax]);
     ylim([-40 0]);
-    set(gca, "linewidth",2, "fontsize", 14)
+    set(gca, "linewidth",2, "fontsize", 14);
     grid on
     title('Reflection Coefficient S_{11}', 'FontSize', 16);
     xlabel('Frequency (GHz)','FontSize', 14);
@@ -48,6 +49,16 @@ function run_simulation(Sim, port, nf2ff)
     drawnow
     S11_output = strcat(Sim.output_path, sprintf('/%d_S11_output.svg', Sim.horn_number));
     print (S11_figure, S11_output, "-dsvg", "-Sxsize=900");
+
+    % S11 Smith chart
+    S11_smith_figure = figure('position',[600,100,900,900]);
+    h = polar(arg(s11), abs(s11), 'r');
+    set(h,'LineWidth',2);
+    set(gca, "linewidth",2, "fontsize", 14);
+    title('Reflection Coefficient S_{11}', 'FontSize', 16);
+    drawnow
+    S11_smith_output = strcat(Sim.output_path, sprintf('/%d_S11_smith_output.svg', Sim.horn_number));
+    print (S11_smith_figure, S11_smith_output, "-dsvg", "-Sxsize=900");
 
     %%% NFFF plots
 
