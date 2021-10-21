@@ -39,6 +39,8 @@ function simulate(Sim, sweep_type, RUN_SIMULATION)
     endif
     Sim.output_path = strcat(Sim.output_path, sweep_path);
     [status, message, messageid] = mkdir(Sim.output_path);
+    [status, message, messageid] = mkdir(strcat(Sim.output_path, '/svg_plots'));
+    [status, message, messageid] = mkdir(strcat(Sim.output_path, '/jpg_plots'));
 
     %% ----->> Make horn structure and save openEMS XML simulation file at "<Sim_Path>/<Sim_CSX>"  <<-----
     [port, nf2ff] = make_horn(Sim);
@@ -46,9 +48,14 @@ function simulate(Sim, sweep_type, RUN_SIMULATION)
     %% ----->> Simulate and store 3D files <<-----
     if (RUN_SIMULATION);
         run_simulation(Sim, port, nf2ff);
-        movefile(strcat(Sim.Sim_Path, '/*.stl'), Sim.output_path);
-        movefile(strcat(Sim.Sim_Path, '/*.vtk'), Sim.output_path);
+
+        % Move output files to uotput folder
         movefile(strcat(Sim.Sim_Path, '/*.txt'), Sim.output_path);
+        disp("--->> Moving 3D files to output folder... <<---");
+        out_3d = strcat(Sim.output_path, '/3D_Outputs');
+        [status, message, messageid] = mkdir(out_3d);
+        movefile(strcat(Sim.Sim_Path, '/*.stl'), out_3d);
+        movefile(strcat(Sim.Sim_Path, '/*.vtk'), out_3d);
     endif
 endfunction
 

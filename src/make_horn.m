@@ -299,8 +299,11 @@ function [port, nf2ff] = make_horn(Sim)
         title( 'Complete Corrugated Horn B Profile', 'FontSize', 16 );
         axis equal;   % Scale axis equally for aspect ratio 1:1
 
-        structure_output = strcat(Sim.output_path, sprintf('/%d_structure_output.svg',horn_number));
+        structure_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_structure_output.svg',horn_number));
         print (structure_figure, structure_output, "-dsvg", "-Sxsize=900");
+
+        structure_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_structure_output.jpg',horn_number));
+        print (structure_figure, structure_output, "-djpg", "-Sxsize=900");
     endif
 
     % Substraction volume for B

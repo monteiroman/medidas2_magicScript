@@ -47,8 +47,12 @@ function run_simulation(Sim, port, nf2ff)
     xlabel('Frequency (GHz)','FontSize', 14);
     ylabel('Reflection Coefficient |S_{11}| (dB)','FontSize', 14);
     drawnow
-    S11_output = strcat(Sim.output_path, sprintf('/%d_S11_output.svg', Sim.horn_number));
-    print (S11_figure, S11_output, "-dsvg", "-Sxsize=900");
+
+    S11_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_S11_output.svg', Sim.horn_number));
+    print(S11_figure, S11_output, "-dsvg", "-Sxsize=900");
+
+    S11_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_S11_output.jpg', Sim.horn_number));
+    print(S11_figure, S11_output, "-djpg", "-Sxsize=900");
 
     % S11 Smith chart
     S11_smith_figure = figure('position',[600,100,900,900]);
@@ -57,8 +61,12 @@ function run_simulation(Sim, port, nf2ff)
     set(gca, "linewidth",2, "fontsize", 14);
     title('Reflection Coefficient S_{11}', 'FontSize', 16);
     drawnow
-    S11_smith_output = strcat(Sim.output_path, sprintf('/%d_S11_smith_output.svg', Sim.horn_number));
-    print (S11_smith_figure, S11_smith_output, "-dsvg", "-Sxsize=900");
+
+    S11_smith_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_S11_smith_output.svg', Sim.horn_number));
+    print(S11_smith_figure, S11_smith_output, "-dsvg", "-Sxsize=900");
+
+    S11_smith_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_S11_smith_output.jpg', Sim.horn_number));
+    print(S11_smith_figure, S11_smith_output, "-djpg", "-Sxsize=900");
 
     %%% NFFF plots
 
@@ -84,8 +92,12 @@ function run_simulation(Sim, port, nf2ff)
     xlabel('Theta (degrees)','FontSize', 14);
     ylabel('Directivity (dBi)','FontSize', 14);
     drawnow
-    farfield_directivity_output = strcat(Sim.output_path, sprintf('/%d_Farfield_directivity_output.svg', Sim.horn_number));
-    print (farfield_directivity_figure, farfield_directivity_output, "-dsvg", "-Sxsize=900");
+
+    farfield_directivity_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_Farfield_directivity_output.svg', Sim.horn_number));
+    print(farfield_directivity_figure, farfield_directivity_output, "-dsvg", "-Sxsize=900");
+
+    farfield_directivity_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_Farfield_directivity_output.jpg', Sim.horn_number));
+    print(farfield_directivity_figure, farfield_directivity_output, "-djpg", "-Sxsize=900");
 
     % 3) Plot Ludwig3 cross polar
     farfield_directivity_ludwig_figure = figure('position',[600,100,900,900]);
@@ -98,9 +110,14 @@ function run_simulation(Sim, port, nf2ff)
     xlabel('Theta (degrees)','FontSize', 14);
     ylabel('Directivity (dBi)','FontSize', 14);
     drawnow
-    farfield_directivity_ludwig_output = strcat(Sim.output_path, sprintf('/%d_Farfield_directivity_ludwig_output.svg', 
+    
+    farfield_directivity_ludwig_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_Farfield_directivity_ludwig_output.svg', 
                                                                                                     Sim.horn_number));
-    print (farfield_directivity_ludwig_figure, farfield_directivity_ludwig_output, "-dsvg", "-Sxsize=900");
+    print(farfield_directivity_ludwig_figure, farfield_directivity_ludwig_output, "-dsvg", "-Sxsize=900");
+
+    farfield_directivity_ludwig_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_Farfield_directivity_ludwig_output.jpg', 
+                                                                                                    Sim.horn_number));
+    print(farfield_directivity_ludwig_figure, farfield_directivity_ludwig_output, "-djpg", "-Sxsize=900");
 
     % 4) Polar plot
     farfield_directivity_polar_figure = figure('position',[600,100,900,900]);
@@ -110,9 +127,14 @@ function run_simulation(Sim, port, nf2ff)
     xlabel('Theta (degrees)','FontSize', 14);
     ylabel('Directivity (dBi)','FontSize', 14);
     drawnow
-    farfield_directivity_polar_output = strcat(Sim.output_path, sprintf('/%d_Farfield_directivity_polar_output.svg', 
+
+    farfield_directivity_polar_output = strcat(Sim.output_path, sprintf('/svg_plots/%d_Farfield_directivity_polar_output.svg', 
                                                                                                     Sim.horn_number));
-    print (farfield_directivity_polar_figure, farfield_directivity_polar_output, "-dsvg", "-Sxsize=900");
+    print(farfield_directivity_polar_figure, farfield_directivity_polar_output, "-dsvg", "-Sxsize=900");
+
+    farfield_directivity_polar_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_Farfield_directivity_polar_output.jpg', 
+                                                                                                    Sim.horn_number));
+    print(farfield_directivity_polar_figure, farfield_directivity_polar_output, "-djpg", "-Sxsize=900");
 
     %% Calculate 3D pattern
     %phiRange = sort(unique([-180:5:-100 -100:2.5:-50 -50:1:50 50:2.5:100 100:5:180]));
@@ -126,8 +148,9 @@ function run_simulation(Sim, port, nf2ff)
     radiation_pattern_figure = figure('position',[600,100,900,900]);
     colormap jet;
     plotFF3D(nf2ff, 'logscale', -40);        % plot 3D far field in dB
-    radiation_patern_output = strcat(Sim.output_path, sprintf('/%d_radiation_patern_output.jpg', Sim.horn_number));
-    print (radiation_pattern_figure, radiation_patern_output, "-djpg", "-Sxsize=900");
+
+    radiation_patern_output = strcat(Sim.output_path, sprintf('/jpg_plots/%d_radiation_patern_output.jpg', Sim.horn_number));
+    print(radiation_pattern_figure, radiation_patern_output, "-djpg", "-Sxsize=900");
 
     % Save far field in VTK to plot in ParaView
     E_far_normalized = nf2ff.E_norm{1}/max(nf2ff.E_norm{1}(:));
