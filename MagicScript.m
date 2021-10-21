@@ -108,10 +108,12 @@ Sim.delta               = 0.75;
 Sim.USE_CORRUGATIONS_A  = OFF;
 Sim.depth_a             = 0;
 Sim.a_jump              = 0;
+Sim.PROFILE_FOR_A       = 1;            % 1=Linear, 2=Tangential, 3=Exponential
 % B walls corrugations
 Sim.USE_CORRUGATIONS_B  = ON;
 Sim.depth_b             = 0;
 Sim.b_jump              = 2.5;
+Sim.PROFILE_FOR_B       = 1;            % 1=Linear, 2=Tangential, 3=Exponential
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
 Sim.num_of_corrugations = 35;
@@ -125,8 +127,6 @@ Sim.SUBSTRACT_LEFTOVERS         = YES;
 
 Sim.TIME_STEPS  = 10000;
 Sim.n_cell      = 40;                   % cell size: lambda/n_cell
-
-Sim.USE_PROFILE = 1;                    % 1=Linear, 2=Tangential, 3=Exponential
 
 % ______ End of User Editable parameters _______________________________________
 

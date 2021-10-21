@@ -44,13 +44,14 @@ function [port, nf2ff] = make_horn(Sim)
 
     SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES
     USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A
+    PROFILE_FOR_A               = Sim.PROFILE_FOR_A
     USE_CORRUGATIONS_B          = Sim.USE_CORRUGATIONS_B
+    PROFILE_FOR_B               = Sim.PROFILE_FOR_B
     SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS
 
     TIME_STEPS  = Sim.TIME_STEPS
     n_cell      = Sim.n_cell
 
-    USE_PROFILE = Sim.USE_PROFILE        % 1=Linear, 2=Tangential, 3=Exponential
     output_path = Sim.output_path
     disp('>>____________________________________________<<');
 
@@ -68,7 +69,7 @@ function [port, nf2ff] = make_horn(Sim)
 
 %%_____________________________ START OF 2D FIGURES DESIGN _____________________________
     %%% Profile for A faces %%%
-    switch (USE_PROFILE)
+    switch (PROFILE_FOR_A)
         case 1
             % Linear profile
             a_profile = ai+(ao/2-ai/2)*z/length;
@@ -188,7 +189,7 @@ function [port, nf2ff] = make_horn(Sim)
     y_for_a_subs_profile = [y_for_a_subs_profile,   outer_surface(1)+air_guard, outer_surface(1)];
 
     %%% Profile for B faces %%%
-    switch (USE_PROFILE)
+    switch (PROFILE_FOR_B)
         case 1
             % Linear profile
             b_profile = bi+(bo/2-bi/2)*z/length;
