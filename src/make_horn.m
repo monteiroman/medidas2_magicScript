@@ -73,14 +73,17 @@ function [port, nf2ff] = make_horn(Sim)
         case 1
             % Linear profile
             a_profile = ai+(ao/2-ai/2)*z/length;
+            a_mesh_step = 4;
         case 2
             % Tangential profile
             A = 1;
             rho = 2;
             a_profile = ai+(ao-ai)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
+            a_mesh_step = 8;
         case 3
             % Exponential profile
             a_profile = ai*exp(log(ao/ai)*(z/length));
+            a_mesh_step = 12;
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
@@ -193,14 +196,17 @@ function [port, nf2ff] = make_horn(Sim)
         case 1
             % Linear profile
             b_profile = bi+(bo/2-bi/2)*z/length;
+            b_mesh_step = 4;
         case 2
             % Tangential profile
             A = 1;
             rho = 2;
             b_profile = bi+(bo-bi)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
+            b_mesh_step = 8;
         case 3
             % Exponential profile
             b_profile = bi*exp(log(bo/bi)*(z/length));
+            b_mesh_step = 12;
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
@@ -359,34 +365,18 @@ function [port, nf2ff] = make_horn(Sim)
 
     % Create fixed lines for the simulation box, structure and port
     % Info at this link: http://openems.de/index.php/FDTD_Mesh
-    mesh.y = [(-mesh_b(end)-(9*max_res)-lambda_max) -mesh_b(1:4:end)+bi/2 0 mesh_b(1:4:end)-bi/2 (mesh_b(end)+(9*max_res)+
-                                                                                                            lambda_max)];
-    mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-
-    mesh.x = [(-mesh_a(end)-(9*max_res)-lambda_max) -mesh_a(1:4:end)+ai/2 0 mesh_a(1:4:end)-ai/2 (mesh_a(end)+(9*max_res)+
-                                                                                                            lambda_max)];
+    mesh.x = [(-mesh_a(end)-(9*max_res)-lambda_max) -mesh_a(1:a_mesh_step:end)+ai/2 0 mesh_a(1:a_mesh_step:end)-ai/2 ...
+                                                                                (mesh_a(end)+(9*max_res)+lambda_max)];
     mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
 
+    mesh.y = [(-mesh_b(end)-(9*max_res)-lambda_max) -mesh_b(1:b_mesh_step:end)+bi/2 0 mesh_b(1:b_mesh_step:end)-bi/2 ... 
+                                                                                (mesh_b(end)+(9*max_res)+lambda_max)];
+    mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
+
     % % Create fixed lines for the simulation box,port and given number of lines inside the horn
-    mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:end) length+2*lambda_max+(9*max_res)];
+    mesh.z = [-wg_length-lambda_max-(9*max_res) -wg_length-1 -wg_length -wg_length+10 0 z_for_a_profile(1:2:end) ...
+                                                                                length+2*lambda_max+(9*max_res)];
     mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
-
-
-
-    % mesh.y = [(-b_offset(end)-(9*max_res)-lambda_max) -bi/2 0 bi/2 (b_offset(end)+(9*max_res)+lambda_max)];
-    % mesh.y = SmoothMeshLines( mesh.y, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-
-    % mesh.x = [(-a_offset(end)-(9*max_res)-lambda_max) -ai/2 0 ai/2 (a_offset(end)+(9*max_res)+lambda_max)];
-    % mesh.x = SmoothMeshLines( mesh.x, max_res, 1.5); % Create a smooth mesh between specified fixed mesh lines
-
-    % % Create fixed lines for the simulation box,port and given number of lines inside the horn
-    % mesh.z = [-wg_length-lambda_max-(9*max_res) 0 length+2*lambda_max+(9*max_res)];
-    % mesh.z = SmoothMeshLines( mesh.z, max_res, 1.4 );
-
-
-
-
-
 
     CSX = DefineRectGrid( CSX, unit, mesh );
 
@@ -411,10 +401,10 @@ function [port, nf2ff] = make_horn(Sim)
     % https://openems.de/index.php/Polygon.html
     CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
         'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi+2*b_jump)/2) ',0']
-        });
+                                                                                });
     CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
-        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi+2*b_jump)/2) ',0']
-        });
+        'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi+2*b_jump)/2) ...
+                                                                                ',0']});
 
     % Subtract horn A walls outside geometry
     if (SUBSTRACT_LEFTOVERS);
@@ -422,26 +412,26 @@ function [port, nf2ff] = make_horn(Sim)
             'Rotate_Y', -pi/2, 'Translate',[ num2str(ai/2) ',' num2str(-(b_volume_y_end*2-bi+2*b_jump)/2) ',0']
             });
         CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_a, b_volume_y_end*2-bi+2*b_jump, 'Transform', {
-            'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' num2str((b_volume_y_end*2-bi+2*b_jump)/2) ',0']
-            });
+            'Rotate_Y', pi/2, 'Rotate_X', pi, 'Translate',[ num2str(-ai/2) ',' ...
+                                                                    num2str((b_volume_y_end*2-bi+2*b_jump)/2) ',0']});
     endif
 
     % Corrugated B walls
     CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(-bi/2) ',0']
-        });
+        'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' ...
+                                                                                num2str(-bi/2) ',0']});
     CSX = AddLinPoly( CSX, 'Corrugated_Horn', 5, 1, 0, corrugated_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
-        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(bi/2) ',0']
-        });
+        'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' ...
+                                                                                num2str(bi/2) ',0']});
 
     % Subtract horn B walls outside geometry
     if (SUBSTRACT_LEFTOVERS);
         CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
-            'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(-bi/2) ',0']
-            });
+            'Rotate_Y', -pi/2, 'Rotate_Z', -pi/2, 'Translate',[ num2str(-(a_volume_y_end*2-ai+2*a_jump)/2) ',' ...
+                                                                                num2str(-bi/2) ',0']});
         CSX = AddLinPoly( CSX, 'Air', 10, 1, 0, substract_coords_b, a_volume_y_end*2-ai+2*a_jump, 'Transform', {
-            'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' num2str(bi/2) ',0']
-            });
+            'Rotate_Y', -pi/2, 'Rotate_Z', pi/2, 'Translate',[ num2str((a_volume_y_end*2-ai+2*a_jump)/2) ',' ...
+                                                                                num2str(bi/2) ',0']});
     endif
 
 
