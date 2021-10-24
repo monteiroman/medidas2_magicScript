@@ -7,12 +7,16 @@ function h = plotFFcocx(nf2ff,varargin)
 %   nf2ff:      output of CalcNF2FF
 %
 % variable input:
-%   'freq_index':  - use the given frequency index, see nf2ff.freq
-%                  - default is 1
-%   'xaxis':       - 'phi' (default) or 'theta'
-%   'param':       - array positions of parametric plot
-%                  - if xaxis='phi', theta is parameter, and vice versa
-%                  - default is 1
+%   'freq_index':       - use the given frequency index, see nf2ff.freq
+%                       - default is 1
+%   'xaxis':            - 'phi' (default) or 'theta'
+%   'param':            - array positions of parametric plot
+%                       - if xaxis='phi', theta is parameter, and vice versa
+%                       - default is 1
+%   'linewidth':        - set the graph linewidth
+%                       - default is 1
+%   'legend_fontsize':  - set the legend font size
+%                       - default is 5
 %
 %   example:
 %       plotFFdB(nf2cocx, 'freq_index', 2, ...
@@ -33,6 +37,7 @@ freq_index = 1;
 xaxis = 'phi';
 param = 1;
 linewidth = 1;
+legend_fontsize = 5;
 
 for n=1:2:numel(varargin)
     if (strcmp(varargin{n},'freq_index')==1);
@@ -41,8 +46,10 @@ for n=1:2:numel(varargin)
         xaxis = varargin{n+1};
     elseif (strcmp(varargin{n},'param')==1);
         param = varargin{n+1};
-    elseif (strcmp(varargin{n},'Linewidth')==1);
+    elseif (strcmp(varargin{n},'linewidth')==1);
         linewidth = varargin{n+1};
+    elseif (strcmp(varargin{n},'legend_fontsize')==1);
+        legend_fontsize = varargin{n+1};
     else
         warning('openEMS:plotFFcocx',['unknown argument key: ''' varargin{n} '''']);
     end
@@ -87,7 +94,8 @@ ylabel( 'directivity (dBi)');
 
 createlegend = @(d)sprintf('%s = %3.1f',param,d / pi * 180);
 legendtext = arrayfun(createlegend,[parval, parval],'UniformOutput',0);
-legend( legendtext );
+l = legend(legendtext);
+set(l, "fontsize", legend_fontsize);
 title( sprintf('far field pattern @ f = %e Hz',nf2ff.freq(freq_index)) );
 grid on;
 

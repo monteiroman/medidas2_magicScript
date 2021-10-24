@@ -56,9 +56,8 @@ function run_simulation(Sim, port, nf2ff)
 
     % S11 Smith chart
     S11_smith_figure = figure('position',[600,100,900,900]);
-    h = polar(arg(s11), abs(s11), 'r');
-    set(h,'LineWidth',2);
-    set(gca, "linewidth",2, "fontsize", 14);
+    plotRefl(port, 'fmarkers', [f_start, f_stop], 'linewidth', 2, 'legend_fontsize', 20, 'markersize', 15);
+    set(gca,"linewidth",2, "fontsize", 14, "XTick", -180:30:180, "YTick", -30:5:40);
     title('Reflection Coefficient S_{11}', 'FontSize', 16);
     drawnow
 
@@ -83,7 +82,7 @@ function run_simulation(Sim, port, nf2ff)
 
     % 2) Directivity
     farfield_directivity_figure = figure('position',[600,100,900,900]);
-    plotFFdB(nf2ff, 'xaxis', 'theta', 'param', [1 2 3], 'Linewidth', 2);
+    plotFFdB(nf2ff, 'xaxis', 'theta', 'param', [1 2 3], 'linewidth', 2, 'legend_fontsize', 20);
     ylim([-30 25]);
     xlim([-180 180]);
     grid on
@@ -101,7 +100,7 @@ function run_simulation(Sim, port, nf2ff)
 
     % 3) Plot Ludwig3 cross polar
     farfield_directivity_ludwig_figure = figure('position',[600,100,900,900]);
-    plotFFcocx(nf2ff, 'xaxis', 'theta', 'param', [2], 'Linewidth', 2);
+    plotFFcocx(nf2ff, 'xaxis', 'theta', 'param', [2], 'linewidth', 2, 'legend_fontsize', 20);
     ylim([-30 25]);
     xlim([-180 180]);
     grid on
@@ -122,7 +121,7 @@ function run_simulation(Sim, port, nf2ff)
     % 4) Polar plot
     farfield_directivity_polar_figure = figure('position',[600,100,900,900]);
     leg=[];   %legend
-    polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12, 'Linewidth', 1);
+    polarFF(nf2ff,'xaxis','theta','param',[1 2 3],'logscale',[-30 35], 'xtics', 12, 'linewidth', 2, 'legend_fontsize', 20);
     title(sprintf('Farfield Directivity @ %.2f GHz',Sim.fcalc),'FontSize', 16);
     xlabel('Theta (degrees)','FontSize', 14);
     ylabel('Directivity (dBi)','FontSize', 14);

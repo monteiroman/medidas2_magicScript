@@ -7,21 +7,25 @@ function h = polarFF(nf2ff,varargin)
 %   nf2ff:      output of CalcNF2FF
 %
 % variable input:
-%   'freq_index':  - use the given frequency index, see nf2ff.freq
-%                  - default is 1
-%   'xaxis':       - 'phi' (default) or 'theta'
-%   'param':       - array positions of parametric plot
-%                  - if xaxis='phi', theta is parameter, and vice versa
-%                  - default is 1
-%   'normalize':   - true/false, normalize linear plot
-%                  - default is false, log-plot is always normalized!
-%   'logscale':    - if set, plot logarithmic polar
-%                  - set the dB value for point of origin if scalar
-%                  - set point of origin and maximum if 2-element array
-%                  - values below minimum will be clamped
-%                  - default is -20
-%   'xtics':       - set the number of tics for polar grid
-%                  - default is 5
+%   'freq_index':       - use the given frequency index, see nf2ff.freq
+%                       - default is 1
+%   'xaxis':            - 'phi' (default) or 'theta'
+%   'param':            - array positions of parametric plot
+%                       - if xaxis='phi', theta is parameter, and vice versa
+%                       - default is 1
+%   'normalize':        - true/false, normalize linear plot
+%                       - default is false, log-plot is always normalized!
+%   'logscale':         - if set, plot logarithmic polar
+%                       - set the dB value for point of origin if scalar
+%                       - set point of origin and maximum if 2-element array
+%                       - values below minimum will be clamped
+%                       - default is -20
+%   'xtics':            - set the number of tics for polar grid
+%                       - default is 5
+%   'linewidth':        - set the graph linewidth
+%                       - default is 1
+%   'legend_fontsize':  - set the legend font size
+%                       - default is 5
 %
 %   example:
 %       polarFF(nf2ff, 'freq_index', 2, ...
@@ -50,6 +54,7 @@ logscale = [];
 xtics = 5;
 normalize = 0;
 linewidth = 1;
+legend_fontsize = 5;
 
 for n=1:2:numel(varargin)
     if (strcmp(varargin{n},'freq_index')==1);
@@ -64,8 +69,10 @@ for n=1:2:numel(varargin)
         logscale = varargin{n+1};
     elseif (strcmp(varargin{n},'xtics')==1);
         xtics = varargin{n+1};
-    elseif (strcmp(varargin{n},'Linewidth')==1);
+    elseif (strcmp(varargin{n},'linewidth')==1);
         linewidth = varargin{n+1};
+    elseif (strcmp(varargin{n},'legend_fontsize')==1);
+        legend_fontsize = varargin{n+1};
     else
         warning('openEMS:polarFF',['unknown argument key: ''' varargin{n} '''']);
     end
@@ -92,7 +99,7 @@ if ~isempty(logscale)
 elseif (normalize==0)
     E_far = nf2ff.E_norm{freq_index};
 
-    titletext = sprintf('electrical far field [V/m] @ f = %e Hz',nf2ff.freq(freq_index));
+    titletext = sprintf('Electrical far field [V/m] @ f = %e Hz',nf2ff.freq(freq_index));
 
     gridmin = 0;
     gridmax = E_far_max;
@@ -160,7 +167,8 @@ ylabel( sprintf('%s / deg', xaxis) );
 title( titletext );
 createlegend = @(d)sprintf('%s = %3.1f',param,d / pi * 180);
 legendtext = arrayfun(createlegend,parval,'UniformOutput',0);
-legend( h, legendtext ,'location','southeast');
+l = legend(h, legendtext ,'location','southeast');
+set(l, "fontsize", legend_fontsize);
 
 % workaround for polar plot
 axis equal tight

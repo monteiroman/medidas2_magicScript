@@ -120,13 +120,13 @@ Sim.num_of_corrugations = 35;
 Sim.straight_width      = 2;
 Sim.cap_width           = 2;
 
-Sim.exc_mode            = 'TE10';
+Sim.exc_mode            = 'TE10';       % Port excitation mode
 
 Sim.SHOW_STRUCTURE_FIGURES      = YES;
-Sim.SUBSTRACT_LEFTOVERS         = YES;
+Sim.SUBSTRACT_LEFTOVERS         = YES;  % Subtracts horn leftovers with air volume
 
 Sim.TIME_STEPS  = 10000;
-Sim.n_cell      = 40;                   % cell size: lambda/n_cell
+Sim.n_cell      = 40;                   % cell_size = lambda_fmax / n_cell
 
 % ______ End of User Editable parameters _______________________________________
 
