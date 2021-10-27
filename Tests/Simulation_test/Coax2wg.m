@@ -11,7 +11,7 @@ ON  = 1;
 OFF = 0;
 
 %% switches
-run_simulation = NO;
+run_simulation = YES;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Simulacion %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 physical_constants;
@@ -29,7 +29,7 @@ cl_y            = 4;
 %%%%% Dimensiones de la guia %%%%%
 length          = 60;
 b               = 10.16;            % waveguide width  WR-75 works
-a               = 20.86;            % waveguide heigth
+a               = 22.86;            % waveguide heigth
 WallThickness   = 5.48;             % thickness of top wall
 BackShort       = 5.969;              % distance from short to center of probe
 
@@ -166,7 +166,7 @@ stop  = clearance+[cl_x+a/2+WallThickness,cl_y+b+2*WallThickness,+BackShort+Wall
 
 % waveguide port 2
 
-start = [clearance+cl_x+WallThickness   clearance+cl_y+WallThickness   length];%mesh.z(297)];
+start = [clearance+cl_x+WallThickness   clearance+cl_y+WallThickness   length-3];%mesh.z(297)];
 stop  = [clearance+cl_x+WallThickness+a clearance+cl_y+WallThickness+b length];%mesh.z(300)];
 [CSX, port{2}] = AddRectWaveGuidePort( CSX, 0, 2, start, stop, 'z', a*unit, b*unit, TE_mode);
 
