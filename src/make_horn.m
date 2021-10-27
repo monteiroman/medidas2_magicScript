@@ -31,10 +31,17 @@ function [port, nf2ff] = make_horn(Sim)
 
     corr_step           = Sim.corr_step         
     delta               = Sim.delta
+    
     depth_a             = Sim.depth_a
     a_jump              = Sim.a_jump
+    A_wall_tan_A        = Sim.A_wall_tan_A
+    A_wall_tan_rho      = Sim.A_wall_tan_rho
+
     depth_b             = Sim.depth_b
     b_jump              = Sim.b_jump
+    B_wall_tan_A        = Sim.B_wall_tan_A
+    B_wall_tan_rho      = Sim.B_wall_tan_rho
+
     wg_length           = Sim.wg_length
     num_of_corrugations = Sim.num_of_corrugations
     straight_width      = Sim.straight_width
@@ -76,8 +83,8 @@ function [port, nf2ff] = make_horn(Sim)
             a_mesh_step = 4;
         case 2
             % Tangential profile
-            A = 1;
-            rho = 2;
+            A = A_wall_tan_A;
+            rho = A_wall_tan_rho;
             a_profile = ai+(ao-ai)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
             a_mesh_step = 8;
         case 3
@@ -199,8 +206,8 @@ function [port, nf2ff] = make_horn(Sim)
             b_mesh_step = 4;
         case 2
             % Tangential profile
-            A = 1;
-            rho = 2;
+            A = B_wall_tan_A;
+            rho = B_wall_tan_rho;
             b_profile = bi+(bo-bi)*((1-A)*(z/length)+A*power(tan((pi*z)/(4*length)),rho));
             b_mesh_step = 8;
         case 3

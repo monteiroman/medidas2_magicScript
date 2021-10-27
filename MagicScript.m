@@ -104,16 +104,20 @@ Sim.bo      = 120;%49.78;
 %
 Sim.corr_step           = 3;
 Sim.delta               = 0.75;
-% A walls corrugations
-Sim.USE_CORRUGATIONS_A  = OFF;
-Sim.depth_a             = 0;
-Sim.a_jump              = 0;
-Sim.PROFILE_FOR_A       = 1;            % 1=Linear, 2=Tangential, 3=Exponential
-% B walls corrugations
-Sim.USE_CORRUGATIONS_B  = ON;
-Sim.depth_b             = 0;
-Sim.b_jump              = 2.5;
-Sim.PROFILE_FOR_B       = 1;            % 1=Linear, 2=Tangential, 3=Exponential
+% A walls setup
+    Sim.USE_CORRUGATIONS_A  = OFF;
+    Sim.depth_a             = 0;
+    Sim.a_jump              = 0;
+    Sim.PROFILE_FOR_A       = 1;        % 1=Linear, 2=Tangential, 3=Exponential
+    Sim.A_wall_tan_A        = 1;        % A coeficient for Tangential wall A
+    Sim.A_wall_tan_rho      = 2;        % rho coeficient for Tangential wall A
+% B walls setup
+    Sim.USE_CORRUGATIONS_B  = ON;
+    Sim.depth_b             = 0;
+    Sim.b_jump              = 2.5;
+    Sim.PROFILE_FOR_B       = 1;        % 1=Linear, 2=Tangential, 3=Exponential
+    Sim.B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
+    Sim.B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
 Sim.num_of_corrugations = 35;
