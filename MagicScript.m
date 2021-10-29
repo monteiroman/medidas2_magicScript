@@ -113,7 +113,7 @@ Sim.delta               = 0.75;
     Sim.A_wall_tan_A        = 1;        % A coeficient for Tangential wall A
     Sim.A_wall_tan_rho      = 2;        % rho coeficient for Tangential wall A
     % Only fot two phase linear
-    Sim.first_a_len         = 0.1;
+    Sim.first_a_length      = 0.1;
     Sim.first_ao            = 70;
 
 % B walls setup
@@ -125,7 +125,7 @@ Sim.delta               = 0.75;
     Sim.B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
     Sim.B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
     % Only fot two phase linear
-    Sim.first_b_len         = 0.3;
+    Sim.first_b_length      = 0.3;
     Sim.first_bo            = 25;
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
@@ -154,13 +154,21 @@ ai_len = length(Sim.ai);
 bi_len = length(Sim.bi);
 ao_len = length(Sim.ao);
 bo_len = length(Sim.bo);
-corr_step_len   = length(Sim.corr_step);
-delta_len       = length(Sim.delta);
-depth_a_len     = length(Sim.depth_a);
-a_jump_len      = length(Sim.a_jump);
-depth_b_len     = length(Sim.depth_b);
-b_jump_len      = length(Sim.b_jump);
-wg_length_len   = length(Sim.wg_length);
+corr_step_len       = length(Sim.corr_step);
+delta_len           = length(Sim.delta);
+depth_a_len         = length(Sim.depth_a);
+a_jump_len          = length(Sim.a_jump);
+A_wall_tan_A_len    = length(A_wall_tan_A);
+A_wall_tan_rho_len  = length(A_wall_tan_rho);
+first_a_length_len  = length(first_a_length);
+first_ao_len        = length(first_ao);
+depth_b_len         = length(Sim.depth_b);
+b_jump_len          = length(Sim.b_jump);
+B_wall_tan_A_len    = length(B_wall_tan_A);
+B_wall_tan_rho_len  = length(B_wall_tan_rho);
+first_b_length_len  = length(first_b_length);
+first_bo_len        = length(first_bo);
+wg_length_len       = length(Sim.wg_length);
 num_of_corrugations_len = length(Sim.num_of_corrugations);
 
 if (ai_len > 1);
@@ -243,6 +251,46 @@ elseif (a_jump_len > 1);
         sweep_type      = sprintf('a_jump_sweep_%.2f', a_jump_values(i));
         simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
+elseif (A_wall_tan_A_len > 1);
+    A_wall_tan_A_values = Sim.A_wall_tan_A;
+
+    for i = 1:A_wall_tan_A_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.A_wall_tan_A    = A_wall_tan_A_values(i);
+        sweep_type          = sprintf('A_wall_tan_A_sweep_%.2f', A_wall_tan_A_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (A_wall_tan_rho_len > 1);
+    A_wall_tan_rho_values = Sim.A_wall_tan_rho;
+
+    for i = 1:A_wall_tan_rho_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.A_wall_tan_rho  = A_wall_tan_rho_values(i);
+        sweep_type          = sprintf('A_wall_tan_rho_sweep_%.2f', A_wall_tan_rho_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (first_a_length_len > 1);
+    first_a_length_values = Sim.first_a_length;
+
+    for i = 1:first_a_length_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.first_a_length  = first_a_length_values(i);
+        sweep_type          = sprintf('first_a_length_sweep_%.2f', first_a_length_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (first_ao_len > 1);
+    first_ao_values = Sim.first_ao;
+
+    for i = 1:first_ao_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.first_ao        = first_ao_values(i);
+        sweep_type          = sprintf('first_ao_sweep_%.2f', first_ao_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
 elseif (depth_b_len > 1);
     depth_b_values = Sim.depth_b;
 
@@ -261,6 +309,46 @@ elseif (b_jump_len > 1);
         Sim.horn_number = i;
         Sim.b_jump      = b_jump_values(i);
         sweep_type      = sprintf('b_jump_sweep_%.2f', b_jump_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (B_wall_tan_A_len > 1);
+    B_wall_tan_A_values = Sim.B_wall_tan_A;
+
+    for i = 1:B_wall_tan_A_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.B_wall_tan_A    = B_wall_tan_A_values(i);
+        sweep_type          = sprintf('B_wall_tan_A_sweep_%.2f', B_wall_tan_A_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (B_wall_tan_rho_len > 1);
+    B_wall_tan_rho_values = Sim.B_wall_tan_rho;
+
+    for i = 1:B_wall_tan_rho_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.B_wall_tan_rho  = B_wall_tan_rho_values(i);
+        sweep_type          = sprintf('B_wall_tan_rho_sweep_%.2f', B_wall_tan_rho_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (first_b_length_len > 1);
+    first_b_length_values = Sim.first_b_length;
+
+    for i = 1:first_b_length_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.first_b_length  = first_b_length_values(i);
+        sweep_type          = sprintf('first_b_length_sweep_%.2f', first_b_length_values(i));
+        simulate(Sim, sweep_type, RUN_SIMULATION);
+    endfor
+elseif (first_ao_len > 1);
+    first_bo_values = Sim.first_bo;
+
+    for i = 1:first_bo_len;
+        close all
+        Sim.horn_number     = i;
+        Sim.first_bo        = first_bo_values(i);
+        sweep_type          = sprintf('first_bo_sweep_%.2f', first_bo_values(i));
         simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
 elseif (wg_length_len > 1);

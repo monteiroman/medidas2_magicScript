@@ -41,14 +41,14 @@ function [port, nf2ff] = make_horn(Sim)
     b_jump              = Sim.b_jump
     B_wall_tan_A        = Sim.B_wall_tan_A
     B_wall_tan_rho      = Sim.B_wall_tan_rho
-    first_b_len         = Sim.first_b_len
+    first_b_length      = Sim.first_b_length
     first_bo            = Sim.first_bo
 
     wg_length           = Sim.wg_length
     num_of_corrugations = Sim.num_of_corrugations
     straight_width      = Sim.straight_width
     cap_width           = Sim.cap_width
-    first_a_len         = Sim.first_a_len
+    first_a_length      = Sim.first_a_length
     first_ao            = Sim.first_ao
 
     exc_mode            = Sim.exc_mode
@@ -99,7 +99,7 @@ function [port, nf2ff] = make_horn(Sim)
             % Two phased Linear profile
             
             % Get the inflection point an determine first and second lengths.
-            z_inflextion = round(length * first_a_len);
+            z_inflextion = round(length * first_a_length);
             first_length = z_inflextion;
             second_length = length - z_inflextion;
             % Make lengths z vectors
@@ -246,7 +246,7 @@ function [port, nf2ff] = make_horn(Sim)
             % Two phased Linear profile
             
             % Get the inflection point an determine first and second lengths.
-            z_inflextion = round(length * first_b_len);
+            z_inflextion = round(length * first_b_length);
             first_length = z_inflextion;
             second_length = length - z_inflextion;
             % Make lengths z vectors
