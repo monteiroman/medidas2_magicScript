@@ -41,23 +41,27 @@ function [port, nf2ff] = make_horn(Sim)
     b_jump              = Sim.b_jump
     B_wall_tan_A        = Sim.B_wall_tan_A
     B_wall_tan_rho      = Sim.B_wall_tan_rho
+    first_b_len         = Sim.first_b_len
+    first_bo            = Sim.first_bo
 
     wg_length           = Sim.wg_length
     num_of_corrugations = Sim.num_of_corrugations
     straight_width      = Sim.straight_width
     cap_width           = Sim.cap_width
+    first_a_len         = Sim.first_a_len
+    first_ao            = Sim.first_ao
 
     exc_mode            = Sim.exc_mode
 
-    SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES
-    USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A
-    PROFILE_FOR_A               = Sim.PROFILE_FOR_A
-    USE_CORRUGATIONS_B          = Sim.USE_CORRUGATIONS_B
-    PROFILE_FOR_B               = Sim.PROFILE_FOR_B
-    SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS
+    SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES;
+    USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A;
+    PROFILE_FOR_A               = Sim.PROFILE_FOR_A;
+    USE_CORRUGATIONS_B          = Sim.USE_CORRUGATIONS_B;
+    PROFILE_FOR_B               = Sim.PROFILE_FOR_B;
+    SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS;
 
-    TIME_STEPS  = Sim.TIME_STEPS
-    n_cell      = Sim.n_cell
+    TIME_STEPS  = Sim.TIME_STEPS;
+    n_cell      = Sim.n_cell;
 
     output_path = Sim.output_path
     disp('>>____________________________________________<<');
@@ -91,6 +95,30 @@ function [port, nf2ff] = make_horn(Sim)
             % Exponential profile
             a_profile = ai*exp(log(ao/ai)*(z/length));
             a_mesh_step = 12;
+        case 4
+            % Two phased Linear profile
+            
+            % Get the inflection point an determine first and second lengths.
+            z_inflextion = round(length * first_a_len);
+            first_length = z_inflextion;
+            second_length = length - z_inflextion;
+            % Make lengths z vectors
+            first_z = 0:corr_step:first_length;
+            second_z = first_z(end):corr_step:length;
+            % First profile
+            a_profile = ai+(first_ao/2-ai/2)*first_z/(first_length);
+            second_ai = a_profile(end);
+            % Second profile
+            a_profile_second =  second_ai+(ao/2-second_ai/2)*second_z/(second_length);
+            % Subtract first point of the second profile with the last of the first to determine the
+            %   matching value.
+            match_profiles = a_profile_second(1) - a_profile(end);
+            a_profile_second = a_profile_second - match_profiles;
+
+            a_profile = [a_profile, a_profile_second(2:end)];
+
+            % Mesh constant
+            a_mesh_step = 4;
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
@@ -214,6 +242,30 @@ function [port, nf2ff] = make_horn(Sim)
             % Exponential profile
             b_profile = bi*exp(log(bo/bi)*(z/length));
             b_mesh_step = 12;
+        case 4
+            % Two phased Linear profile
+            
+            % Get the inflection point an determine first and second lengths.
+            z_inflextion = round(length * first_b_len);
+            first_length = z_inflextion;
+            second_length = length - z_inflextion;
+            % Make lengths z vectors
+            first_z = 0:corr_step:first_length;
+            second_z = first_z(end):corr_step:length;
+            % First profile
+            b_profile = bi+(first_bo/2-bi/2)*first_z/(first_length);
+            second_bi = b_profile(end);
+            % Second profile
+            b_profile_second =  second_bi+(bo/2-second_bi/2)*second_z/(second_length);
+            % Subtract first point of the second profile with the last of the first to determine the
+            %   matching value.
+            match_profiles = b_profile_second(1) - b_profile(end);
+            b_profile_second = b_profile_second - match_profiles;
+
+            b_profile = [b_profile, b_profile_second(2:end)];
+
+            % Mesh constant
+            b_mesh_step = 4;
     endswitch
 
     if (SHOW_STRUCTURE_FIGURES);
@@ -225,6 +277,7 @@ function [port, nf2ff] = make_horn(Sim)
         title( 'Linear Horn B Profile', 'FontSize', 16 );
         axis equal;
     endif
+
 
     if (USE_CORRUGATIONS_B);
         % Corrugations depths.
