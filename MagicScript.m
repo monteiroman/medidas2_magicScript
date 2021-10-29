@@ -125,8 +125,8 @@ Sim.delta               = 0.75;
     Sim.B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
     Sim.B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
     % Only fot two phase linear
-    Sim.first_b_length      = 0.3;
-    Sim.first_bo            = 25;
+    Sim.first_b_length      = 0.6;
+    Sim.first_bo            = 50;
 
 Sim.wg_length           = 60;           % Length of feeding waveguide
 Sim.num_of_corrugations = 35;
@@ -158,16 +158,16 @@ corr_step_len       = length(Sim.corr_step);
 delta_len           = length(Sim.delta);
 depth_a_len         = length(Sim.depth_a);
 a_jump_len          = length(Sim.a_jump);
-A_wall_tan_A_len    = length(A_wall_tan_A);
-A_wall_tan_rho_len  = length(A_wall_tan_rho);
-first_a_length_len  = length(first_a_length);
-first_ao_len        = length(first_ao);
+A_wall_tan_A_len    = length(Sim.A_wall_tan_A);
+A_wall_tan_rho_len  = length(Sim.A_wall_tan_rho);
+first_a_length_len  = length(Sim.first_a_length);
+first_ao_len        = length(Sim.first_ao);
 depth_b_len         = length(Sim.depth_b);
 b_jump_len          = length(Sim.b_jump);
-B_wall_tan_A_len    = length(B_wall_tan_A);
-B_wall_tan_rho_len  = length(B_wall_tan_rho);
-first_b_length_len  = length(first_b_length);
-first_bo_len        = length(first_bo);
+B_wall_tan_A_len    = length(Sim.B_wall_tan_A);
+B_wall_tan_rho_len  = length(Sim.B_wall_tan_rho);
+first_b_length_len  = length(Sim.first_b_length);
+first_bo_len        = length(Sim.first_bo);
 wg_length_len       = length(Sim.wg_length);
 num_of_corrugations_len = length(Sim.num_of_corrugations);
 
@@ -341,7 +341,7 @@ elseif (first_b_length_len > 1);
         sweep_type          = sprintf('first_b_length_sweep_%.2f', first_b_length_values(i));
         simulate(Sim, sweep_type, RUN_SIMULATION);
     endfor
-elseif (first_ao_len > 1);
+elseif (first_bo_len > 1);
     first_bo_values = Sim.first_bo;
 
     for i = 1:first_bo_len;
