@@ -12,53 +12,8 @@ YES = 1;
 NO  = 0;
 ON  = 1;
 OFF = 0;
-
-%%
-%%  Simulation function
-%%
-function simulate(Sim, sweep_type, RUN_SIMULATION)
-    %%  
-    %%  This function makes the simulation directory, calls make_horn for make 
-    %%  the 3D structure and then calls run_simulation if it is required to. 
-    %%  
-    %%  Parameters:
-    %%          Sim: Horn simulation parameters.
-    %%          sweep_type: String detailing sweep type.
-    %%          RUN_SIMULATION: Flag that determines if the simulation must be 
-    %%                          done.
-    %%  Returns:
-    %%          void
-    %%
-
-    %% ----->> Output simulation particular folder <<-----
-    sweep_type = strcat('/', sweep_type);
-    if (Sim.horn_number == 0);
-        sweep_path = strcat(sweep_type, '_Horn_output');
-    else
-        sweep_path = strcat(sweep_type, sprintf('_Horn_n%d_output',Sim.horn_number));
-    endif
-    Sim.output_path = strcat(Sim.output_path, sweep_path);
-    [status, message, messageid] = mkdir(Sim.output_path);
-    [status, message, messageid] = mkdir(strcat(Sim.output_path, '/svg_plots'));
-    [status, message, messageid] = mkdir(strcat(Sim.output_path, '/jpg_plots'));
-
-    %% ----->> Make horn structure and save openEMS XML simulation file at "<Sim_Path>/<Sim_CSX>"  <<-----
-    [port, nf2ff] = make_horn(Sim);
-
-    %% ----->> Simulate and store 3D files <<-----
-    if (RUN_SIMULATION);
-        run_simulation(Sim, port, nf2ff);
-
-        % Move output files to uotput folder
-        movefile(strcat(Sim.Sim_Path, '/*.txt'), Sim.output_path);
-        disp("--->> Moving 3D files to output folder... <<---");
-        out_3d = strcat(Sim.output_path, '/3D_Outputs');
-        [status, message, messageid] = mkdir(out_3d);
-        movefile(strcat(Sim.Sim_Path, '/*.stl'), out_3d);
-        movefile(strcat(Sim.Sim_Path, '/*.vtk'), out_3d);
-    endif
-endfunction
-
+Sim.horn_number = 0;
+Sim.adapt_number = 0;
 %------------------------------------------------------------------------------%
 %                                   MagicScript                                %
 %------------------------------------------------------------------------------%
@@ -70,22 +25,29 @@ endfunction
 %%    E.g. Sim.ao = 5:1:10;    % will sweep between 6 simulations with ao 
 %%                                  starting at 5 and finishing at 10.
 
-% ______ User Editable parameters ______________________________________________
-RUN_SIMULATION = ON;
+%
+% >>>>>> User Editable parameters >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+%
+
+%___ General parameters __________________
+RUN_SIMULATION  = ON;
+Sim.MAKE_HORN   = OFF;
+Sim.MAKE_ADAPT  = ON;
 
 Sim.output_path = 'outputs/';
 Sim.Sim_Path    = 'tmp/';
-Sim.Sim_CSX     = 'Corrugated_Horn.xml';
+Sim.Sim_CSX     = 'Simulation.xml';
 
 Sim.fmin    = 8;                     % Minimum frequency in GHz
 Sim.fmax    = 12;                    % Maximum frequency in GHz
 Sim.fcalc   = 10;                    % Frequency to calculate fields
 
-Sim.ai      = 22.86;
-Sim.bi      = 10.16;
+%___ Horn parameters _____________________
+Sim.horn_ai      = 22.86;
+Sim.horn_bi      = 10.16;
 
-Sim.ao      = 145;%63.75;
-Sim.bo      = 120;%49.78;
+Sim.horn_ao      = 145;%63.75;
+Sim.horn_bo      = 120;%49.78;
 
 %__ Corrugated profile ____
 %
@@ -102,280 +64,76 @@ Sim.bo      = 120;%49.78;
 % If Sim.depth is set to 0 it goes from fcalc/2 to fcalc/4 across flare length.
 % If Sim.USE_CORRUGATIONS_A/B are set to NO or OFF then depth_a/b are ignored.
 %
-Sim.corr_step           = 3;
-Sim.delta               = 0.75;
+Sim.horn_corr_step           = 3;
+Sim.horn_delta               = 0.75;
 % A walls setup
-    Sim.USE_CORRUGATIONS_A  = OFF;
-    Sim.depth_a             = 0;
-    Sim.a_jump              = 0;
-    Sim.PROFILE_FOR_A       = 1;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
+    Sim.HORN_USE_CORRUGATIONS_A  = OFF;
+    Sim.horn_depth_a             = 0;
+    Sim.horn_a_jump              = 0;
+    Sim.HORN_PROFILE_FOR_A       = 1;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
     % Only for Tangential profile
-    Sim.A_wall_tan_A        = 1;        % A coeficient for Tangential wall A
-    Sim.A_wall_tan_rho      = 2;        % rho coeficient for Tangential wall A
+    Sim.horn_A_wall_tan_A        = 1;        % A coeficient for Tangential wall A
+    Sim.horn_A_wall_tan_rho      = 2;        % rho coeficient for Tangential wall A
     % Only fot two phase linear
-    Sim.first_a_length      = 0.1;
-    Sim.first_ao            = 70;
+    Sim.horn_first_a_length      = 0.1;
+    Sim.horn_first_ao            = 70;
 
 % B walls setup
-    Sim.USE_CORRUGATIONS_B  = ON;
-    Sim.depth_b             = 0;
-    Sim.b_jump              = 2.5;
-    Sim.PROFILE_FOR_B       = 4;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
+    Sim.HORN_USE_CORRUGATIONS_B  = ON;
+    Sim.horn_depth_b             = 0;
+    Sim.horn_b_jump              = 3.5;
+    Sim.HORN_PROFILE_FOR_B       = 4;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
     % Only for Tangential profile
-    Sim.B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
-    Sim.B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
+    Sim.horn_B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
+    Sim.horn_B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
     % Only fot two phase linear
-    Sim.first_b_length      = 0.6;
-    Sim.first_bo            = 50;
+    Sim.horn_first_b_length      = 0.2;
+    Sim.horn_first_bo            = 25;
 
-Sim.wg_length           = 60;           % Length of feeding waveguide
-Sim.num_of_corrugations = 35;
-Sim.straight_width      = 2;
-Sim.cap_width           = 2;
+Sim.horn_wg_length           = 60;           % Length of feeding waveguide
+Sim.horn_num_of_corrugations = 35;
+Sim.horn_straight_width      = 2;
+Sim.horn_cap_width           = 2;
 
-Sim.exc_mode            = 'TE10';       % Port excitation mode
+Sim.horn_exc_mode            = 'TE10';       % Port excitation mode
 
-Sim.SHOW_STRUCTURE_FIGURES      = YES;
-Sim.SUBSTRACT_LEFTOVERS         = YES;  % Subtracts horn leftovers with air volume
+Sim.HORN_SHOW_STRUCTURE_FIGURES      = YES;
+Sim.HORN_SUBSTRACT_LEFTOVERS         = YES;  % Subtracts horn leftovers with air volume
 
-Sim.TIME_STEPS  = 10000;
-Sim.n_cell      = 40;                   % cell_size = lambda_fmax / n_cell
-
-% ______ End of User Editable parameters _______________________________________
+Sim.HORN_TIME_STEPS = 10000;
+Sim.horn_n_cell     = 40;                   % cell_size = lambda_fmax / n_cell
 
 
-%% ----->> Generic simulation output folder <<----- 
-confirm_recursive_rmdir(0);                                     % Do not asks if remove directory
-[status, message, messageid] = rmdir( Sim.output_path, 's');    % Clear previous directory
-[status, message, messageid] = mkdir( Sim.output_path );        % Create empty simulation folder
+%___ Adapter parameters __________________
+Sim.ADAPT_TIME_STEPS = 50000; %max. number of timesteps
 
-%% ----->> Check parameters and sweep if necessary <<----- 
-ai_len = length(Sim.ai);
-bi_len = length(Sim.bi);
-ao_len = length(Sim.ao);
-bo_len = length(Sim.bo);
-corr_step_len       = length(Sim.corr_step);
-delta_len           = length(Sim.delta);
-depth_a_len         = length(Sim.depth_a);
-a_jump_len          = length(Sim.a_jump);
-A_wall_tan_A_len    = length(Sim.A_wall_tan_A);
-A_wall_tan_rho_len  = length(Sim.A_wall_tan_rho);
-first_a_length_len  = length(Sim.first_a_length);
-first_ao_len        = length(Sim.first_ao);
-depth_b_len         = length(Sim.depth_b);
-b_jump_len          = length(Sim.b_jump);
-B_wall_tan_A_len    = length(Sim.B_wall_tan_A);
-B_wall_tan_rho_len  = length(Sim.B_wall_tan_rho);
-first_b_length_len  = length(Sim.first_b_length);
-first_bo_len        = length(Sim.first_bo);
-wg_length_len       = length(Sim.wg_length);
-num_of_corrugations_len = length(Sim.num_of_corrugations);
+% waveguide dimensions and mode
+Sim.adapt_m = 1;
+Sim.adapt_n = 0;
 
-if (ai_len > 1);
-    ai_values = Sim.ai;
+Sim.adapt_length          = 60;
+Sim.adapt_b               = 10.16;            % waveguide width  WR-75 works
+Sim.adapt_a               = 22.86;            % waveguide heigth
+Sim.adapt_WallThickness   = 2;                % walls thickness
+Sim.adapt_BackShort       = 7;                % distance from short to center of probe
 
-    for i = 1:ai_len;
-        close all                                   % Prevent memory leakage
-        Sim.horn_number = i;
-        Sim.ai          = ai_values(i);
-        sweep_type      = sprintf('ai_sweep_%.2f', ai_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (bi_len > 1);
-    bi_values = Sim.bi;
 
-    for i = 1:bi_len;
-        close all
-        Sim.horn_number = i;
-        Sim.bi          = bi_values(i);
-        sweep_type      = sprintf('bi_sweep_%.2f', bi_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (ao_len > 1);
-    ao_values = Sim.ao;
+%%%%% Conector N %%%%%
+Sim.adapt_InnerCond_N     = 3.086;            %inner diameter
+Sim.adapt_OuterCond_N     = 8.636;            %inner diam of outer conductor
+Sim.adapt_OuterCondOD_N   = 14;               % outer diam of outer conductor
+Sim.adapt_ProbeDepth      = 7;              % Probe insertion depth inside waveguide  ?????
+Sim.adapt_N_Length        = 10.72;            % length of N connector
+Sim.adapt_epsR            = 2.08;
 
-    for i = 1:ao_len;
-        close all
-        Sim.horn_number = i;
-        Sim.ao          = ao_values(i);
-        sweep_type      = sprintf('ao_sweep_%.2f', ao_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (bo_len > 1);
-    bo_values = Sim.bo;
+Sim.adapt_mesh_res        = [.2 .2 .2];
+Sim.adapt_space           = 5;
+Sim.adapt_exc_mode        = 'TE10';
 
-    for i = 1:bo_len;
-        close all
-        Sim.horn_number = i;
-        Sim.bo          = bo_values(i);
-        sweep_type      = sprintf('bo_sweep_%.2f', bo_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (corr_step_len > 1);
-    corr_step_values = Sim.corr_step;
+%
+% <<<<<< End of User Editable parameters <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+%
 
-    for i = 1:corr_step_len;
-        close all
-        Sim.horn_number = i;
-        Sim.corr_step   = corr_step_values(i);
-        sweep_type      = sprintf('corr_step_sweep_%.2f', corr_step_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (delta_len > 1);
-    delta_values = Sim.delta;
-
-    for i = 1:delta_len;
-        close all
-        Sim.horn_number = i;
-        Sim.delta       = delta_values(i);
-        sweep_type      = sprintf('delta_sweep_%.2f', delta_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (depth_a_len > 1);
-    depth_a_values = Sim.depth_a;
-
-    for i = 1:depth_a_len;
-        close all
-        Sim.horn_number = i;
-        Sim.depth_a     = depth_a_values(i);
-        sweep_type      = sprintf('depth_a_sweep_%.2f', depth_a_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (a_jump_len > 1);
-    a_jump_values = Sim.a_jump;
-
-    for i = 1:a_jump_len;
-        close all
-        Sim.horn_number = i;
-        Sim.a_jump      = a_jump_values(i);
-        sweep_type      = sprintf('a_jump_sweep_%.2f', a_jump_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (A_wall_tan_A_len > 1);
-    A_wall_tan_A_values = Sim.A_wall_tan_A;
-
-    for i = 1:A_wall_tan_A_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.A_wall_tan_A    = A_wall_tan_A_values(i);
-        sweep_type          = sprintf('A_wall_tan_A_sweep_%.2f', A_wall_tan_A_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (A_wall_tan_rho_len > 1);
-    A_wall_tan_rho_values = Sim.A_wall_tan_rho;
-
-    for i = 1:A_wall_tan_rho_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.A_wall_tan_rho  = A_wall_tan_rho_values(i);
-        sweep_type          = sprintf('A_wall_tan_rho_sweep_%.2f', A_wall_tan_rho_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (first_a_length_len > 1);
-    first_a_length_values = Sim.first_a_length;
-
-    for i = 1:first_a_length_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.first_a_length  = first_a_length_values(i);
-        sweep_type          = sprintf('first_a_length_sweep_%.2f', first_a_length_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (first_ao_len > 1);
-    first_ao_values = Sim.first_ao;
-
-    for i = 1:first_ao_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.first_ao        = first_ao_values(i);
-        sweep_type          = sprintf('first_ao_sweep_%.2f', first_ao_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (depth_b_len > 1);
-    depth_b_values = Sim.depth_b;
-
-    for i = 1:depth_b_len;
-        close all
-        Sim.horn_number = i;
-        Sim.depth_b     = depth_b_values(i);
-        sweep_type      = sprintf('depth_b_sweep_%.2f', depth_b_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (b_jump_len > 1);
-    b_jump_values = Sim.b_jump;
-
-    for i = 1:b_jump_len;
-        close all
-        Sim.horn_number = i;
-        Sim.b_jump      = b_jump_values(i);
-        sweep_type      = sprintf('b_jump_sweep_%.2f', b_jump_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (B_wall_tan_A_len > 1);
-    B_wall_tan_A_values = Sim.B_wall_tan_A;
-
-    for i = 1:B_wall_tan_A_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.B_wall_tan_A    = B_wall_tan_A_values(i);
-        sweep_type          = sprintf('B_wall_tan_A_sweep_%.2f', B_wall_tan_A_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (B_wall_tan_rho_len > 1);
-    B_wall_tan_rho_values = Sim.B_wall_tan_rho;
-
-    for i = 1:B_wall_tan_rho_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.B_wall_tan_rho  = B_wall_tan_rho_values(i);
-        sweep_type          = sprintf('B_wall_tan_rho_sweep_%.2f', B_wall_tan_rho_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (first_b_length_len > 1);
-    first_b_length_values = Sim.first_b_length;
-
-    for i = 1:first_b_length_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.first_b_length  = first_b_length_values(i);
-        sweep_type          = sprintf('first_b_length_sweep_%.2f', first_b_length_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (first_bo_len > 1);
-    first_bo_values = Sim.first_bo;
-
-    for i = 1:first_bo_len;
-        close all
-        Sim.horn_number     = i;
-        Sim.first_bo        = first_bo_values(i);
-        sweep_type          = sprintf('first_bo_sweep_%.2f', first_bo_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (wg_length_len > 1);
-    wg_length_values = Sim.wg_length;
-
-    for i = 1:wg_length_len;
-        close all
-        Sim.horn_number = i;
-        Sim.wg_length   = wg_length_values(i);
-        sweep_type      = sprintf('wg_length_sweep_%.2f', wg_length_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-elseif (num_of_corrugations_len > 1);
-    num_of_corrugations_values = Sim.num_of_corrugations;
-
-    for i = 1:num_of_corrugations_len;
-        close all
-        Sim.horn_number         = i;
-        Sim.num_of_corrugations = num_of_corrugations_values(i);
-        sweep_type              = sprintf('num_of_corrugations_sweep_%d', num_of_corrugations_values(i));
-        simulate(Sim, sweep_type, RUN_SIMULATION);
-    endfor
-else
-    close all
-    Sim.horn_number = 0;
-    sweep_type = 'no_sweep';
-    simulate(Sim, sweep_type, RUN_SIMULATION);
-endif
+simulation_core(Sim, RUN_SIMULATION);
 
 disp(">>-------------------- Simulation fineshed! --------------------<<");

@@ -3,7 +3,7 @@
 %%
 %%  Author: Tiago Monteiro
 %%
-function run_simulation(Sim, port, nf2ff)
+function run_horn_simulation(Sim, port, nf2ff)
     %%
     %%  Runs the OpenEMS simulation and stores output graphics.
     %%

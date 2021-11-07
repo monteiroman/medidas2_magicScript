@@ -21,49 +21,49 @@ function [port, nf2ff] = make_horn(Sim)
     fmax    = Sim.fmax
     fcalc   = Sim.fcalc
 
-    ai = Sim.ai
-    bi = Sim.bi
+    ai = Sim.horn_ai
+    bi = Sim.horn_bi
 
-    ao = Sim.ao
-    bo = Sim.bo
+    ao = Sim.horn_ao
+    bo = Sim.horn_bo
 
     horn_number         = Sim.horn_number;
 
-    corr_step           = Sim.corr_step         
-    delta               = Sim.delta
+    corr_step           = Sim.horn_corr_step         
+    delta               = Sim.horn_delta
     
-    depth_a             = Sim.depth_a
-    a_jump              = Sim.a_jump
-    A_wall_tan_A        = Sim.A_wall_tan_A
-    A_wall_tan_rho      = Sim.A_wall_tan_rho
+    depth_a             = Sim.horn_depth_a
+    a_jump              = Sim.horn_a_jump
+    A_wall_tan_A        = Sim.horn_A_wall_tan_A
+    A_wall_tan_rho      = Sim.horn_A_wall_tan_rho
+    first_a_length      = Sim.horn_first_a_length
+    first_ao            = Sim.horn_first_ao
 
-    depth_b             = Sim.depth_b
-    b_jump              = Sim.b_jump
-    B_wall_tan_A        = Sim.B_wall_tan_A
-    B_wall_tan_rho      = Sim.B_wall_tan_rho
-    first_b_length      = Sim.first_b_length
-    first_bo            = Sim.first_bo
+    depth_b             = Sim.horn_depth_b
+    b_jump              = Sim.horn_b_jump
+    B_wall_tan_A        = Sim.horn_B_wall_tan_A
+    B_wall_tan_rho      = Sim.horn_B_wall_tan_rho
+    first_b_length      = Sim.horn_first_b_length
+    first_bo            = Sim.horn_first_bo
 
-    wg_length           = Sim.wg_length
-    num_of_corrugations = Sim.num_of_corrugations
-    straight_width      = Sim.straight_width
-    cap_width           = Sim.cap_width
-    first_a_length      = Sim.first_a_length
-    first_ao            = Sim.first_ao
+    wg_length           = Sim.horn_wg_length
+    num_of_corrugations = Sim.horn_num_of_corrugations
+    straight_width      = Sim.horn_straight_width
+    cap_width           = Sim.horn_cap_width
+    
+    exc_mode            = Sim.horn_exc_mode
 
-    exc_mode            = Sim.exc_mode
+    SHOW_STRUCTURE_FIGURES      = Sim.HORN_SHOW_STRUCTURE_FIGURES;
+    USE_CORRUGATIONS_A          = Sim.HORN_USE_CORRUGATIONS_A;
+    PROFILE_FOR_A               = Sim.HORN_PROFILE_FOR_A;
+    USE_CORRUGATIONS_B          = Sim.HORN_USE_CORRUGATIONS_B;
+    PROFILE_FOR_B               = Sim.HORN_PROFILE_FOR_B;
+    SUBSTRACT_LEFTOVERS         = Sim.HORN_SUBSTRACT_LEFTOVERS;
 
-    SHOW_STRUCTURE_FIGURES      = Sim.SHOW_STRUCTURE_FIGURES;
-    USE_CORRUGATIONS_A          = Sim.USE_CORRUGATIONS_A;
-    PROFILE_FOR_A               = Sim.PROFILE_FOR_A;
-    USE_CORRUGATIONS_B          = Sim.USE_CORRUGATIONS_B;
-    PROFILE_FOR_B               = Sim.PROFILE_FOR_B;
-    SUBSTRACT_LEFTOVERS         = Sim.SUBSTRACT_LEFTOVERS;
+    TIME_STEPS  = Sim.HORN_TIME_STEPS;
+    n_cell      = Sim.horn_n_cell;
 
-    TIME_STEPS  = Sim.TIME_STEPS;
-    n_cell      = Sim.n_cell;
-
-    output_path = Sim.output_path
+    output_path = Sim.output_path;
     disp('>>____________________________________________<<');
 
     % Save variables for analysis
