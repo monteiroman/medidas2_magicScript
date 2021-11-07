@@ -119,19 +119,20 @@ Sim.adapt_BackShort       = 7;                % distance from short to center of
 
 
 %%%%% Conector N %%%%%
-Sim.adapt_InnerCond_N     = 3.086;            %inner diameter
-Sim.adapt_OuterCond_N     = 8.636;            %inner diam of outer conductor
-Sim.adapt_OuterCondOD_N   = 14;               % outer diam of outer conductor
-Sim.adapt_ProbeDepth      = 7;              % Probe insertion depth inside waveguide  ?????
-Sim.adapt_N_Length        = 10.72;            % length of N connector
-Sim.adapt_epsR            = 2.08;
+Sim.adapt_InnerCond_N           = 3.04;            %inner diameter
+Sim.adapt_OuterCond_N           = 8.13;            %inner diam of outer conductor
+Sim.adapt_OuterCondOD_N         = 15.8;               % outer diam of outer conductor
+Sim.adapt_ProbeDepth            = 5;              % Probe insertion depth inside waveguide
+Sim.adapt_dielectric_intrusion  = 1:0.5:1.5;
+Sim.adapt_N_Length              = 10.72;            % length of N connector
+Sim.adapt_epsR                  = 2.08;             % Teflon permitivity
 
-Sim.adapt_mesh_res        = [.2 .2 .2];
+Sim.adapt_mesh_res        = [.5 .5 .5];
 Sim.adapt_space           = 5;
 Sim.adapt_exc_mode        = 'TE10';
 
 %
-% <<<<<< End of User Editable parameters <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+% <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< End of User Editable parameters <<<<<<
 %
 
 simulation_core(Sim, RUN_SIMULATION);

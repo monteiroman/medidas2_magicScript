@@ -26,12 +26,13 @@ function [port, freq] = make_adapter(Sim)
 
 
     %%%%% Conector N %%%%%
-    InnerCond_N     = Sim.adapt_InnerCond_N            %inner diameter
-    OuterCond_N     = Sim.adapt_OuterCond_N            %inner diam of outer conductor
-    OuterCondOD_N   = Sim.adapt_OuterCondOD_N               % outer diam of outer conductor
-    ProbeDepth      = Sim.adapt_ProbeDepth              % Probe insertion depth inside waveguide  ?????
-    N_Length        = Sim.adapt_N_Length            % length of N connector
-    epsR            = Sim.adapt_epsR
+    InnerCond_N          = Sim.adapt_InnerCond_N            %inner diameter
+    OuterCond_N          = Sim.adapt_OuterCond_N            %inner diam of outer conductor
+    OuterCondOD_N        = Sim.adapt_OuterCondOD_N               % outer diam of outer conductor
+    ProbeDepth           = Sim.adapt_ProbeDepth              % Probe insertion depth inside waveguide
+    N_Length             = Sim.adapt_N_Length            % length of N connector
+    dielectric_intrusion = Sim.adapt_dielectric_intrusion
+    epsR                 = Sim.adapt_epsR
 
     space = Sim.adapt_space
 
@@ -75,7 +76,7 @@ function [port, freq] = make_adapter(Sim)
     Settings.LogFile = 'openEMS.log';
 
     %% setup FDTD parameter & excitation function %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    FDTD = InitFDTD('NrTS',NumTS,'EndCriteria', 1e-5); 
+    FDTD = InitFDTD('NrTS',NumTS,'EndCriteria', 1e-4); 
     FDTD = SetGaussExcite(FDTD,.5*(f_stop+f_start),.5*(f_stop-f_start));    
 
     BC = {'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8' 'PML_8'};   
@@ -109,22 +110,24 @@ function [port, freq] = make_adapter(Sim)
 
     CSX = AddBox(CSX,'metal',0, [-WallThickness -WallThickness length], [a+WallThickness b+WallThickness length+WallThickness]);
 
-
     %% drill hole for _N probe to enter
-    CSX = AddMaterial(CSX,'air');
-    CSX = SetMaterialProperty(CSX,'air','Epsilon',1.0,'Mue',1.0);
-    % More info of AddCylinder here:
-    %                       https://openems.de/index.php/Cylinder.html
-    CSX = AddCylinder(CSX,'air',20,[a/2 b length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
+    CSX = AddMaterial( CSX, 'teflon' );
+    CSX = SetMaterialProperty( CSX, 'teflon', 'Epsilon', epsR);
+
+    if (dielectric_intrusion >= WallThickness);
+        % More info of AddCylinder here:
+        %                       https://openems.de/index.php/Cylinder.html
+        CSX = AddCylinder(CSX,'teflon',20,[a/2 b-dielectric_intrusion length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
+    else
+        CSX = AddMaterial(CSX,'air');
+        CSX = SetMaterialProperty(CSX,'air','Epsilon',1.0,'Mue',1.0);
+    
+        CSX = AddCylinder(CSX,'air',20,[a/2 b length-BackShort], [a/2 b+(WallThickness-dielectric_intrusion) length-BackShort],OuterCond_N/2);
+        CSX = AddCylinder(CSX,'teflon',20,[a/2 b+(WallThickness-dielectric_intrusion) length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
+    endif
 
     %% add _N center conductor probe to waveguide
     CSX = AddCylinder(CSX,'metal2',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],InnerCond_N/2);
-
-    %% add teflon dielectric material
-
-    CSX = AddMaterial( CSX, 'teflon' );
-    CSX = SetMaterialProperty( CSX, 'teflon', 'Epsilon', epsR);
-    %% no need for AddBox because teflon shape is set in AddCoaxialPort
 
     %%% coax and coax port #1
 
