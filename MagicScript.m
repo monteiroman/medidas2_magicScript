@@ -112,7 +112,7 @@ Sim.adapt_m = 1;
 Sim.adapt_n = 0;
 
 Sim.adapt_length          = 60;
-Sim.adapt_b               = 10.16;            % waveguide width  WR-75 works
+Sim.adapt_b               = 10.16;            % waveguide width 
 Sim.adapt_a               = 22.86;            % waveguide heigth
 Sim.adapt_WallThickness   = 2;                % walls thickness
 Sim.adapt_BackShort       = 7;                % distance from short to center of probe
@@ -123,7 +123,9 @@ Sim.adapt_InnerCond_N           = 3.04;            %inner diameter
 Sim.adapt_OuterCond_N           = 8.13;            %inner diam of outer conductor
 Sim.adapt_OuterCondOD_N         = 15.8;               % outer diam of outer conductor
 Sim.adapt_ProbeDepth            = 5;              % Probe insertion depth inside waveguide
-Sim.adapt_dielectric_intrusion  = 1:0.5:1.5;
+Sim.adapt_dielectric_intrusion  = 1:0.5:4;
+Sim.ADAPT_ADD_SPHERE            = NO;
+Sim.adapt_sph_rad               = 2;
 Sim.adapt_N_Length              = 10.72;            % length of N connector
 Sim.adapt_epsR                  = 2.08;             % Teflon permitivity
 

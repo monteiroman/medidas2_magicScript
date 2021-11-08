@@ -32,11 +32,14 @@ function [port, freq] = make_adapter(Sim)
     ProbeDepth           = Sim.adapt_ProbeDepth              % Probe insertion depth inside waveguide
     N_Length             = Sim.adapt_N_Length            % length of N connector
     dielectric_intrusion = Sim.adapt_dielectric_intrusion
+    sph_rad              = Sim.adapt_sph_rad
     epsR                 = Sim.adapt_epsR
 
-    space = Sim.adapt_space
+    space       = Sim.adapt_space
 
-    Sim_Path = Sim.Sim_Path;
+    ADD_SPHERE  = Sim.ADAPT_ADD_SPHERE;
+
+    Sim_Path    = Sim.Sim_Path;
 
 
     %%%%% Setup %%%%%%
@@ -97,23 +100,23 @@ function [port, freq] = make_adapter(Sim)
 
     CSX = DefineRectGrid(CSX, unit,mesh);
 
-    %% add metal top to waveguide   
+    %% Add materials properties   
     CSX = AddMetal(CSX,'metal');  %% metal is PEC
     CSX = AddMetal(CSX,'metal2');  %% metal is PEC
+    CSX = AddMaterial( CSX, 'teflon' );
+    CSX = SetMaterialProperty( CSX, 'teflon', 'Epsilon', epsR);
     % AddBox info at:
     %       https://openems.de/index.php/Box.html
+    % Top and bottom walls
     CSX = AddBox(CSX,'metal',0, [0 b 0], [a b+WallThickness length]);
     CSX = AddBox(CSX,'metal',0, [0 0 0], [a -WallThickness length]);
-
+    % Lateral walls
     CSX = AddBox(CSX,'metal',0, [a -WallThickness 0], [a+WallThickness b+WallThickness length]);
     CSX = AddBox(CSX,'metal',0, [0 -WallThickness 0], [-WallThickness b+WallThickness length]);
-
+    % Back wall
     CSX = AddBox(CSX,'metal',0, [-WallThickness -WallThickness length], [a+WallThickness b+WallThickness length+WallThickness]);
 
     %% drill hole for _N probe to enter
-    CSX = AddMaterial( CSX, 'teflon' );
-    CSX = SetMaterialProperty( CSX, 'teflon', 'Epsilon', epsR);
-
     if (dielectric_intrusion >= WallThickness);
         % More info of AddCylinder here:
         %                       https://openems.de/index.php/Cylinder.html
@@ -128,6 +131,11 @@ function [port, freq] = make_adapter(Sim)
 
     %% add _N center conductor probe to waveguide
     CSX = AddCylinder(CSX,'metal2',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],InnerCond_N/2);
+
+    if (ADD_SPHERE);
+        sph_center = [a/2 b-ProbeDepth length-BackShort];
+        CSX = AddSphere(CSX, 'metal2', 30, sph_center, sph_rad);
+    end
 
     %%% coax and coax port #1
 
