@@ -265,6 +265,7 @@ function simulation_core(Sim, RUN_SIMULATION)
         adapt_a_len = length(Sim.adapt_a);
         adapt_b_len = length(Sim.adapt_b);
         adapt_dielectric_intrusion_len = length(Sim.adapt_dielectric_intrusion);
+        adapt_ProbeRad_len = length(Sim.adapt_ProbeRad);
 
         if (BackShort_len > 1);
             BackShort_values = Sim.adapt_BackShort;
@@ -292,7 +293,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:adapt_a_len;
                 close all                                   % Prevent memory leakage
                 Sim.adapt_number        = i;
-                Sim.adapt_a       = adapt_a_values(i);
+                Sim.adapt_a             = adapt_a_values(i);
                 sweep_type              = sprintf('adapt_a_sweep_%.2f', adapt_a_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -302,7 +303,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:adapt_b_len;
                 close all                                   % Prevent memory leakage
                 Sim.adapt_number        = i;
-                Sim.adapt_b       = adapt_b_values(i);
+                Sim.adapt_b             = adapt_b_values(i);
                 sweep_type              = sprintf('adapt_b_sweep_%.2f', adapt_b_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -311,9 +312,19 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:adapt_dielectric_intrusion_len;
                 close all                                   % Prevent memory leakage
+                Sim.adapt_number                = i;
+                Sim.adapt_dielectric_intrusion  = adapt_dielectric_intrusion_values(i);
+                sweep_type                      = sprintf('adapt_dielectric_intrusion_sweep_%.2f', adapt_dielectric_intrusion_values(i));
+                simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
+            endfor
+        elseif (adapt_ProbeRad_len >1);
+            adapt_ProbeRad_values = Sim.adapt_ProbeRad;
+
+            for i = 1:adapt_ProbeRad_len;
+                close all                                   % Prevent memory leakage
                 Sim.adapt_number        = i;
-                Sim.adapt_dielectric_intrusion       = adapt_dielectric_intrusion_values(i);
-                sweep_type              = sprintf('adapt_dielectric_intrusion_sweep_%.2f', adapt_dielectric_intrusion_values(i));
+                Sim.adapt_ProbeRad      = adapt_ProbeRad_values(i);
+                sweep_type              = sprintf('adapt_ProbeRad_sweep_%.2f', adapt_ProbeRad_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         else
@@ -324,7 +335,7 @@ function simulation_core(Sim, RUN_SIMULATION)
         endif
     endif
     
-    pause(5);  % Gives AppCSXCad time to open the horn model.
+    pause(5);  % Gives AppCSXCad time to open the model.
 endfunction
 
 %%

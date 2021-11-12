@@ -30,16 +30,18 @@ function [port, freq] = make_adapter(Sim)
     OuterCond_N          = Sim.adapt_OuterCond_N            %inner diam of outer conductor
     OuterCondOD_N        = Sim.adapt_OuterCondOD_N               % outer diam of outer conductor
     ProbeDepth           = Sim.adapt_ProbeDepth              % Probe insertion depth inside waveguide
+    ProbeRad             = Sim.adapt_ProbeRad
     N_Length             = Sim.adapt_N_Length            % length of N connector
     dielectric_intrusion = Sim.adapt_dielectric_intrusion
-    sph_rad              = Sim.adapt_sph_rad
     epsR                 = Sim.adapt_epsR
 
-    space       = Sim.adapt_space
+    space           = Sim.adapt_space
 
-    ADD_SPHERE  = Sim.ADAPT_ADD_SPHERE;
+    ADD_SPHERE      = Sim.ADAPT_ADD_SPHERE
+    sph_rad         = Sim.adapt_sph_rad
 
-    Sim_Path    = Sim.Sim_Path;
+    Sim_Path        = Sim.Sim_Path;
+    adapt_number    = Sim.adapt_number;
 
 
     %%%%% Setup %%%%%%
@@ -49,6 +51,10 @@ function [port, freq] = make_adapter(Sim)
     TE_mode = Sim.adapt_exc_mode;
     mesh_res = Sim.adapt_mesh_res;
     disp('>>____________________________________________<<');
+
+    % Save variables for analysis
+    config_variables_file = strcat(Sim.output_path, sprintf('/%d_adapter_variables.txt',adapt_number));
+    save("-text", config_variables_file, "Sim");
 
     physical_constants;
 
@@ -130,7 +136,7 @@ function [port, freq] = make_adapter(Sim)
     endif
 
     %% add _N center conductor probe to waveguide
-    CSX = AddCylinder(CSX,'metal2',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],InnerCond_N/2);
+    CSX = AddCylinder(CSX,'metal2',30, [a/2 b-ProbeDepth length-BackShort], [a/2 b+WallThickness length-BackShort],ProbeRad);
 
     if (ADD_SPHERE);
         sph_center = [a/2 b-ProbeDepth length-BackShort];
