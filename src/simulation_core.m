@@ -1,21 +1,19 @@
 %%
 %%  Author: Tiago Monteiro
 %%
-%% Clean workspace
-
-
+%% 
 function simulation_core(Sim, RUN_SIMULATION)
     %%  
-    %%   
-    %%  
+    %%  Simulation sweep function. Checks parameters of interest lengths and loops its values if
+    %%  there are more than one.
     %%  
     %%  Parameters:
-    %%  
-    %%  
-    %%  
+    %%          Sim: Simulation structures parameters
+    %%          RUN_SIMULATION: Flag that determines if the simulation must be 
+    %%                          done.  
     %%  
     %%  Returns:
-    %%  
+    %%          void.
     %%
 
     %% ----->> Generic simulation output folder <<----- 
@@ -52,7 +50,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:ai_len;
                 close all                                   % Prevent memory leakage
                 Sim.horn_number = i;
-                Sim.horn_ai          = ai_values(i);
+                Sim.horn_ai     = ai_values(i);
                 sweep_type      = sprintf('ai_sweep_%.2f', ai_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -62,7 +60,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:bi_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_bi          = bi_values(i);
+                Sim.horn_bi     = bi_values(i);
                 sweep_type      = sprintf('bi_sweep_%.2f', bi_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -72,7 +70,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:ao_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_ao          = ao_values(i);
+                Sim.horn_ao     = ao_values(i);
                 sweep_type      = sprintf('ao_sweep_%.2f', ao_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -82,7 +80,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:bo_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_bo          = bo_values(i);
+                Sim.horn_bo     = bo_values(i);
                 sweep_type      = sprintf('bo_sweep_%.2f', bo_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -91,9 +89,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:corr_step_len;
                 close all
-                Sim.horn_number = i;
-                Sim.horn_corr_step   = corr_step_values(i);
-                sweep_type      = sprintf('corr_step_sweep_%.2f', corr_step_values(i));
+                Sim.horn_number     = i;
+                Sim.horn_corr_step  = corr_step_values(i);
+                sweep_type          = sprintf('corr_step_sweep_%.2f', corr_step_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (delta_len > 1);
@@ -102,7 +100,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:delta_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_delta       = delta_values(i);
+                Sim.horn_delta  = delta_values(i);
                 sweep_type      = sprintf('delta_sweep_%.2f', delta_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -111,9 +109,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:depth_a_len;
                 close all
-                Sim.horn_number = i;
-                Sim.horn_depth_a     = depth_a_values(i);
-                sweep_type      = sprintf('depth_a_sweep_%.2f', depth_a_values(i));
+                Sim.horn_number  = i;
+                Sim.horn_depth_a = depth_a_values(i);
+                sweep_type       = sprintf('depth_a_sweep_%.2f', depth_a_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (a_jump_len > 1);
@@ -122,7 +120,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:a_jump_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_a_jump      = a_jump_values(i);
+                Sim.horn_a_jump = a_jump_values(i);
                 sweep_type      = sprintf('a_jump_sweep_%.2f', a_jump_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -131,9 +129,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:A_wall_tan_A_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_A_wall_tan_A    = A_wall_tan_A_values(i);
-                sweep_type          = sprintf('A_wall_tan_A_sweep_%.2f', A_wall_tan_A_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_A_wall_tan_A   = A_wall_tan_A_values(i);
+                sweep_type              = sprintf('A_wall_tan_A_sweep_%.2f', A_wall_tan_A_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (A_wall_tan_rho_len > 1);
@@ -141,9 +139,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:A_wall_tan_rho_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_A_wall_tan_rho  = A_wall_tan_rho_values(i);
-                sweep_type          = sprintf('A_wall_tan_rho_sweep_%.2f', A_wall_tan_rho_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_A_wall_tan_rho = A_wall_tan_rho_values(i);
+                sweep_type              = sprintf('A_wall_tan_rho_sweep_%.2f', A_wall_tan_rho_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (first_a_length_len > 1);
@@ -151,9 +149,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:first_a_length_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_first_a_length  = first_a_length_values(i);
-                sweep_type          = sprintf('first_a_length_sweep_%.2f', first_a_length_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_first_a_length = first_a_length_values(i);
+                sweep_type              = sprintf('first_a_length_sweep_%.2f', first_a_length_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (first_ao_len > 1);
@@ -162,7 +160,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:first_ao_len;
                 close all
                 Sim.horn_number     = i;
-                Sim.horn_first_ao        = first_ao_values(i);
+                Sim.horn_first_ao   = first_ao_values(i);
                 sweep_type          = sprintf('first_ao_sweep_%.2f', first_ao_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -171,9 +169,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:depth_b_len;
                 close all
-                Sim.horn_number = i;
-                Sim.horn_depth_b     = depth_b_values(i);
-                sweep_type      = sprintf('depth_b_sweep_%.2f', depth_b_values(i));
+                Sim.horn_number     = i;
+                Sim.horn_depth_b    = depth_b_values(i);
+                sweep_type          = sprintf('depth_b_sweep_%.2f', depth_b_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (b_jump_len > 1);
@@ -182,7 +180,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:b_jump_len;
                 close all
                 Sim.horn_number = i;
-                Sim.horn_b_jump      = b_jump_values(i);
+                Sim.horn_b_jump = b_jump_values(i);
                 sweep_type      = sprintf('b_jump_sweep_%.2f', b_jump_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -191,9 +189,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:B_wall_tan_A_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_B_wall_tan_A    = B_wall_tan_A_values(i);
-                sweep_type          = sprintf('B_wall_tan_A_sweep_%.2f', B_wall_tan_A_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_B_wall_tan_A   = B_wall_tan_A_values(i);
+                sweep_type              = sprintf('B_wall_tan_A_sweep_%.2f', B_wall_tan_A_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (B_wall_tan_rho_len > 1);
@@ -201,9 +199,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:B_wall_tan_rho_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_B_wall_tan_rho  = B_wall_tan_rho_values(i);
-                sweep_type          = sprintf('B_wall_tan_rho_sweep_%.2f', B_wall_tan_rho_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_B_wall_tan_rho = B_wall_tan_rho_values(i);
+                sweep_type              = sprintf('B_wall_tan_rho_sweep_%.2f', B_wall_tan_rho_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (first_b_length_len > 1);
@@ -211,9 +209,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:first_b_length_len;
                 close all
-                Sim.horn_number     = i;
-                Sim.horn_first_b_length  = first_b_length_values(i);
-                sweep_type          = sprintf('first_b_length_sweep_%.2f', first_b_length_values(i));
+                Sim.horn_number         = i;
+                Sim.horn_first_b_length = first_b_length_values(i);
+                sweep_type              = sprintf('first_b_length_sweep_%.2f', first_b_length_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (first_bo_len > 1);
@@ -222,7 +220,7 @@ function simulation_core(Sim, RUN_SIMULATION)
             for i = 1:first_bo_len;
                 close all
                 Sim.horn_number     = i;
-                Sim.horn_first_bo        = first_bo_values(i);
+                Sim.horn_first_bo   = first_bo_values(i);
                 sweep_type          = sprintf('first_bo_sweep_%.2f', first_bo_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
@@ -231,9 +229,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:wg_length_len;
                 close all
-                Sim.horn_number = i;
-                Sim.horn_wg_length   = wg_length_values(i);
-                sweep_type      = sprintf('wg_length_sweep_%.2f', wg_length_values(i));
+                Sim.horn_number     = i;
+                Sim.horn_wg_length  = wg_length_values(i);
+                sweep_type          = sprintf('wg_length_sweep_%.2f', wg_length_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (num_of_corrugations_len > 1);
@@ -241,9 +239,9 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:num_of_corrugations_len;
                 close all
-                Sim.horn_number         = i;
+                Sim.horn_number              = i;
                 Sim.horn_num_of_corrugations = num_of_corrugations_values(i);
-                sweep_type              = sprintf('num_of_corrugations_sweep_%d', num_of_corrugations_values(i));
+                sweep_type                   = sprintf('num_of_corrugations_sweep_%d', num_of_corrugations_values(i));
                 simulate_horn(Sim, sweep_type, RUN_SIMULATION);
             endfor
         else
@@ -272,46 +270,46 @@ function simulation_core(Sim, RUN_SIMULATION)
 
             for i = 1:BackShort_len;
                 close all                                   % Prevent memory leakage
-                Sim.adapt_number        = i;
-                Sim.adapt_BackShort     = BackShort_values(i);
-                sweep_type              = sprintf('BackShort_sweep_%.2f', BackShort_values(i));
+                Sim.adapt_number    = i;
+                Sim.adapt_BackShort = BackShort_values(i);
+                sweep_type          = sprintf('BackShort_sweep_%.2f', BackShort_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (ProbeDepth_len >1);
             ProbeDepth_values = Sim.adapt_ProbeDepth;
 
             for i = 1:ProbeDepth_len;
-                close all                                   % Prevent memory leakage
-                Sim.adapt_number        = i;
-                Sim.adapt_ProbeDepth    = ProbeDepth_values(i);
-                sweep_type              = sprintf('ProbeDepth_sweep_%.2f', ProbeDepth_values(i));
+                close all                                   
+                Sim.adapt_number     = i;
+                Sim.adapt_ProbeDepth = ProbeDepth_values(i);
+                sweep_type           = sprintf('ProbeDepth_sweep_%.2f', ProbeDepth_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (adapt_a_len >1);
             adapt_a_values = Sim.adapt_a;
 
             for i = 1:adapt_a_len;
-                close all                                   % Prevent memory leakage
-                Sim.adapt_number        = i;
-                Sim.adapt_a             = adapt_a_values(i);
-                sweep_type              = sprintf('adapt_a_sweep_%.2f', adapt_a_values(i));
+                close all                                   
+                Sim.adapt_number = i;
+                Sim.adapt_a      = adapt_a_values(i);
+                sweep_type       = sprintf('adapt_a_sweep_%.2f', adapt_a_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (adapt_b_len >1);
             adapt_b_values = Sim.adapt_b;
 
             for i = 1:adapt_b_len;
-                close all                                   % Prevent memory leakage
-                Sim.adapt_number        = i;
-                Sim.adapt_b             = adapt_b_values(i);
-                sweep_type              = sprintf('adapt_b_sweep_%.2f', adapt_b_values(i));
+                close all                                   
+                Sim.adapt_number = i;
+                Sim.adapt_b      = adapt_b_values(i);
+                sweep_type       = sprintf('adapt_b_sweep_%.2f', adapt_b_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         elseif (adapt_dielectric_intrusion_len >1);
             adapt_dielectric_intrusion_values = Sim.adapt_dielectric_intrusion;
 
             for i = 1:adapt_dielectric_intrusion_len;
-                close all                                   % Prevent memory leakage
+                close all                                   
                 Sim.adapt_number                = i;
                 Sim.adapt_dielectric_intrusion  = adapt_dielectric_intrusion_values(i);
                 sweep_type                      = sprintf('adapt_dielectric_intrusion_sweep_%.2f', adapt_dielectric_intrusion_values(i));
@@ -321,10 +319,10 @@ function simulation_core(Sim, RUN_SIMULATION)
             adapt_ProbeRad_values = Sim.adapt_ProbeRad;
 
             for i = 1:adapt_ProbeRad_len;
-                close all                                   % Prevent memory leakage
-                Sim.adapt_number        = i;
-                Sim.adapt_ProbeRad      = adapt_ProbeRad_values(i);
-                sweep_type              = sprintf('adapt_ProbeRad_sweep_%.2f', adapt_ProbeRad_values(i));
+                close all                                   
+                Sim.adapt_number   = i;
+                Sim.adapt_ProbeRad = adapt_ProbeRad_values(i);
+                sweep_type         = sprintf('adapt_ProbeRad_sweep_%.2f', adapt_ProbeRad_values(i));
                 simulate_adapter(Sim, sweep_type, RUN_SIMULATION);
             endfor
         else
@@ -388,16 +386,16 @@ endfunction
 %%
 function simulate_adapter(Sim, sweep_type, RUN_SIMULATION)
     %%  
-    %%  
-    %%  
+    %%  This function makes the simulation directory, calls make_adapter for make 
+    %%  the 3D structure and then calls run_adapter_simulation if it is required to. 
     %%  
     %%  Parameters:
-    %%  
-    %%  
-    %%  
-    %%  
+    %%          Sim: Adapter simulation parameters.
+    %%          sweep_type: String detailing sweep type.
+    %%          RUN_SIMULATION: Flag that determines if the simulation must be 
+    %%                          done.
     %%  Returns:
-    %%  
+    %%          void
     %%
 
     %% ----->> Output simulation particular folder <<-----

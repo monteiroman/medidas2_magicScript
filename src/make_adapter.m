@@ -4,6 +4,17 @@
 %%  Author: Tiago Monteiro
 %%
 function [port, freq] = make_adapter(Sim)
+    %%
+    %%  Function for make the 3D structure and OpenEMS's XML for simulation.
+    %%
+    %%  Parameters:
+    %%          Sim: Adapter simulation parameters.
+    %%          
+    %%  Returns:
+    %%          port: Waveguide port for later simulation.
+    %%          freq: Frequency linspace
+    %%
+    %%
 
     disp('>>________ Adapter and Simulation Values ________<<');
     f_start    = Sim.fmin

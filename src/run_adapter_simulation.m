@@ -1,10 +1,16 @@
-    
+%%
+%%  Simulation run function.
+%%
+%%  Author: Tiago Monteiro
+%% 
 function run_adapter_simulation(Sim, port, freq)
     %%
+    %%  Runs the OpenEMS simulation and stores output graphics.
     %%
     %%  Parameters:
     %%          Sim: Horn simulation parameters.
     %%          port: Waveguide port for later simulation.
+    %%          freq: Frequency linspace
     %%
     %%  Returns:
     %%          void

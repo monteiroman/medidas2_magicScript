@@ -1,7 +1,7 @@
 %%
 %%  Author: Tiago Monteiro
 %%
-%% Clean workspace
+%%
 close all
 clear
 clc
@@ -31,8 +31,8 @@ Sim.adapt_number = 0;
 
 %___ General parameters __________________
 RUN_SIMULATION  = ON;
-Sim.MAKE_HORN   = OFF;
-Sim.MAKE_ADAPT  = ON;
+Sim.MAKE_HORN   = ON;
+Sim.MAKE_ADAPT  = OFF;
 
 Sim.output_path = 'outputs/';
 Sim.Sim_Path    = 'tmp/';
@@ -69,29 +69,29 @@ Sim.horn_delta               = 0.75;
 % A walls setup
     Sim.HORN_USE_CORRUGATIONS_A  = OFF;
     Sim.horn_depth_a             = 0;
-    Sim.horn_a_jump              = 0;
+    Sim.horn_a_jump              = 0;        % First corrugation jump
     Sim.HORN_PROFILE_FOR_A       = 1;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
     % Only for Tangential profile
     Sim.horn_A_wall_tan_A        = 1;        % A coeficient for Tangential wall A
     Sim.horn_A_wall_tan_rho      = 2;        % rho coeficient for Tangential wall A
     % Only fot two phase linear
-    Sim.horn_first_a_length      = 0.1;
-    Sim.horn_first_ao            = 70;
+    Sim.horn_first_a_length      = 0.1;      % First length in horn flare
+    Sim.horn_first_ao            = 70;       % First flare aperture for a walls
 
 % B walls setup
     Sim.HORN_USE_CORRUGATIONS_B  = ON;
     Sim.horn_depth_b             = 0;
-    Sim.horn_b_jump              = 3.5;
+    Sim.horn_b_jump              = 2;      % First corrugation jump
     Sim.HORN_PROFILE_FOR_B       = 4;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
     % Only for Tangential profile
     Sim.horn_B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
     Sim.horn_B_wall_tan_rho      = 2;        % rho coeficient for Tangential wall B
     % Only fot two phase linear
-    Sim.horn_first_b_length      = 0.2;
-    Sim.horn_first_bo            = 25;
+    Sim.horn_first_b_length      = 0.2;      % First length in horn flare
+    Sim.horn_first_bo            = 25;       % First flare aperture for b walls
 
 Sim.horn_wg_length           = 60;           % Length of feeding waveguide
-Sim.horn_num_of_corrugations = 35;
+Sim.horn_num_of_corrugations = 35;           % Number of corrugations
 Sim.horn_straight_width      = 2;
 Sim.horn_cap_width           = 2;
 
@@ -112,22 +112,22 @@ Sim.adapt_m = 1;
 Sim.adapt_n = 0;
 
 Sim.adapt_length          = 60;
-Sim.adapt_b               = 10.16;            % waveguide width 
-Sim.adapt_a               = 22.86;            % waveguide heigth
-Sim.adapt_WallThickness   = 2;                % walls thickness
-Sim.adapt_BackShort       = 6.5;                % distance from short to center of probe
+Sim.adapt_b               = 10.16;            % Waveguide width 
+Sim.adapt_a               = 22.86;            % Waveguide heigth
+Sim.adapt_WallThickness   = 2;                % Walls thickness
+Sim.adapt_BackShort       = 7;                % Distance from short to center of probe
 
 
 %%%%% Conector N %%%%%
-Sim.adapt_InnerCond_N           = 3.04;            %inner diameter
-Sim.adapt_OuterCond_N           = 8.13;            %inner diam of outer conductor
-Sim.adapt_OuterCondOD_N         = 15.8;               % outer diam of outer conductor
-Sim.adapt_ProbeDepth            = 5;              % Probe insertion depth inside waveguide
-Sim.adapt_ProbeRad              = 0.3:0.1:1;%0.97;              % probe rad
-Sim.adapt_dielectric_intrusion  = 1.75;
-Sim.ADAPT_ADD_SPHERE            = NO;
-Sim.adapt_sph_rad               = (Sim.adapt_InnerCond_N/2)-0.55;
-Sim.adapt_N_Length              = 10.72;            % length of N connector
+Sim.adapt_InnerCond_N           = 3.04;             % Inner diameter
+Sim.adapt_OuterCond_N           = 8.13;             % Inner diam of outer conductor
+Sim.adapt_OuterCondOD_N         = 15.8;             % Outer diam of outer conductor
+Sim.adapt_ProbeDepth            = 5.5;              % Probe insertion depth inside waveguide
+Sim.adapt_ProbeRad              = 1;                % Probe rad
+Sim.adapt_dielectric_intrusion  = 1.75;             % Dielectric intrusion on waveguide
+Sim.ADAPT_ADD_SPHERE            = NO;                   % Add probe end sphere
+Sim.adapt_sph_rad               = Sim.adapt_ProbeRad;   % Probe end shere radius
+Sim.adapt_N_Length              = 10.72;            % Length of N connector
 Sim.adapt_epsR                  = 2.08;             % Teflon permitivity
 
 Sim.adapt_mesh_res        = [.3 .3 .3];
