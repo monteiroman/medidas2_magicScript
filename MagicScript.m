@@ -32,7 +32,7 @@ Sim.adapt_number = 0;
 %___ General parameters __________________
 RUN_SIMULATION  = ON;
 Sim.MAKE_HORN   = ON;
-Sim.MAKE_ADAPT  = OFF;
+Sim.MAKE_ADAPT  = ON;
 
 Sim.output_path = 'outputs/';
 Sim.Sim_Path    = 'tmp/';
@@ -81,7 +81,7 @@ Sim.horn_delta               = 0.75;
 % B walls setup
     Sim.HORN_USE_CORRUGATIONS_B  = ON;
     Sim.horn_depth_b             = 0;
-    Sim.horn_b_jump              = 2;      % First corrugation jump
+    Sim.horn_b_jump              = 2;        % First corrugation jump
     Sim.HORN_PROFILE_FOR_B       = 4;        % 1=Linear, 2=Tangential, 3=Exponential, 4=Two phased linear.
     % Only for Tangential profile
     Sim.horn_B_wall_tan_A        = 1;        % A coeficient for Tangential wall B
@@ -101,7 +101,7 @@ Sim.HORN_SHOW_STRUCTURE_FIGURES      = YES;
 Sim.HORN_SUBSTRACT_LEFTOVERS         = YES;  % Subtracts horn leftovers with air volume
 
 Sim.HORN_TIME_STEPS = 10000;
-Sim.horn_n_cell     = 40;                   % cell_size = lambda_fmax / n_cell
+Sim.horn_n_cell     = 40;                    % cell_size = lambda_fmax / n_cell
 
 
 %___ Adapter parameters __________________
