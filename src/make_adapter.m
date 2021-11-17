@@ -36,7 +36,7 @@ function [port, freq] = make_adapter(Sim)
     BackShort       = Sim.adapt_BackShort                % distance from short to center of probe
 
 
-    %%%%% Conector N %%%%%
+    %%%%% N Conector %%%%%
     InnerCond_N          = Sim.adapt_InnerCond_N            %inner diameter
     OuterCond_N          = Sim.adapt_OuterCond_N            %inner diam of outer conductor
     OuterCondOD_N        = Sim.adapt_OuterCondOD_N               % outer diam of outer conductor
@@ -56,7 +56,6 @@ function [port, freq] = make_adapter(Sim)
 
 
     %%%%% Setup %%%%%%
-
     f_start = f_start * 1e9;    
     f_stop  = f_stop * 1e9;   
     TE_mode = Sim.adapt_exc_mode;
@@ -155,7 +154,6 @@ function [port, freq] = make_adapter(Sim)
     end
 
     %%% coax and coax port #1
-
     start = [a/2,b+WallThickness+N_Length,length-BackShort];
     stop  = [a/2,b+WallThickness,length-BackShort];     
     [CSX,port{1}] = AddCoaxialPort( CSX, 0, 1, 'metal', 'teflon', start, stop, 'y',InnerCond_N/2 , OuterCond_N/2, OuterCondOD_N/2,'ExciteAmp', 1,'FeedShift', 10*mesh_res(2) );

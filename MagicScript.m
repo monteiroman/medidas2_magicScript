@@ -126,7 +126,7 @@ Sim.adapt_ProbeDepth            = 5.5;              % Probe insertion depth insi
 Sim.adapt_ProbeRad              = 1;                % Probe rad
 Sim.adapt_dielectric_intrusion  = 1.75;             % Dielectric intrusion on waveguide
 Sim.ADAPT_ADD_SPHERE            = NO;                   % Add probe end sphere
-Sim.adapt_sph_rad               = Sim.adapt_ProbeRad;   % Probe end shere radius
+Sim.adapt_sph_rad               = Sim.adapt_ProbeRad;   % Probe end sphere radius
 Sim.adapt_N_Length              = 10.72;            % Length of N connector
 Sim.adapt_epsR                  = 2.08;             % Teflon permitivity
 
