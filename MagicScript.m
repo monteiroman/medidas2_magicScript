@@ -31,7 +31,7 @@ Sim.adapt_number = 0;
 
 %___ General parameters __________________
 RUN_SIMULATION  = ON;
-Sim.MAKE_HORN   = ON;
+Sim.MAKE_HORN   = OFF;
 Sim.MAKE_ADAPT  = ON;
 
 Sim.output_path = 'outputs/';
@@ -119,12 +119,12 @@ Sim.adapt_BackShort       = 7;                % Distance from short to center of
 
 
 %%%%% Conector N %%%%%
-Sim.adapt_InnerCond_N           = 3.04;             % Inner diameter
+Sim.adapt_InnerCond_N           = 3.15;             % Inner diameter
 Sim.adapt_OuterCond_N           = 8.13;             % Inner diam of outer conductor
 Sim.adapt_OuterCondOD_N         = 15.8;             % Outer diam of outer conductor
 Sim.adapt_ProbeDepth            = 5.5;              % Probe insertion depth inside waveguide
 Sim.adapt_ProbeRad              = 1;                % Probe rad
-Sim.adapt_dielectric_intrusion  = 1.75;             % Dielectric intrusion on waveguide
+Sim.adapt_dielectric_intrusion  = 2;             % Dielectric intrusion on waveguide
 Sim.ADAPT_ADD_SPHERE            = NO;                   % Add probe end sphere
 Sim.adapt_sph_rad               = Sim.adapt_ProbeRad;   % Probe end sphere radius
 Sim.adapt_N_Length              = 10.72;            % Length of N connector

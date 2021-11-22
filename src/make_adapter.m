@@ -121,6 +121,9 @@ function [port, freq] = make_adapter(Sim)
     CSX = AddMetal(CSX,'metal2');  %% metal is PEC
     CSX = AddMaterial( CSX, 'teflon' );
     CSX = SetMaterialProperty( CSX, 'teflon', 'Epsilon', epsR);
+    CSX = AddMaterial(CSX,'air');
+    CSX = SetMaterialProperty(CSX,'air','Epsilon',1.0,'Mue',1.0);
+
     % AddBox info at:
     %       https://openems.de/index.php/Box.html
     % Top and bottom walls
@@ -136,11 +139,8 @@ function [port, freq] = make_adapter(Sim)
     if (dielectric_intrusion >= WallThickness);
         % More info of AddCylinder here:
         %                       https://openems.de/index.php/Cylinder.html
-        CSX = AddCylinder(CSX,'teflon',20,[a/2 b-dielectric_intrusion length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
+        CSX = AddCylinder(CSX,'teflon',20,[a/2 b-(dielectric_intrusion-WallThickness) length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
     else
-        CSX = AddMaterial(CSX,'air');
-        CSX = SetMaterialProperty(CSX,'air','Epsilon',1.0,'Mue',1.0);
-    
         CSX = AddCylinder(CSX,'air',20,[a/2 b length-BackShort], [a/2 b+(WallThickness-dielectric_intrusion) length-BackShort],OuterCond_N/2);
         CSX = AddCylinder(CSX,'teflon',20,[a/2 b+(WallThickness-dielectric_intrusion) length-BackShort], [a/2 b+WallThickness length-BackShort],OuterCond_N/2);
     endif
@@ -156,7 +156,7 @@ function [port, freq] = make_adapter(Sim)
     %%% coax and coax port #1
     start = [a/2,b+WallThickness+N_Length,length-BackShort];
     stop  = [a/2,b+WallThickness,length-BackShort];     
-    [CSX,port{1}] = AddCoaxialPort( CSX, 0, 1, 'metal', 'teflon', start, stop, 'y',InnerCond_N/2 , OuterCond_N/2, OuterCondOD_N/2,'ExciteAmp', 1,'FeedShift', 10*mesh_res(2) );
+    [CSX,port{1}] = AddCoaxialPort( CSX, 0, 1, 'metal', 'air', start, stop, 'y',InnerCond_N/2 , OuterCond_N/2, OuterCondOD_N/2,'ExciteAmp', 1,'FeedShift', 10*mesh_res(2) );
 
     % waveguide port 2
 
