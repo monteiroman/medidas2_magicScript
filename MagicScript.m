@@ -115,14 +115,14 @@ Sim.adapt_length          = 60;
 Sim.adapt_b               = 10.16;            % Waveguide width 
 Sim.adapt_a               = 22.86;            % Waveguide heigth
 Sim.adapt_WallThickness   = 2;                % Walls thickness
-Sim.adapt_BackShort       = 7;                % Distance from short to center of probe
+Sim.adapt_BackShort       = 8;                % Distance from short to center of probe
 
 
 %%%%% Conector N %%%%%
 Sim.adapt_InnerCond_N           = 3.15;             % Inner diameter
 Sim.adapt_OuterCond_N           = 8.13;             % Inner diam of outer conductor
 Sim.adapt_OuterCondOD_N         = 15.8;             % Outer diam of outer conductor
-Sim.adapt_ProbeDepth            = 5.5;              % Probe insertion depth inside waveguide
+Sim.adapt_ProbeDepth            = 3:1:7;              % Probe insertion depth inside waveguide
 Sim.adapt_ProbeRad              = 1;                % Probe rad
 Sim.adapt_dielectric_intrusion  = 2;             % Dielectric intrusion on waveguide
 Sim.ADAPT_ADD_SPHERE            = NO;                   % Add probe end sphere
