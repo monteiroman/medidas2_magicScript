@@ -90,18 +90,18 @@ Results shown below are for [these](/ReadmeData/5mm_b_jump/9_horn_variables.txt)
 ## Project State
 |Step|Description|Status|
 |:---:|:---:|:---:|
-|1|Run simulations on OpenEMS with structures made by us.<br/>(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/e91d77f7ba519339ee20ab937bb6875e94559fc0) moment)|✅|
-|2|Obtain similar horn structure as [1].<br/>(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/d6bcb67d9ceb91d669a03ce52e1ebb5fea73e0dc) moment with [test_horn_with_chokes.m](/Tests/Structure_test/test_horn_with_chokes.m), results [here](/Tests/README.md))|✅|
-|3|Obtain similar simulation values as [1].<br/>(achieved at [this](https://github.com/monteiroman/medidas2_magicScript/tree/12c9e1740e78929e84c12cb717035419cef249a2) moment with [test_horn_with_chokes_simulation.m](/Tests/Simulation_test/test_horn_with_chokes_simulation.m), results [here](/Tests/README.md))|✅|
-|4|Simulate a full corrugated horn.<br/>(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
-|5|Test other horn shapes (Hyperbolic, Exponential, Tangential).<br/>(achieved with [test_corrugated_horn.m](/Tests/Simulation_test/test_corrugated_horn.m), results [here](/Tests/README.md))|✅|
-|6|Make function for Horn design in octave. (on MagicScript.m)|✅|
-|7|Make a parameter sweep script for horn antennas in octave. (on MagicScript.m)|✅|
-|8|Waveguide to N connector adapter|⏳|
+|1|Run simulations on OpenEMS with structures made by us.|✅|
+|2|Obtain similar horn structure as [1].|✅|
+|3|Obtain similar simulation values as [1].|✅|
+|4|Simulate a full corrugated horn.|✅|
+|5|Test other horn shapes (Hyperbolic, Exponential, Tangential).|✅|
+|6|Make function for Horn design in octave.|✅|
+|7|Make a parameter sweep script for horn antennas in octave.|✅|
+|8|Waveguide to N connector adapter|✅|
 
 ***
 ## Tests
-Project tests can be seen here, they were the first steps developing the root project. You can see the readme [here](/Tests/README.md).
+Project tests can be seen [here](Tests/), they were the first steps developing the root project. You can see the readme [here](/Tests/README.md).
 
 ***
 ## OpenEMS installation on Linux
